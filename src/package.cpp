@@ -254,42 +254,27 @@ QSet<QString>* Package::getUnrequiredPackageList()
  */
 QMap<QString, OutdatedPackageInfo> *Package::getOutdatedStringList()
 {
+  QString pkgAux, pkgName;
   QString outPkgList = UnixCommand::getOutdatedPackageList();
   QStringList packageTuples = outPkgList.split(QRegularExpression("\\n"), QString::SkipEmptyParts);
   QMap<QString, OutdatedPackageInfo>* res = new QMap<QString, OutdatedPackageInfo>();
-  bool pkgsToUpgrade = false;
+  //bool pkgsToUpgrade = false;
 
-  if (packageTuples.contains("Installed packages to be UPGRADED:", Qt::CaseInsensitive))
+  foreach(QString packageTuple, packageTuples)
   {
-    foreach(QString packageTuple, packageTuples)
+    if (packageTuple.contains("update"))
     {
-      if (packageTuple.contains("packages to be") &&
-          !packageTuple.contains("Installed packages to be UPGRADED:"))
+      QStringList parts = packageTuple.split(' ');
       {
-        pkgsToUpgrade = false;
-        continue;
-      }
-      else if (packageTuple.contains("packages to be") &&
-          packageTuple.contains("Installed packages to be UPGRADED:"))
-      {
-        pkgsToUpgrade = true;
-      }
+        OutdatedPackageInfo opi;
 
-      if (pkgsToUpgrade && packageTuple.contains("\t"))
-      {
-        packageTuple.remove("\t");
+        pkgAux = parts[0];
+        int dash = pkgAux.lastIndexOf("-");
 
-        QStringList parts = packageTuple.split(' ');
+        if (dash != -1)
         {
-          OutdatedPackageInfo opi;
-          QString pkgName;
-
-          pkgName = parts[0];
-          pkgName.remove(pkgName.size()-1, 1);
-
-          opi.oldVersion = parts[1];
-          opi.newVersion = parts[3];
-
+          pkgName = pkgAux.left(dash);
+          opi.newVersion = pkgAux.right(pkgAux.length() - (dash+1));
           res->insert(pkgName, opi);
         }
       }
@@ -468,7 +453,7 @@ QList<PackageListData> * Package::getPackageList(const QString &packageName)
  */
 QList<PackageListData> * Package::parsePackageTuple(const QStringList &packageTuples, QStringList &packageCache)
 {
-  QString pkgAux, pkgName, pkgVersion, pkgCategories, pkgWWW, pkgComment, strStatus, pkgDescription, pkgOrigin;
+  QString pkgAux, pkgName, pkgVersion, pkgComment, strStatus, pkgDescription, pkgOrigin;
   PackageStatus pkgStatus;
   double pkgInstalledSize, pkgDownloadedSize;
 
@@ -512,106 +497,6 @@ QList<PackageListData> * Package::parsePackageTuple(const QStringList &packageTu
   }
 
   return res;
-
-    /*if (packageTuple.at(0).isLower())
-    {
-      //TODO We have to search for the pkg to discover its status
-      PackageListData pld;
-
-      if (!pkgName.isEmpty())
-      {
-        pld.name = pkgName;
-
-        if (packageCache.contains(pkgName)) continue;
-
-        pld.version = pkgVersion;
-        pld.categories = pkgCategories;
-        pld.www = pkgWWW;
-        pld.comment = pkgName + " " + pkgComment;
-        pld.downloadSize = pkgPkgSize;
-        pld.status = ectn_NON_INSTALLED;
-        pld.repository = ctn_PKGNG_FAKE_REPOSITORY;
-
-        packageCache.append(pkgName);
-
-        pkgName="";
-        pkgVersion="";
-        pkgCategories="";
-        pkgWWW="";
-        pkgComment="";
-        pkgPkgSize=0;
-
-        res->append(pld);
-      }
-
-      continue;
-    }
-
-    indName = packageTuple.indexOf("Name           :");
-    indVersion = packageTuple.indexOf("Version        :");
-    indCategories = packageTuple.indexOf("Categories     :");
-    indWWW = packageTuple.indexOf("WWW            :");
-    indComment = packageTuple.indexOf("Comment        :");
-    indPkgSize = packageTuple.indexOf("Pkg size       :");
-
-    if (indName > -1)
-    {
-      indName += cSpaces;
-      pkgName = packageTuple.right(packageTuple.size()-(indName+1));
-    }
-    else if (indVersion > -1)
-    {
-      indVersion += cSpaces;
-      pkgVersion = packageTuple.right(packageTuple.size()-(indVersion+1));
-    }
-    else if (indCategories > -1)
-    {
-      indCategories += cSpaces;
-      pkgCategories = packageTuple.right(packageTuple.size()-(indCategories+1));
-    }
-    else if (indWWW > -1)
-    {
-      indWWW += cSpaces;
-      pkgWWW = packageTuple.right(packageTuple.size()-(indWWW+1));
-    }
-    else if (indComment > -1)
-    {
-      indComment += cSpaces;
-      pkgComment = packageTuple.right(packageTuple.size()-(indComment+1));
-    }
-    else if (indPkgSize > -1)
-    {
-      indPkgSize += cSpaces;
-      pkgPkgSize = strToKBytes2(packageTuple.right(packageTuple.size()-(indPkgSize+1)));
-    }
-  }
-
-  //Adds the last one...
-  if (packageTuples.count() > 0 && (!packageCache.contains(pkgName)))
-  {
-    PackageListData pld;
-    pld.name = pkgName;
-    pld.version = pkgVersion;
-    pld.categories = pkgCategories;
-    pld.www = pkgWWW;
-    pld.comment = pkgName + " " + pkgComment;
-    pld.downloadSize = pkgPkgSize;
-    pld.status = ectn_NON_INSTALLED;
-    pld.repository = ctn_PKGNG_FAKE_REPOSITORY;
-
-    packageCache.append(pkgName);
-
-    pkgName="";
-    pkgVersion="";
-    pkgCategories="";
-    pkgWWW="";
-    pkgComment="";
-    pkgPkgSize=0;
-
-    res->append(pld);
-  }
-
-  return res;*/
 }
 
 /*
@@ -893,6 +778,22 @@ QString Package::getOptions(const QString &pkgInfo)
 {
   QString aux = extractFieldFromInfo("Options", pkgInfo);
   return aux;
+}
+
+/*
+ * Retrieves "maintainer" field from a remote pkg search
+ */
+QString Package::getRemoteMaintainer(const QString &pkgName)
+{
+  return UnixCommand::getFieldFromRemotePackage("maintainer", pkgName);
+}
+
+/*
+ * Retrieves "homepage" field from a remote pkg search
+ */
+QString Package::getRemoteHomepage(const QString &pkgName)
+{
+  return UnixCommand::getFieldFromRemotePackage("homepage", pkgName);
 }
 
 /**

@@ -50,7 +50,6 @@ QString OctopiTabInfo::formatTabInfo(const PackageRepository::PackageData& packa
   QString version = StrConstants::getVersion();
   QString url = StrConstants::getURL();
   QString licenses = StrConstants::getLicenses();
-  QString groups = StrConstants::getCategories();
   QString downloadSize = StrConstants::getDownloadSize();
   QString installedSize = StrConstants::getInstalledSize();
   QString maintainer = StrConstants::getMaintainer();
@@ -78,10 +77,17 @@ QString OctopiTabInfo::formatTabInfo(const PackageRepository::PackageData& packa
   html += "<table border=\"0\">";
   html += "<tr><th width=\"20%\"></th><th width=\"80%\"></th></tr>";
 
-  if (package.repository.isEmpty() && pid.url != "<a href=\"http://\"></a>UNKNOWN")
-    html += "<tr><td>" + url + "</td><td style=\"font-size:14px;\">" + pid.url + "</td></tr>";
-  else if (!package.repository.isEmpty())
-    html += "<tr><td>" + url + "</td><td style=\"font-size:14px;\">" + Package::makeURLClickable(package.www) + "</td></tr>";
+  if (package.installed())
+  {
+    if (package.repository.isEmpty() && pid.url != "<a href=\"http://\"></a>UNKNOWN")
+      html += "<tr><td>" + url + "</td><td style=\"font-size:14px;\">" + pid.url + "</td></tr>";
+    else if (!package.repository.isEmpty())
+      html += "<tr><td>" + url + "</td><td style=\"font-size:14px;\">" + Package::makeURLClickable(package.www) + "</td></tr>";
+  }
+  else
+  {
+    html += "<tr><td>" + url + "</td><td style=\"font-size:14px;\">" + Package::makeURLClickable(Package::getRemoteHomepage(package.name)) + "</td></tr>";
+  }
 
   if (package.outdated())
   {
@@ -105,7 +111,17 @@ QString OctopiTabInfo::formatTabInfo(const PackageRepository::PackageData& packa
   }
 
   //This is needed as packager names could be encoded in different charsets, resulting in an error
-  QString packagerName = pid.maintainer;
+  QString packagerName;
+
+  if (package.installed())
+  {
+    packagerName = pid.maintainer;
+  }
+  else
+  {
+    packagerName = Package::getRemoteMaintainer(package.name);
+  }
+
   packagerName = packagerName.replace("<", "&lt;");
   packagerName = packagerName.replace(">", "&gt;");
 

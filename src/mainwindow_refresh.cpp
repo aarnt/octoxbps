@@ -745,8 +745,6 @@ void MainWindow::buildPackageList()
   QList<PackageListData> *list;
   list = m_listOfPackages.release();
 
-  //qDebug() << "PASSED...";
-
   m_progressWidget->setRange(0, list->count());
   m_progressWidget->setValue(0);
   m_progressWidget->show();

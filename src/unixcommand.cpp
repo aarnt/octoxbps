@@ -223,6 +223,7 @@ QByteArray UnixCommand::getUnrequiredPackageList()
  */
 QByteArray UnixCommand::getOutdatedPackageList()
 {
+  //QByteArray result = "qt5-x11extras-5.5.0_2 update x86_64 http://repo.voidlinux.eu/current\nqtchooser-52_1 update x86_64 http://repo.voidlinux.eu/current\nrtkit-0.11_12 update x86_64 http://repo.voidlinux.eu/current\nsudo-1.8.14p3_1 update x86_64 http://repo.voidlinux.eu/current";
   QByteArray result = performQuery("install -un");
   return result;
 }
@@ -487,6 +488,15 @@ QByteArray UnixCommand::getTargetRemovalList(const QString &pkgName)
     res = performQuery(args);
   }
 
+  return res;
+}
+
+/*
+ * Retrieves the given field for a remote package search
+ */
+QByteArray UnixCommand::getFieldFromRemotePackage(const QString &field, const QString &pkgName)
+{
+  QByteArray res = performQuery("query -R -p " + field + " " + pkgName);
   return res;
 }
 

@@ -247,56 +247,58 @@ void MainWindow::outputTextBrowserAnchorClicked(const QUrl &link)
   {
     QString pkgName = link.toString().mid(5);
 
-    bool indIncremented = false;
-    QItemSelectionModel*const selectionModel = ui->tvPackages->selectionModel();
-    QModelIndex item = selectionModel->selectedRows(PackageModel::ctn_PACKAGE_NAME_COLUMN).first();
-    const PackageRepository::PackageData*const selectedPackage = m_packageModel->getData(item);
-    //qDebug() << "Testing with index: " << m_indOfVisitedPackage;
-
-    if (!m_listOfVisitedPackages.isEmpty())
+    if (m_packageModel->getPackageCount() > 0)
     {
-      int limit = m_listOfVisitedPackages.count()-1;
+      bool indIncremented = false;
+      QItemSelectionModel*const selectionModel = ui->tvPackages->selectionModel();
+      QModelIndex item = selectionModel->selectedRows(PackageModel::ctn_PACKAGE_NAME_COLUMN).first();
+      const PackageRepository::PackageData*const selectedPackage = m_packageModel->getData(item);
 
-      if (m_indOfVisitedPackage <= limit)
+      if (!m_listOfVisitedPackages.isEmpty())
       {
-        if (m_listOfVisitedPackages.at(m_indOfVisitedPackage) != selectedPackage->name)
+        int limit = m_listOfVisitedPackages.count()-1;
+
+        if (m_indOfVisitedPackage <= limit)
+        {
+          if (m_listOfVisitedPackages.at(m_indOfVisitedPackage) != selectedPackage->name)
+          {
+            m_indOfVisitedPackage++;
+            indIncremented = true;
+            m_listOfVisitedPackages.insert(m_indOfVisitedPackage, selectedPackage->name);
+            m_listOfVisitedPackages.insert(m_indOfVisitedPackage+1, pkgName);
+            m_indOfVisitedPackage++; //CHANGED!!!
+          }
+          else
+          {
+            if ((m_indOfVisitedPackage+1) <= limit)
+            {
+              if (m_listOfVisitedPackages.at(m_indOfVisitedPackage+1) != pkgName)
+              {
+                m_listOfVisitedPackages.insert(m_indOfVisitedPackage+1, pkgName);
+              }
+            }
+            else
+              m_listOfVisitedPackages.insert(m_indOfVisitedPackage+1, pkgName);
+          }
+        }
+        else if (m_indOfVisitedPackage == 1)
         {
           m_indOfVisitedPackage++;
           indIncremented = true;
           m_listOfVisitedPackages.insert(m_indOfVisitedPackage, selectedPackage->name);
           m_listOfVisitedPackages.insert(m_indOfVisitedPackage+1, pkgName);
-          m_indOfVisitedPackage++; //CHANGED!!!
-        }
-        else
-        {
-          if ((m_indOfVisitedPackage+1) <= limit)
-          {
-            if (m_listOfVisitedPackages.at(m_indOfVisitedPackage+1) != pkgName)
-            {
-              m_listOfVisitedPackages.insert(m_indOfVisitedPackage+1, pkgName);
-            }
-          }
-          else
-            m_listOfVisitedPackages.insert(m_indOfVisitedPackage+1, pkgName);
         }
       }
-      else if (m_indOfVisitedPackage == 1)
+      else //The list is EMPTY!
       {
         m_indOfVisitedPackage++;
         indIncremented = true;
         m_listOfVisitedPackages.insert(m_indOfVisitedPackage, selectedPackage->name);
         m_listOfVisitedPackages.insert(m_indOfVisitedPackage+1, pkgName);
       }
-    }
-    else //The list is EMPTY!
-    {
-      m_indOfVisitedPackage++;
-      indIncremented = true;
-      m_listOfVisitedPackages.insert(m_indOfVisitedPackage, selectedPackage->name);
-      m_listOfVisitedPackages.insert(m_indOfVisitedPackage+1, pkgName);
-    }
 
-    if (indIncremented == false) m_indOfVisitedPackage++;
+      if (indIncremented == false) m_indOfVisitedPackage++;
+    }
 
     positionInPackageList(pkgName);
   }
@@ -481,7 +483,6 @@ void MainWindow::setRemoveCommand(const QString &removeCommand)
  */
 bool MainWindow::isPackageInstalled(const QString &pkgName)
 {
-  //qDebug() << "Is pkg " << pkgName << " installed?";
   const PackageRepository::PackageData*const package = m_packageRepo.getFirstPackageByName(pkgName);
   return (package != NULL && package->installed());
 }

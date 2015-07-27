@@ -207,7 +207,9 @@ class Package{
     static QString getDownloadSizeAsString(const QString &pkgInfo);
     static double getInstalledSize(const QString &pkgInfo);
     static QString getInstalledSizeAsString(const QString &pkgInfo);
-    static QString getOptions(const QString &pkgInfo);
+    static QString getOptions(const QString &pkgInfo); 
+    static QString getRemoteMaintainer(const QString &pkgName);
+    static QString getRemoteHomepage(const QString &pkgName);
 
     static QString kbytesToSize(float Bytes );
     static double strToKBytes(QString size);
