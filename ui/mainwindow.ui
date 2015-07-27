@@ -1,0 +1,559 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>552</width>
+    <height>518</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Octopi</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>:/resorces/icons/resources/icons/octopi_yellow.png</normaloff>:/resorces/icons/resources/icons/octopi_yellow.png</iconset>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <layout class="QGridLayout" name="gridLayout">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+    <property name="spacing">
+     <number>0</number>
+    </property>
+    <item row="0" column="0">
+     <widget class="QSplitter" name="splitterHorizontal">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <widget class="QSplitter" name="splitterVertical">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <widget class="QTreeView" name="tvPackages">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::NoFrame</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Plain</enum>
+        </property>
+        <property name="indentation">
+         <number>20</number>
+        </property>
+       </widget>
+       <widget class="QTreeWidget" name="twGroups">
+        <property name="maximumSize">
+         <size>
+          <width>265</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <column>
+         <property name="text">
+          <string notr="true">1</string>
+         </property>
+        </column>
+       </widget>
+      </widget>
+      <widget class="QTabWidget" name="twProperties">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>235</height>
+        </size>
+       </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <widget class="QWidget" name="tabInfo">
+        <attribute name="title">
+         <string>Info</string>
+        </attribute>
+       </widget>
+       <widget class="QWidget" name="tbFiles">
+        <attribute name="title">
+         <string>Files</string>
+        </attribute>
+       </widget>
+       <widget class="QWidget" name="tabTransaction">
+        <attribute name="title">
+         <string>Transaction</string>
+        </attribute>
+       </widget>
+       <widget class="QWidget" name="tabOutput">
+        <attribute name="title">
+         <string>Output</string>
+        </attribute>
+       </widget>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>552</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="contextMenuPolicy">
+    <enum>Qt::NoContextMenu</enum>
+   </property>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>He&amp;lp</string>
+    </property>
+    <addaction name="actionHelpUsage"/>
+    <addaction name="separator"/>
+    <addaction name="actionHelpAbout"/>
+   </widget>
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>V&amp;iew</string>
+    </property>
+    <addaction name="actionViewAllPackages"/>
+    <addaction name="actionViewInstalledPackages"/>
+    <addaction name="actionViewNonInstalledPackages"/>
+    <addaction name="separator"/>
+   </widget>
+   <widget class="QMenu" name="menuTransaction">
+    <property name="title">
+     <string>&amp;Transaction</string>
+    </property>
+    <addaction name="actionCommit"/>
+    <addaction name="actionCancel"/>
+   </widget>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionGetNews"/>
+    <addaction name="actionSyncPackages"/>
+    <addaction name="actionSystemUpgrade"/>
+    <addaction name="separator"/>
+    <addaction name="actionInstallLocalPackage"/>
+    <addaction name="actionOpenRootTerminal"/>
+    <addaction name="separator"/>
+    <addaction name="actionExit"/>
+   </widget>
+   <widget class="QMenu" name="menuSearch">
+    <property name="title">
+     <string>Se&amp;arch</string>
+    </property>
+    <addaction name="actionSearchByName"/>
+    <addaction name="actionSearchByDescription"/>
+    <addaction name="separator"/>
+    <addaction name="actionSearchByFile"/>
+   </widget>
+   <widget class="QMenu" name="menuTools">
+    <property name="title">
+     <string>Tools</string>
+    </property>
+    <addaction name="actionCacheCleaner"/>
+    <addaction name="actionPacmanLogViewer"/>
+    <addaction name="actionRepositoryEditor"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuView"/>
+   <addaction name="menuSearch"/>
+   <addaction name="menuTransaction"/>
+   <addaction name="menuTools"/>
+   <addaction name="menuHelp"/>
+  </widget>
+  <widget class="QToolBar" name="mainToolBar">
+   <property name="contextMenuPolicy">
+    <enum>Qt::NoContextMenu</enum>
+   </property>
+   <property name="movable">
+    <bool>false</bool>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionHelpAbout">
+   <property name="text">
+    <string>&amp;About</string>
+   </property>
+   <property name="iconText">
+    <string>About</string>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionViewNonInstalledPackages">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Non installed</string>
+   </property>
+  </action>
+  <action name="actionCommit">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/resources/images/commit.png</normaloff>:/resources/images/commit.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Commit</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+M</string>
+   </property>
+  </action>
+  <action name="actionCancel">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/resources/images/rollback.png</normaloff>:/resources/images/rollback.png</iconset>
+   </property>
+   <property name="text">
+    <string>Ca&amp;ncel</string>
+   </property>
+   <property name="toolTip">
+    <string>Cancel</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+E</string>
+   </property>
+  </action>
+  <action name="actionSyncPackages">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/resources/images/refresh.png</normaloff>:/resources/images/refresh.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Sync database</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+D</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/resources/images/exit.png</normaloff>:/resources/images/exit.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Exit</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="actionSystemUpgrade">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/resources/images/fast_forward.png</normaloff>:/resources/images/fast_forward.png</iconset>
+   </property>
+   <property name="text">
+    <string>Package &amp;upgrade</string>
+   </property>
+   <property name="toolTip">
+    <string>Package upgrade</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+U</string>
+   </property>
+  </action>
+  <action name="actionInstall">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/resources/images/toinstall.png</normaloff>:/resources/images/toinstall.png</iconset>
+   </property>
+   <property name="text">
+    <string>Install</string>
+   </property>
+   <property name="toolTip">
+    <string>Install</string>
+   </property>
+  </action>
+  <action name="actionRemove">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/resources/images/toremove.png</normaloff>:/resources/images/toremove.png</iconset>
+   </property>
+   <property name="text">
+    <string>Remove</string>
+   </property>
+   <property name="toolTip">
+    <string>Remove</string>
+   </property>
+  </action>
+  <action name="actionOutdated_packages">
+   <property name="text">
+    <string>Outdated packages</string>
+   </property>
+  </action>
+  <action name="actionGetNews">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/resources/images/rss.png</normaloff>:/resources/images/rss.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Get latest distro news</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+G</string>
+   </property>
+  </action>
+  <action name="actionCollapseItem">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/resources/images/collapse.png</normaloff>:/resources/images/collapse.png</iconset>
+   </property>
+   <property name="text">
+    <string>Collapse item</string>
+   </property>
+  </action>
+  <action name="actionExpandItem">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/resources/images/expand.png</normaloff>:/resources/images/expand.png</iconset>
+   </property>
+   <property name="text">
+    <string>Expand item</string>
+   </property>
+  </action>
+  <action name="actionCollapseAllItems">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/resources/images/collapse.png</normaloff>:/resources/images/collapse.png</iconset>
+   </property>
+   <property name="text">
+    <string>Collapse all items</string>
+   </property>
+  </action>
+  <action name="actionExpandAllItems">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/resources/images/expand.png</normaloff>:/resources/images/expand.png</iconset>
+   </property>
+   <property name="text">
+    <string>Expand all items</string>
+   </property>
+  </action>
+  <action name="actionOpenFile">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/resources/images/binary.png</normaloff>:/resources/images/binary.png</iconset>
+   </property>
+   <property name="text">
+    <string>Open file</string>
+   </property>
+  </action>
+  <action name="actionEditFile">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/resources/images/editfile.png</normaloff>:/resources/images/editfile.png</iconset>
+   </property>
+   <property name="text">
+    <string>Edit file</string>
+   </property>
+  </action>
+  <action name="actionOpenDirectory">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/resources/images/folder.png</normaloff>:/resources/images/folder.png</iconset>
+   </property>
+   <property name="text">
+    <string>Open directory</string>
+   </property>
+  </action>
+  <action name="actionOpenTerminal">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/resources/images/terminal.png</normaloff>:/resources/images/terminal.png</iconset>
+   </property>
+   <property name="text">
+    <string>Open terminal here</string>
+   </property>
+  </action>
+  <action name="actionRemoveTransactionItem">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/resources/images/window_close.png</normaloff>:/resources/images/window_close.png</iconset>
+   </property>
+   <property name="text">
+    <string>Remove item</string>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionRemoveTransactionItems">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/resources/images/window_close.png</normaloff>:/resources/images/window_close.png</iconset>
+   </property>
+   <property name="text">
+    <string>Remove items</string>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionSearchByDescription">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>By &amp;description</string>
+   </property>
+  </action>
+  <action name="actionSearchByName">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;By name</string>
+   </property>
+  </action>
+  <action name="actionFindFileInPackage">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/resources/images/find.png</normaloff>:/resources/images/find.png</iconset>
+   </property>
+   <property name="text">
+    <string>Find a file</string>
+   </property>
+  </action>
+  <action name="actionOpenRootTerminal">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/resources/images/terminal.png</normaloff>:/resources/images/terminal.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Open root terminal</string>
+   </property>
+  </action>
+  <action name="actionHelpUsage">
+   <property name="text">
+    <string>&amp;Usage</string>
+   </property>
+   <property name="shortcut">
+    <string>F1</string>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionInstallLocalPackage">
+   <property name="text">
+    <string>&amp;Install local package...</string>
+   </property>
+  </action>
+  <action name="actionPacmanLogViewer">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Pacman Log Viewer</string>
+   </property>
+   <property name="visible">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionRepositoryEditor">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/resources/images/binary.png</normaloff>:/resources/images/binary.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Repository Editor</string>
+   </property>
+  </action>
+  <action name="actionCacheCleaner">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/resources/images/cachecleaner.png</normaloff>:/resources/images/cachecleaner.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Cache Cleaner</string>
+   </property>
+  </action>
+  <action name="actionViewInstalledPackages">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Installed</string>
+   </property>
+  </action>
+  <action name="actionViewAllPackages">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </action>
+  <action name="actionSearchByFile">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>By &amp;file</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <tabstops>
+  <tabstop>tvPackages</tabstop>
+  <tabstop>twProperties</tabstop>
+ </tabstops>
+ <resources>
+  <include location="../resources.qrc"/>
+ </resources>
+ <connections/>
+</ui>
