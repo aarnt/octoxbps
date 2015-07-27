@@ -1009,9 +1009,20 @@ LinuxDistro UnixCommand::getLinuxDistro()
 
   if (firstTime)
   {
-    //Test to see if it is VoidLinux...
-    return ectn_VOID;
+    if (QFile::exists("/etc/os-release"))
+    {
+      QFile file("/etc/os-release");
 
+      if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        ret = ectn_UNKNOWN;
+
+      QString contents = file.readAll();
+
+      if (contents.contains(QRegExp("Void Linux")))
+      {
+        ret = ectn_VOID;
+      }
+    }
 
     firstTime = false;
   }

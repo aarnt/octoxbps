@@ -54,8 +54,8 @@ void MainWindow::initTabHelpUsage()
 
   QString strForMoreInfo = tr("For more information, visit:");
   QString html =
-    QString("<h2>OctoPkg</h2>") +
-    QString("<h3><p>") + tr("A Qt5-based pkgng front-end,") + " " +
+    QString("<h2>" + StrConstants::getApplicationName() + "</h2>") +
+    QString("<h3><p>") + tr("A Qt5-based XBPS front-end,") + " " +
     tr("licensed under the terms of") + " ";
 
   if ((!WMHelper::isKDERunning() && (!WMHelper::isRazorQtRunning())))
