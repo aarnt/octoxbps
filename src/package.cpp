@@ -231,14 +231,19 @@ double Package::strToKBytes2(QString size)
  */
 QSet<QString>* Package::getUnrequiredPackageList()
 {
+  QString pkgName;
   QString unrequiredPkgList = UnixCommand::getUnrequiredPackageList();
   QStringList packageTuples = unrequiredPkgList.split(QRegularExpression("\\n"), QString::SkipEmptyParts);
   QSet<QString>* res = new QSet<QString>();
 
   foreach(QString packageTuple, packageTuples)
   {
-    res->insert(packageTuple);
-    //qDebug() << packageTuple;
+    int dash = packageTuple.lastIndexOf("-");
+    if (dash != -1)
+    {
+      pkgName = packageTuple.left(dash);
+      res->insert(pkgName);
+    }
   }
 
   return res;
@@ -412,7 +417,7 @@ QStringList *Package::getTargetRemovalList(const QString &pkgName)
  */
 QList<PackageListData> * Package::getPackageList(const QString &packageName)
 {
-  QString pkgName, pkgOrigin, pkgVersion, pkgComment, pkgDescription;
+  QString pkgAux, pkgName, pkgOrigin, pkgVersion, pkgComment, pkgDescription;
   double pkgInstalledSize, pkgDownloadedSize;
   PackageStatus pkgStatus;
   QString pkgList = UnixCommand::getPackageList(packageName);
@@ -425,17 +430,21 @@ QList<PackageListData> * Package::getPackageList(const QString &packageName)
     foreach(QString packageTuple, packageTuples)
     {
       pkgComment = "";
-      QStringList parts = packageTuple.split(' ');
-      pkgName = parts[0];
-      pkgVersion = parts[1];
+      QStringList parts = packageTuple.split(' ');      
+      pkgAux = parts[1];
+      int dash = pkgAux.lastIndexOf("-");
 
-      int bar = parts[2].indexOf("/");
-      pkgOrigin = parts[2].left(bar);
+      if (dash != -1)
+      {
+        pkgName = pkgAux.left(dash);
+        pkgVersion = pkgAux.right(pkgAux.length()-(dash+1));
+      }
+
       pkgStatus = ectn_INSTALLED;
       pkgDownloadedSize = 0;
-      pkgInstalledSize = strToKBytes(parts[3]);
+      pkgInstalledSize = 0; //strToKBytes(parts[3]);
 
-      for(int c=4; c<parts.count(); c++)
+      for(int c=2; c<parts.count(); c++)
       {
         pkgComment += " " + parts[c];
       }
@@ -459,15 +468,52 @@ QList<PackageListData> * Package::getPackageList(const QString &packageName)
  */
 QList<PackageListData> * Package::parsePackageTuple(const QStringList &packageTuples, QStringList &packageCache)
 {
-  QString pkgName, pkgVersion, pkgCategories, pkgWWW, pkgComment;
-  double pkgPkgSize;
-  int indName, indVersion, indCategories, indWWW, indComment, indPkgSize;
-  const int cSpaces = 16;
+  QString pkgAux, pkgName, pkgVersion, pkgCategories, pkgWWW, pkgComment, strStatus, pkgDescription, pkgOrigin;
+  PackageStatus pkgStatus;
+  double pkgInstalledSize, pkgDownloadedSize;
+
   QList<PackageListData> * res = new QList<PackageListData>();
 
   foreach(QString packageTuple, packageTuples)
   {
-    if (packageTuple.at(0).isLower())
+    pkgComment = "";
+    QStringList parts = packageTuple.split(' ');
+    strStatus = parts[0];
+    pkgAux = parts[1];
+    int dash = pkgAux.lastIndexOf("-");
+
+    if (dash != -1)
+    {
+      pkgName = pkgAux.left(dash);
+      pkgVersion = pkgAux.right(pkgAux.length()-(dash+1));
+    }
+
+    if (strStatus.contains("*"))
+      pkgStatus = ectn_INSTALLED;
+    else
+      pkgStatus = ectn_NON_INSTALLED;
+
+    pkgDownloadedSize = 0;
+    pkgInstalledSize = 0; //strToKBytes(parts[3]);
+
+    for(int c=2; c<parts.count(); c++)
+    {
+      pkgComment += " " + parts[c];
+    }
+
+    if (!pkgComment.isEmpty()) pkgComment = pkgName + " " + pkgComment;
+    pkgComment = pkgComment.trimmed();
+    pkgDescription = pkgComment;
+
+    PackageListData pld =
+        PackageListData(pkgName, pkgOrigin, pkgVersion, pkgComment, pkgStatus, pkgInstalledSize, pkgDownloadedSize);
+
+    res->append(pld);
+  }
+
+  return res;
+
+    /*if (packageTuple.at(0).isLower())
     {
       //TODO We have to search for the pkg to discover its status
       PackageListData pld;
@@ -565,7 +611,7 @@ QList<PackageListData> * Package::parsePackageTuple(const QStringList &packageTu
     res->append(pld);
   }
 
-  return res;
+  return res;*/
 }
 
 /*
@@ -581,9 +627,9 @@ QList<PackageListData> * Package::getRemotePackageList(const QString& searchStri
   if (searchString.isEmpty())
     return res;
 
-  QString pkgList = UnixCommand::getRemotePackageList(searchString, false);
+  /*QString pkgList = UnixCommand::getRemotePackageList(searchString, false);
   QStringList packageTuples = pkgList.split(QRegularExpression("\\n"), QString::SkipEmptyParts);
-  res = parsePackageTuple(packageTuples, packageCache);
+  res = parsePackageTuple(packageTuples, packageCache);*/
 
   QString pkgListComment = UnixCommand::getRemotePackageList(searchString, true);
   QStringList packageTuplesComment = pkgListComment.split(QRegularExpression("\\n"), QString::SkipEmptyParts);
@@ -1171,7 +1217,6 @@ bool Package::hasPkgNGDatabase()
   }
 
   return answer;*/
-
   return true;
 }
 
@@ -1180,6 +1225,6 @@ bool Package::hasPkgNGDatabase()
  */
 bool Package::isForbidden(const QString pkgName)
 {
-  QStringList forbiddenPkgs = { "pcbsd-base", "pcbsd-meta-kde", "pcbsd-meta-virtualboxguest", "pkg", "xorg" };
+  QStringList forbiddenPkgs = { "libxbps", "xbps", "xbps-triggers" };
   return forbiddenPkgs.contains(pkgName);
 }

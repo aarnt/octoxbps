@@ -202,9 +202,9 @@ QByteArray UnixCommand::getRemotePackageList(const QString &searchString, bool u
   QByteArray result("");
 
   if (useCommentSearch)
-    result = performQuery("search -Q name -Q version -Q categories -Q www -Q comment -Q pkg-size --comment " + searchString);
+    result = performQuery("query -Rs " + searchString);
   else
-    result = performQuery("search -Q name -Q version -Q categories -Q www -Q comment -Q pkg-size " + searchString);
+    result = performQuery("query -Rs " + searchString);
 
   return result;
 }
@@ -214,8 +214,7 @@ QByteArray UnixCommand::getRemotePackageList(const QString &searchString, bool u
  */
 QByteArray UnixCommand::getUnrequiredPackageList()
 {
-  //pkg query -e '%a = 0' '%n'
-  QByteArray result = performQuery("query -e \"%a = 0\" \"%n\"");
+  QByteArray result = performQuery("query -m");
   return result;
 }
 
@@ -224,7 +223,7 @@ QByteArray UnixCommand::getUnrequiredPackageList()
  */
 QByteArray UnixCommand::getOutdatedPackageList()
 {
-  QByteArray result = performQuery("upgrade -n");
+  QByteArray result = performQuery("install -un");
   return result;
 }
 
@@ -262,7 +261,7 @@ QByteArray UnixCommand::getForeignPackageList()
  */
 QByteArray UnixCommand::getDependenciesList(const QString &pkgName)
 {
-  QByteArray result = performQuery("query \"%dn\" " + pkgName);
+  QByteArray result = performQuery("query -x " + pkgName);
   return result;
 }
 
@@ -278,7 +277,7 @@ QByteArray UnixCommand::getPackageList(const QString &pkgName)
 
   if (pkgName.isEmpty())
   {
-    result = performQuery("query \"%n %v %o %sh %c\"");
+    result = performQuery("query -l");
   }
   else
   {
@@ -303,7 +302,7 @@ QByteArray UnixCommand::getPackageInformation(const QString &pkgName, bool forei
   }
   else
   {
-    args = "info " + pkgName;
+    args = "query " + pkgName;
   }
 
   //if (pkgName.isEmpty() == false) // enables get for all ("")
@@ -338,8 +337,7 @@ QByteArray UnixCommand::getAURPackageVersionInformation()
  */
 QByteArray UnixCommand::getPackageContentsUsingPacman(const QString& pkgName)
 {
-  QByteArray res = performQuery("query \"%Fp\" " + pkgName);
-  //qDebug() << res;
+  QByteArray res = performQuery("query -f " + pkgName);
   return res;
 }
 
@@ -386,16 +384,20 @@ QByteArray UnixCommand::getPackageContentsUsingPkgfile(const QString &pkgName)
 QString UnixCommand::getPackageByFilePath(const QString &filePath)
 {
   QString pkgName="";
-  QString out = performQuery("which -o " + filePath);
+  QString out = performQuery("query -o " + filePath);
 
-  if (!out.isEmpty() && !out.contains("was not found in the database"))
+  if (!out.isEmpty())
   {
-    int pos = out.indexOf("was installed by package");
+    int pos = out.indexOf(":");
     if (pos != -1)
-    {
-      int pos2 = out.indexOf("/", pos+25);
-      pkgName = out.right(out.size()-(pos2+1));
-      pkgName.remove('\n');
+    {      
+      pkgName = out.left(pos);
+      //Now we have to remove the pkg version...
+      int dash = pkgName.lastIndexOf("-");
+      if (dash != -1)
+      {
+        pkgName = pkgName.left(dash);
+      }
     }
   }
 
