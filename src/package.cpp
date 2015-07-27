@@ -714,7 +714,7 @@ QString Package::getRepository(const QString &pkgInfo)
  */
 QString Package::getURL(const QString &pkgInfo)
 {
-  QString URL = extractFieldFromInfo("WWW", pkgInfo);
+  QString URL = extractFieldFromInfo("homepage", pkgInfo);
   if (!URL.isEmpty())
     return makeURLClickable(URL);
   else
@@ -726,7 +726,7 @@ QString Package::getURL(const QString &pkgInfo)
  */
 QString Package::getLicense(const QString &pkgInfo)
 {
-  return extractFieldFromInfo("Licenses", pkgInfo);
+  return extractFieldFromInfo("license", pkgInfo);
 }
 
 /*
@@ -806,7 +806,7 @@ QString Package::getPackager(const QString &pkgInfo)
  */
 QString Package::getMaintainer(const QString &pkgInfo)
 {
-  return extractFieldFromInfo("Maintainer", pkgInfo);
+  return extractFieldFromInfo("maintainer", pkgInfo);
 }
 
 /*
@@ -822,7 +822,7 @@ QString Package::getArch(const QString &pkgInfo)
  */
 QString Package::getInstalledOn(const QString &pkgInfo)
 {
-  return extractFieldFromInfo("Installed on", pkgInfo);
+  return extractFieldFromInfo("build-date", pkgInfo);
   //qDebug() << aux;
   //return QDateTime::fromString(aux); //"ddd MMM d hh:mm:ss yyyy");
 }
@@ -832,7 +832,7 @@ QString Package::getInstalledOn(const QString &pkgInfo)
  */
 double Package::getDownloadSize(const QString &pkgInfo)
 {
-  QString aux = extractFieldFromInfo("Download Size", pkgInfo);
+  QString aux = extractFieldFromInfo("filename-size", pkgInfo);
   bool isMega = (aux.indexOf("MiB", Qt::CaseInsensitive) != -1);
   aux = aux.section(QRegularExpression("\\s"), 0, 0);
 
@@ -853,7 +853,7 @@ double Package::getDownloadSize(const QString &pkgInfo)
  */
 QString Package::getDownloadSizeAsString(const QString &pkgInfo)
 {
-  QString aux = extractFieldFromInfo("Download Size", pkgInfo);
+  QString aux = extractFieldFromInfo("filename-size", pkgInfo);
   return aux;
 }
 
@@ -862,7 +862,7 @@ QString Package::getDownloadSizeAsString(const QString &pkgInfo)
  */
 double Package::getInstalledSize(const QString &pkgInfo)
 {
-  QString aux = extractFieldFromInfo("Flat size", pkgInfo);
+  QString aux = extractFieldFromInfo("installed_size", pkgInfo);
   bool isMega = (aux.indexOf("MiB", Qt::CaseInsensitive) != -1);
   aux = aux.section(QRegularExpression("\\s"), 0, 0);
   bool ok;
@@ -882,7 +882,7 @@ double Package::getInstalledSize(const QString &pkgInfo)
  */
 QString Package::getInstalledSizeAsString(const QString &pkgInfo)
 {
-  QString aux = extractFieldFromInfo("Flat size", pkgInfo);
+  QString aux = extractFieldFromInfo("installed_size", pkgInfo);
   return aux;
 }
 

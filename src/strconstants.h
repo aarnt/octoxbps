@@ -230,7 +230,7 @@ public:
   }
 
   static QString getInstalledOn(){
-    return QObject::tr("Installed on");
+    return QObject::tr("Build date");
   }
 
   static QString getDescription(){

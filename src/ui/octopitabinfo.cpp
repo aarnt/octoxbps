@@ -116,7 +116,7 @@ QString OctopiTabInfo::formatTabInfo(const PackageRepository::PackageData& packa
     html += "<tr><td>" + installedOn + "</td><td>" + pid.installedOn;
 
   //Show this info only if there's something to show
-  if (package.repository.isEmpty())
+  /*if (package.repository.isEmpty())
   {
     if(! pid.group.contains("None"))
       html += "<tr><td>" + groups + "</td><td>" + pid.group + "</td></tr>";
@@ -125,7 +125,7 @@ QString OctopiTabInfo::formatTabInfo(const PackageRepository::PackageData& packa
   {
     if(! package.categories.isEmpty())
       html += "<tr><td>" + groups + "</td><td>" + package.categories + "</td></tr>";
-  }
+  }*/
 
   if(package.downloadSize != 0)
     html += "<tr><td>" + downloadSize + "</td><td>" + Package::kbytesToSize(package.downloadSize) + "</td></tr>";
