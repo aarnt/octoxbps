@@ -1236,6 +1236,8 @@ void MainWindow::refreshTabFiles(bool clearContents, bool neverQuit)
 
     foreach ( QString file, fileList )
     {
+      if (file.indexOf("->") != -1) continue;
+
       bool isDir = file.endsWith('/');
       isSymLinkToDir = false;
       QString baseFileName = extractBaseFileName(file);

@@ -187,8 +187,20 @@ void MainWindow::showAnchorDescription(const QUrl &link)
 {
   if (link.toString().contains("goto:"))
   {
-    //qDebug() << "ENTERED!";
     QString pkgName = link.toString().mid(5);
+
+    int sign = pkgName.indexOf(">");
+    if (sign == -1)
+    {
+      sign = pkgName.indexOf("<");
+    }
+    if (sign == -1)
+    {
+      sign = pkgName.indexOf("=");
+    }
+
+    pkgName = pkgName.left(sign);
+    pkgName.remove("%3E");
 
     QFuture<QString> f;
     disconnect(&g_fwToolTipInfo, SIGNAL(finished()), this, SLOT(execToolTip()));
@@ -249,6 +261,20 @@ void MainWindow::outputTextBrowserAnchorClicked(const QUrl &link)
 
     if (m_packageModel->getPackageCount() > 0)
     {
+      int sign = pkgName.indexOf(">");
+
+      if (sign == -1)
+      {
+        sign = pkgName.indexOf("<");
+      }
+      if (sign == -1)
+      {
+        sign = pkgName.indexOf("=");
+      }
+
+      pkgName = pkgName.left(sign);
+      pkgName.remove("%3E");
+
       bool indIncremented = false;
       QItemSelectionModel*const selectionModel = ui->tvPackages->selectionModel();
       QModelIndex item = selectionModel->selectedRows(PackageModel::ctn_PACKAGE_NAME_COLUMN).first();

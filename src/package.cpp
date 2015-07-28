@@ -258,7 +258,6 @@ QMap<QString, OutdatedPackageInfo> *Package::getOutdatedStringList()
   QString outPkgList = UnixCommand::getOutdatedPackageList();
   QStringList packageTuples = outPkgList.split(QRegularExpression("\\n"), QString::SkipEmptyParts);
   QMap<QString, OutdatedPackageInfo>* res = new QMap<QString, OutdatedPackageInfo>();
-  //bool pkgsToUpgrade = false;
 
   foreach(QString packageTuple, packageTuples)
   {
@@ -274,7 +273,8 @@ QMap<QString, OutdatedPackageInfo> *Package::getOutdatedStringList()
         if (dash != -1)
         {
           pkgName = pkgAux.left(dash);
-          opi.newVersion = pkgAux.right(pkgAux.length() - (dash+1));
+          opi.newVersion = pkgAux.right(pkgAux.length() - (dash+1));          
+          opi.oldVersion = getVersionByName(pkgName);
           res->insert(pkgName, opi);
         }
       }
@@ -584,6 +584,16 @@ QString Package::getName(const QString& pkgInfo)
 QString Package::getVersion(const QString &pkgInfo)
 {
   return extractFieldFromInfo("Version", pkgInfo);
+}
+
+/*
+ * Retrieves "Version" field of the given package name
+ */
+QString Package::getVersionByName(const QString &pkgName)
+{
+  QString auxName = UnixCommand::getFieldFromLocalPackage("pkgver", pkgName);
+  int dash = auxName.lastIndexOf("-");
+  return auxName.right(auxName.length() - (dash+1));
 }
 
 /*

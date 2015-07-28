@@ -104,7 +104,7 @@ public:
   static QByteArray getInstalledPackages();
   static QByteArray getTargetUpgradeList(const QString &pkgName = "");
   static QByteArray getTargetRemovalList(const QString &pkgName);
-
+  static QByteArray getFieldFromLocalPackage(const QString &field, const QString &pkgName);
   static QByteArray getFieldFromRemotePackage(const QString &field, const QString &pkgName);
 
   static QString getSystemArchitecture();

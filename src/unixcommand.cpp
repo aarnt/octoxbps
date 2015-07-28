@@ -492,6 +492,15 @@ QByteArray UnixCommand::getTargetRemovalList(const QString &pkgName)
 }
 
 /*
+ * Retrieves the given field for a local package search
+ */
+QByteArray UnixCommand::getFieldFromLocalPackage(const QString &field, const QString &pkgName)
+{
+  QByteArray res = performQuery("query -p " + field + " " + pkgName);
+  return res;
+}
+
+/*
  * Retrieves the given field for a remote package search
  */
 QByteArray UnixCommand::getFieldFromRemotePackage(const QString &field, const QString &pkgName)
@@ -874,6 +883,7 @@ bool UnixCommand::isAppRunning(const QString &appName, bool justOneInstance)
   slParam << appName;
   proc.start("ps", slParam);
   proc.waitForFinished();
+
   QString out = proc.readAll();
   proc.close();
 
