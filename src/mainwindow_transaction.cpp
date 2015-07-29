@@ -667,7 +667,7 @@ void MainWindow::doSyncDatabase()
   QObject::connect(m_unixCommand, SIGNAL( readyReadStandardError() ),
                    this, SLOT( actionsProcessRaisedError() ));
 
-  QString command = "pkg update -f";
+  QString command = "xbps-install -Sy";
   m_unixCommand->executeCommand(command);
 }
 
@@ -680,7 +680,7 @@ void MainWindow::prepareSystemUpgrade()
   if (!doRemovePacmanLockFile()) return;
 
   m_lastCommandList.clear();
-  m_lastCommandList.append("pkg upgrade;");
+  m_lastCommandList.append("install -u -y;");
   m_lastCommandList.append("echo -e;");
   m_lastCommandList.append("read -n1 -p \"" + StrConstants::getPressAnyKey() + "\"");
 
@@ -799,7 +799,7 @@ void MainWindow::doSystemUpgrade(SystemUpgradeOptions systemUpgradeOptions)
     m_commandExecuting = ectn_SYSTEM_UPGRADE;
 
     QString command;
-    command = "pkg upgrade -y";
+    command = "xbps-install -u -y";
 
     m_unixCommand->executeCommand(command);
     m_commandQueued = ectn_NONE;
@@ -839,7 +839,7 @@ void MainWindow::doSystemUpgrade(SystemUpgradeOptions systemUpgradeOptions)
       {
         m_commandExecuting = ectn_SYSTEM_UPGRADE;
         QString command;
-        command = "pkg upgrade -y";
+        command = "xbps-install -u -y";
 
         m_unixCommand->executeCommand(command);
         m_commandQueued = ectn_NONE;
@@ -1068,13 +1068,13 @@ void MainWindow::doPreInstall()
 }
 
 /*
- * Installs ALL the packages selected by the user with "pacman -S (INCLUDING DEPENDENCIES)" !
+ * Installs ALL the packages selected by the user with "xbps-install (INCLUDING DEPENDENCIES)" !
  */
 void MainWindow::doInstall()
 {
   QString listOfTargets = getTobeInstalledPackages();
 
-  TransactionInfo ti = g_fwTargetUpgradeList.result(); //Package::getTargetUpgradeList(listOfTargets);
+  TransactionInfo ti = g_fwTargetUpgradeList.result();
   QStringList *targets = ti.packages;
 
   if (targets->count() == 0)
@@ -1118,10 +1118,10 @@ void MainWindow::doInstall()
     disableTransactionButtons();
 
     QString command;
-    command = "pkg install -f -y " + listOfTargets;
+    command = "xbps-install -f -y " + listOfTargets;
 
     m_lastCommandList.clear();
-    m_lastCommandList.append("pkg install -f " + listOfTargets + ";");
+    m_lastCommandList.append("xbps-install -f -y " + listOfTargets + ";");
     m_lastCommandList.append("echo -e;");
     m_lastCommandList.append("read -n1 -p \"" + StrConstants::getPressAnyKey() + "\"");
 
@@ -1483,7 +1483,7 @@ void MainWindow::actionsProcessStarted()
  */
 void MainWindow::actionsProcessFinished(int exitCode, QProcess::ExitStatus exitStatus)
 {
-  bool bRefreshGroups = true;
+  //bool bRefreshGroups = true;
   m_progressWidget->close();
   ui->twProperties->setTabText(ctn_TABINDEX_OUTPUT, StrConstants::getTabOutputName());
 
@@ -1523,7 +1523,7 @@ void MainWindow::actionsProcessFinished(int exitCode, QProcess::ExitStatus exitS
         //Retrieves the RSS News from respective Distro site...
         if (isRemoteSearchSelected())
         {
-          bRefreshGroups = false;
+          //bRefreshGroups = false;
           m_leFilterPackage->clear();
           m_actionSwitchToRemoteSearch->setChecked(false);
           m_actionSwitchToLocalFilter->setChecked(true);
@@ -1544,7 +1544,7 @@ void MainWindow::actionsProcessFinished(int exitCode, QProcess::ExitStatus exitS
       {
         if (isRemoteSearchSelected())
         {
-          bRefreshGroups = false;
+          //bRefreshGroups = false;
           m_leFilterPackage->clear();
           m_actionSwitchToRemoteSearch->setChecked(false);
           m_actionSwitchToLocalFilter->setChecked(true);
@@ -1562,7 +1562,7 @@ void MainWindow::actionsProcessFinished(int exitCode, QProcess::ExitStatus exitS
       {
         if (isRemoteSearchSelected())
         {
-          bRefreshGroups = false;
+          //bRefreshGroups = false;
           m_leFilterPackage->clear();
           m_actionSwitchToRemoteSearch->setChecked(false);          
           m_actionSwitchToLocalFilter->setChecked(true);
@@ -1695,6 +1695,7 @@ void MainWindow::parsePkgProcessOutput(const QString &pMsg)
   QString msg = pMsg;
   QString progressRun;
   QString progressEnd;
+  QString target;
 
   msg.remove(QRegularExpression(".+\\[Y/n\\].+"));
 
@@ -1715,7 +1716,7 @@ void MainWindow::parsePkgProcessOutput(const QString &pMsg)
   msg.remove("[c");
   msg.remove("[mo");
 
-  //qDebug() << "_treat: " << msg;
+  qDebug() << "_treat: " << msg;
 
   progressRun = "%";
   progressEnd = "100%";
@@ -1729,6 +1730,20 @@ void MainWindow::parsePkgProcessOutput(const QString &pMsg)
     continueTesting = true;
   }
 
+  if (msg.contains("Updating") && !msg.contains(QRegularExpression("B/s")))
+  {
+    int p = msg.indexOf("'");
+    if (p == -1) return; //Guard!
+
+    target = msg.left(p).remove("Updating `").trimmed();
+    target.remove("[*] ");
+
+    if(!textInTabOutput(target))
+      writeToTabOutputExt("Updating " + target, ectn_DONT_TREAT_URL_LINK);
+
+    return;
+  }
+
   if (msg.indexOf(progressRun) != -1 || continueTesting)
   {
     int p = msg.indexOf("%");
@@ -1739,7 +1754,6 @@ void MainWindow::parsePkgProcessOutput(const QString &pMsg)
 
     //qDebug() << "percentage is: " << perc;
 
-    QString target;
     /*
       Updating pcbsd-major repository catalogue...
       Fetching <>:
@@ -1747,26 +1761,16 @@ void MainWindow::parsePkgProcessOutput(const QString &pMsg)
       pcbsd-major repository update completed. 24141 packages processed.
     */
 
-    if (msg.contains("Fetching") && !msg.contains(QRegularExpression("B/s")))
+    /*if (msg.contains("Processing"))
     {
-      int p = msg.indexOf(":");
+      int p = msg.indexOf("'");
       if (p == -1) return; //Guard!
 
-      target = msg.left(p).remove("Fetching").trimmed();
-
-      if(!textInTabOutput(target))
-        writeToTabOutputExt("<b><font color=\"#FF8040\">Fetching " + target + "</font></b>");
-    }
-    else if (msg.contains("Processing"))
-    {
-      int p = msg.indexOf(":");
-      if (p == -1) return; //Guard!
-
-      target = msg.left(p).remove("Processing").trimmed();
+      target = msg.left(p).remove("Updating `").trimmed();
 
       if(!textInTabOutput(target))
         writeToTabOutputExt("<b><font color=\"#4BC413\">Processing " + target + "</font></b>"); //GREEN
-    }
+    }*/
 
     //Here we print the transaction percentage updating
     if(!perc.isEmpty() && perc.indexOf("%") > 0)
@@ -1782,8 +1786,8 @@ void MainWindow::parsePkgProcessOutput(const QString &pMsg)
     if (msg.contains(QRegularExpression("ETA")) ||
       msg.contains(QRegularExpression("KiB")) ||
       msg.contains(QRegularExpression("MiB")) ||
-      msg.contains(QRegularExpression("kB/s")) ||
-      msg.contains(QRegularExpression("MB/s")) ||
+      //msg.contains(QRegularExpression("KB/s")) ||
+      msg.contains(QRegularExpression("B/s")) ||
       msg.contains(QRegularExpression("[0-9]+ B")) ||
       msg.contains(QRegularExpression("[0-9]{2}:[0-9]{2}"))) return;
 
@@ -2011,6 +2015,7 @@ void MainWindow::writeToTabOutputExt(const QString &msg, TreatURLLinks treatURLL
               newMsg.contains(QRegularExpression("[Cc]hecking")) ||
               newMsg.contains(QRegularExpression("[Rr]einstalling")) ||
               newMsg.contains(QRegularExpression("[Ii]nstalling")) ||
+              newMsg.contains(QRegularExpression("[Uu]pdating")) ||
               newMsg.contains(QRegularExpression("[Uu]pgrading")) ||
               newMsg.contains(QRegularExpression("[Ll]oading")) ||
               newMsg.contains(QRegularExpression("[Rr]esolving")) ||

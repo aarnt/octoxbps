@@ -332,24 +332,34 @@ QStringList *Package::getPackagesOfGroup(const QString &groupName)
 TransactionInfo Package::getTargetUpgradeList(const QString &pkgName)
 {
   QString targets = UnixCommand::getTargetUpgradeList(pkgName);
+  QString pkg;
   QStringList infoTuples = targets.split(QRegularExpression("\\n"), QString::SkipEmptyParts);
   TransactionInfo res;
   res.packages = new QStringList();
+  int pos, space;
 
   foreach(QString infoTuple, infoTuples)
   {
-    int pos = infoTuple.indexOf("to be downloaded");
-    int tab = infoTuple.indexOf("\t");
-    if (pos != -1)
+    pos = infoTuple.indexOf("update");
+    if (pos == -1)
     {
-      res.sizeToDownload = infoTuple.left(pos).trimmed();
+      pos = infoTuple.indexOf("install");
     }
-    if (tab != -1) //We are dealing with packages HERE!
+
+    if (pos != -1) //We are dealing with packages HERE!
     {
-      res.packages->append(infoTuple.remove(QRegularExpression("\t")).trimmed());
+      space = infoTuple.indexOf(" ");
+      if (space != -1)
+      {
+        pkg = infoTuple.left(space);
+        pos = pkg.lastIndexOf("-");
+        pkg = pkg.left(pos);
+        res.packages->append(pkg);
+      }
     }
   }
 
+  //res.sizeToDownload = TODO!
   res.packages->sort();
   return res;
 }

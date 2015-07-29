@@ -462,12 +462,12 @@ QByteArray UnixCommand::getTargetUpgradeList(const QString &pkgName)
 
   if(!pkgName.isEmpty())
   {
-    args = "install -n -f " + pkgName;
+    args = "install -n -f -Rs " + pkgName;
     res = performQuery(args);
   }
   else //pkg upgrade
   {
-    args = "upgrade -n ";
+    args = "install -un";
     res = performQuery(args);
   }
 
