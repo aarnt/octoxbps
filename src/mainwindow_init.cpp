@@ -152,6 +152,7 @@ void MainWindow::initAppIcon()
 {
   m_outdatedStringList->clear();
   m_outdatedList = Package::getOutdatedStringList();
+
   foreach(QString k, m_outdatedList->keys())
   {
     m_outdatedStringList->append(k);
@@ -683,6 +684,7 @@ void MainWindow::initActions()
   actionGroup->addAction(ui->actionSearchByName);
   actionGroup->addAction(ui->actionSearchByFile);
   ui->actionSearchByName->setChecked(true);
+  ui->actionSearchByDescription->setVisible(false);
   actionGroup->setExclusive(true);
   connect(actionGroup, SIGNAL(triggered(QAction*)), this, SLOT(tvPackagesSearchColumnChanged(QAction*)));
 

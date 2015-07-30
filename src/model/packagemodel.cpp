@@ -74,7 +74,7 @@ int PackageModel::rowCount(const QModelIndex &parent) const
 int PackageModel::columnCount(const QModelIndex &parent) const
 {
   if (!parent.isValid()) {
-    return 4;
+    return 3;
   }
   else return 0;
 }
@@ -143,8 +143,8 @@ QVariant PackageModel::headerData(int section, Qt::Orientation orientation, int 
         return QVariant(StrConstants::getVersion());
       /*case ctn_PACKAGE_ORIGIN_COLUMN:
         return QVariant(StrConstants::getOrigin());*/
-      case ctn_PACKAGE_SIZE_COLUMN:
-        return QVariant(StrConstants::getSize());
+      /*case ctn_PACKAGE_SIZE_COLUMN:
+        return QVariant(StrConstants::getSize());*/
       default:
         break;
       }

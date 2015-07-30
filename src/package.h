@@ -212,7 +212,7 @@ class Package{
     static QString getOptions(const QString &pkgInfo); 
     static QString getRemoteMaintainer(const QString &pkgName);
     static QString getRemoteHomepage(const QString &pkgName);
-
+    static QString getRemoteFilenameSize(const QString &pkgName);
     static QString kbytesToSize(float Bytes );
     static double strToKBytes(QString size);
     static double strToKBytes2(QString size);

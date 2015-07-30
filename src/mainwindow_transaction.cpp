@@ -888,7 +888,7 @@ void MainWindow::doRemoveAndInstall()
   }
 
   QString listOfInstallTargets = getTobeInstalledPackages();
-  TransactionInfo ti = g_fwTargetUpgradeList.result(); //Package::getTargetUpgradeList(listOfInstallTargets);
+  TransactionInfo ti = g_fwTargetUpgradeList.result();
   QStringList *installTargets = ti.packages;
   QString ds = ti.sizeToDownload;
 
@@ -936,11 +936,11 @@ void MainWindow::doRemoveAndInstall()
     disableTransactionButtons();
 
     QString command;
-    command = "pkg remove -f -y " + listOfRemoveTargets;
+    command = "xbps-remove -R -f -y " + listOfRemoveTargets;
 
     m_lastCommandList.clear();
-    m_lastCommandList.append("pkg remove -f " + listOfRemoveTargets + ";");
-    m_lastCommandList.append("pkg install -f " + listOfInstallTargets + ";");
+    m_lastCommandList.append("xbps-remove -R -f " + listOfRemoveTargets + ";");
+    m_lastCommandList.append("xbps-install -f " + listOfInstallTargets + ";");
     m_lastCommandList.append("echo -e;");
     m_lastCommandList.append("read -n1 -p \"" + StrConstants::getPressAnyKey() + "\"");
 
@@ -985,8 +985,15 @@ void MainWindow::doRemove()
 {
   QString listOfTargets = getTobeRemovedPackages();  
   QStringList *_targets = Package::getTargetRemovalList(listOfTargets);
-  listOfTargets = "";
+  listOfTargets = "";      
   QString list;
+
+  if (_targets->count() == 0)
+  {
+    QMessageBox::warning(
+          this, StrConstants::getAttention(), StrConstants::getWarnTransactionAborted(), QMessageBox::Ok);
+    return;
+  }
 
   foreach(QString target, *_targets)
   {
@@ -996,7 +1003,7 @@ void MainWindow::doRemove()
 
   TransactionDialog question(this);
 
-  //Shows a dialog indicating the targets which will be removed and asks for the user's permission.
+  //Shows a dialog indicating the targets which will be removed and asks for the user's permission.  
   if(_targets->count()==1)
   {
     question.setText(StrConstants::getRemovePackage());
@@ -1020,10 +1027,10 @@ void MainWindow::doRemove()
     //disableTransactionButtons();
 
     QString command;
-    command = "pkg remove -R -f -y " + listOfTargets;
+    command = "xbps-remove -R -f -y " + listOfTargets;
 
     m_lastCommandList.clear();
-    m_lastCommandList.append("pkg remove -R -f " + listOfTargets + ";");
+    m_lastCommandList.append("xbps-remove -R -f " + listOfTargets + ";");
     m_lastCommandList.append("echo -e;");
     m_lastCommandList.append("read -n1 -p \"" + StrConstants::getPressAnyKey() + "\"");
 
@@ -1730,7 +1737,16 @@ void MainWindow::parsePkgProcessOutput(const QString &pMsg)
     continueTesting = true;
   }
 
-  if (msg.contains("Updating") && !msg.contains(QRegularExpression("B/s")))
+  if ((msg.contains(".xbps:") || msg.contains(".xbps.sig:")) && msg.contains("%"))
+  {
+    //We're dealing with packages being downloaded
+    int colon = msg.indexOf(":");
+    target = msg.left(colon);
+
+    if(!textInTabOutput(target))
+      writeToTabOutputExt("<b><font color=\"#FF8040\">" + target + "</font></b>");
+  }
+  else if (msg.contains("Updating") && !msg.contains(QRegularExpression("B/s")))
   {
     int p = msg.indexOf("'");
     if (p == -1) return; //Guard!
@@ -1749,28 +1765,12 @@ void MainWindow::parsePkgProcessOutput(const QString &pMsg)
     int p = msg.indexOf("%");
     if (p == -1 || (p-3 < 0) || (p-2 < 0)) return; //Guard!
 
-    if (msg.at(p-3).isSpace())
+    if (msg.at(p-2).isSpace())
+      perc = msg.mid(p-1, 2).trimmed();
+    else if (msg.at(p-3).isSpace())
       perc = msg.mid(p-2, 3).trimmed();
 
     //qDebug() << "percentage is: " << perc;
-
-    /*
-      Updating pcbsd-major repository catalogue...
-      Fetching <>:
-      Processing entries:
-      pcbsd-major repository update completed. 24141 packages processed.
-    */
-
-    /*if (msg.contains("Processing"))
-    {
-      int p = msg.indexOf("'");
-      if (p == -1) return; //Guard!
-
-      target = msg.left(p).remove("Updating `").trimmed();
-
-      if(!textInTabOutput(target))
-        writeToTabOutputExt("<b><font color=\"#4BC413\">Processing " + target + "</font></b>"); //GREEN
-    }*/
 
     //Here we print the transaction percentage updating
     if(!perc.isEmpty() && perc.indexOf("%") > 0)
@@ -1996,7 +1996,7 @@ void MainWindow::writeToTabOutputExt(const QString &msg, TreatURLLinks treatURLL
     }
     else
     {
-      if(newMsg.contains(QRegularExpression("REMOVED")) ||
+      if(newMsg.contains(QRegularExpression("removed")) ||
          newMsg.contains(QRegularExpression("removing ")) ||
          newMsg.contains(QRegularExpression("could not ")) ||
          newMsg.contains(QRegularExpression("error")) ||
@@ -2008,11 +2008,13 @@ void MainWindow::writeToTabOutputExt(const QString &msg, TreatURLLinks treatURLL
       {
         newMsg = "<b><font color=\"#E55451\">" + newMsg + "&nbsp;</font></b>"; //RED
       }
-      else if(newMsg.contains(QRegularExpression("REINSTALLED")) ||
-              newMsg.contains(QRegularExpression("INSTALLED")) ||
-              newMsg.contains(QRegularExpression("UPGRADED")) ||
-              newMsg.contains(QRegularExpression("UPDATED")) ||
+      else if(newMsg.contains(QRegularExpression("reinstalled")) ||
+              newMsg.contains(QRegularExpression("installed")) ||
+              newMsg.contains(QRegularExpression("upgraded")) ||
+              newMsg.contains(QRegularExpression("updated")) ||
+              newMsg.contains(QRegularExpression("[Vv]erifying")) ||
               newMsg.contains(QRegularExpression("[Cc]hecking")) ||
+              newMsg.contains(QRegularExpression("[Cc]onfiguring")) ||
               newMsg.contains(QRegularExpression("[Rr]einstalling")) ||
               newMsg.contains(QRegularExpression("[Ii]nstalling")) ||
               newMsg.contains(QRegularExpression("[Uu]pdating")) ||
@@ -2020,6 +2022,8 @@ void MainWindow::writeToTabOutputExt(const QString &msg, TreatURLLinks treatURLL
               newMsg.contains(QRegularExpression("[Ll]oading")) ||
               newMsg.contains(QRegularExpression("[Rr]esolving")) ||
               newMsg.contains(QRegularExpression("[Ee]xtracting")) ||
+              newMsg.contains(QRegularExpression("[Uu]npacking")) ||
+              newMsg.contains(QRegularExpression("[Rr]unning")) ||
               newMsg.contains(QRegularExpression("[Ll]ooking")))
       {
          newMsg = "<b><font color=\"#4BC413\">" + newMsg + "</font></b>"; //GREEN
@@ -2036,12 +2040,12 @@ void MainWindow::writeToTabOutputExt(const QString &msg, TreatURLLinks treatURLL
       {
         newMsg = "<b><font color=\"#FF8040\">" + newMsg + "</font></b>"; //IT'S A PKGNAME!
       }
-      else if (newMsg.contains(":") &&
+      /*else if (newMsg.contains(":") &&
                (!newMsg.contains(QRegularExpression("\\):"))) &&
                (!newMsg.contains(QRegularExpression(":$"))))
       {
         newMsg = "<b><font color=\"#FF8040\">" + newMsg + "</font></b>"; //IT'S A PKGNAME!
-      }
+      }*/
     }
 
     if (newMsg.contains("::"))

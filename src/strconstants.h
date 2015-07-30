@@ -429,6 +429,10 @@ public:
     return QObject::tr("There are forbidden packages in the removal list!");
   }
 
+  static QString getWarnTransactionAborted() {
+    return QObject::tr("Transaction aborted due to unresolved dependencies.");
+  }
+
   static QString getNoNewUpdatesAvailable(){
     return QObject::tr("There are no new updates available!");
   }

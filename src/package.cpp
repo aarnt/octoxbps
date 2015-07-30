@@ -334,6 +334,7 @@ TransactionInfo Package::getTargetUpgradeList(const QString &pkgName)
   QString targets = UnixCommand::getTargetUpgradeList(pkgName);
   QString pkg;
   QStringList infoTuples = targets.split(QRegularExpression("\\n"), QString::SkipEmptyParts);
+  QStringList downloadSizes;
   TransactionInfo res;
   res.packages = new QStringList();
   int pos, space;
@@ -355,13 +356,58 @@ TransactionInfo Package::getTargetUpgradeList(const QString &pkgName)
         pos = pkg.lastIndexOf("-");
         pkg = pkg.left(pos);
         res.packages->append(pkg);
+        downloadSizes.append(getRemoteFilenameSize(pkg));
       }
     }
   }
 
-  //res.sizeToDownload = TODO!
+  QString strSum;
+  double number;
+  double sum;
+
+  //Let's sum up the download sizes of all packages
+  foreach (QString ds, downloadSizes)
+  {
+    if (ds.indexOf("MB") != -1)
+    {
+      ds = ds.remove("MB").trimmed();
+      number = ds.toDouble() * 1024;
+    }
+    else if (ds.indexOf("KB") != -1)
+    {
+      ds = ds.remove("KB").trimmed();
+      number = ds.toDouble();
+    }
+    else if (ds.indexOf("B") != -1)
+    {
+      ds = ds.remove("B").trimmed();
+      number = ds.toDouble() / 1024;
+    }
+
+    sum += number;
+  }
+
+  if (sum > 1024)
+  {
+    sum /= 1024;
+    strSum = QString::number(sum, 'f', 2) + "MB";
+  }
+  else
+  {
+    strSum = QString::number(sum, 'f', 2) + "KB";
+  }
+
+  res.sizeToDownload = strSum;
   res.packages->sort();
   return res;
+}
+
+/*
+ * Retrieves "filename-size" of the given package name
+ */
+QString Package::getRemoteFilenameSize(const QString &pkgName)
+{
+  return UnixCommand::getFieldFromRemotePackage("filename-size", pkgName);
 }
 
 /*
@@ -372,13 +418,28 @@ QStringList *Package::getTargetRemovalList(const QString &pkgName)
   QString targets = UnixCommand::getTargetRemovalList(pkgName);
   QStringList infoTuples = targets.split(QRegularExpression("\\n"), QString::SkipEmptyParts);
   QStringList *res = new QStringList();
+  QString pkg;
+  int space;
 
   foreach(QString infoTuple, infoTuples)
   {
-    int tab = infoTuple.indexOf("\t");
-    if (tab != -1) //We are dealing with packages HERE!
+    int pos = infoTuple.indexOf("remove");
+    if (pos == -1)
     {
-      res->append(infoTuple.remove(QRegularExpression("\t")).trimmed());
+      return res;
+    }
+
+    pos = infoTuple.indexOf("remove");
+    if (pos != -1) //We are dealing with packages HERE!
+    {
+      space = infoTuple.indexOf(" ");
+      if (space != -1)
+      {
+        pkg = infoTuple.left(space);
+        pos = pkg.lastIndexOf("-");
+        pkg = pkg.left(pos);
+        res->append(pkg);
+      }
     }
   }
 
