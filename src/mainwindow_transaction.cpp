@@ -1721,6 +1721,7 @@ void MainWindow::parseXBPSProcessOutput(const QString &pMsg)
   msg.remove(";37m");
   msg.remove("[c");
   msg.remove("[mo");
+  msg.remove("[1A[K");
 
   //qDebug() << "_treat: " << msg;
 
@@ -1776,6 +1777,7 @@ void MainWindow::parseXBPSProcessOutput(const QString &pMsg)
     {
       int percentage = perc.left(perc.size()-1).toInt();
       if (!m_progressWidget->isVisible()) m_progressWidget->show();
+
       m_progressWidget->setValue(percentage);
     }
   }
@@ -2011,19 +2013,19 @@ void MainWindow::writeToTabOutputExt(const QString &msg, TreatURLLinks treatURLL
               newMsg.contains(QRegularExpression("installed")) ||
               newMsg.contains(QRegularExpression("upgraded")) ||
               newMsg.contains(QRegularExpression("updated")) ||
-              newMsg.contains(QRegularExpression("[Vv]erifying")) ||
-              newMsg.contains(QRegularExpression("[Cc]hecking")) ||
-              newMsg.contains(QRegularExpression("[Cc]onfiguring")) ||
-              newMsg.contains(QRegularExpression("[Rr]einstalling")) ||
-              newMsg.contains(QRegularExpression("[Ii]nstalling")) ||
-              newMsg.contains(QRegularExpression("[Uu]pdating")) ||
-              newMsg.contains(QRegularExpression("[Uu]pgrading")) ||
-              newMsg.contains(QRegularExpression("[Ll]oading")) ||
-              newMsg.contains(QRegularExpression("[Rr]esolving")) ||
-              newMsg.contains(QRegularExpression("[Ee]xtracting")) ||
-              newMsg.contains(QRegularExpression("[Uu]npacking")) ||
-              newMsg.contains(QRegularExpression("[Rr]unning")) ||
-              newMsg.contains(QRegularExpression("[Ll]ooking")))
+              newMsg.contains(QRegularExpression("Verifying")) ||
+              newMsg.contains(QRegularExpression("Checking")) ||
+              newMsg.contains(QRegularExpression("Configuring")) ||
+              newMsg.contains(QRegularExpression("Reinstalling")) ||
+              newMsg.contains(QRegularExpression("Installing")) ||
+              newMsg.contains(QRegularExpression("Updating")) ||
+              newMsg.contains(QRegularExpression("Upgrading")) ||
+              newMsg.contains(QRegularExpression("Loading")) ||
+              newMsg.contains(QRegularExpression("Resolving")) ||
+              newMsg.contains(QRegularExpression("Extracting")) ||
+              newMsg.contains(QRegularExpression("Unpacking")) ||
+              newMsg.contains(QRegularExpression("Running")) ||
+              newMsg.contains(QRegularExpression("Looking")))
       {
          newMsg = "<b><font color=\"#4BC413\">" + newMsg + "</font></b>"; //GREEN
       }
