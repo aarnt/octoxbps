@@ -32,7 +32,7 @@
 #include <QHash>
 #include <QSet>
 
-const QString ctn_TEMP_ACTIONS_FILE ( QDir::homePath() + QDir::separator() + ".config/octopkg" + QDir::separator() + ".qt_temp_" );
+const QString ctn_TEMP_ACTIONS_FILE ( QDir::homePath() + QDir::separator() + ".config/octoxbps" + QDir::separator() + ".qt_temp_" );
 const QString ctn_PACMAN_DATABASE_DIR = "/var/lib/pacman";
 const QString ctn_PKGNG_FREEBSD_CORE_DB_FILE = "/var/db/pkg/repo-FreeBSD.sqlite";
 const QString ctn_PKGNG_PCBSD_CORE_DB_FILE = "/var/db/pkg/repo-pcbsd-major.sqlite";

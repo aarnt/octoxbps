@@ -456,7 +456,6 @@ bool MainWindow::insertIntoRemovePackageDeps(const QStringList &dependencies)
   if (newDeps.count() > 0)
   {
     CPUIntensiveComputing *cic = new CPUIntensiveComputing;
-
     MultiSelectionDialog *msd = new MultiSelectionDialog(this);
     msd->setWindowTitle(StrConstants::getRemovePackages(newDeps.count()));
     msd->setWindowIcon(windowIcon());
@@ -680,7 +679,7 @@ void MainWindow::prepareSystemUpgrade()
   if (!doRemovePacmanLockFile()) return;
 
   m_lastCommandList.clear();
-  m_lastCommandList.append("install -u -y;");
+  m_lastCommandList.append("xbps-install -u;");
   m_lastCommandList.append("echo -e;");
   m_lastCommandList.append("read -n1 -p \"" + StrConstants::getPressAnyKey() + "\"");
 
@@ -1128,7 +1127,7 @@ void MainWindow::doInstall()
     command = "xbps-install -f -y " + listOfTargets;
 
     m_lastCommandList.clear();
-    m_lastCommandList.append("xbps-install -f -y " + listOfTargets + ";");
+    m_lastCommandList.append("xbps-install -f " + listOfTargets + ";");
     m_lastCommandList.append("echo -e;");
     m_lastCommandList.append("read -n1 -p \"" + StrConstants::getPressAnyKey() + "\"");
 
