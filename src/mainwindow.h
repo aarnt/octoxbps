@@ -279,7 +279,7 @@ private:
 
   bool searchForKeyVerbs(const QString& msg);
   bool splitOutputStrings(const QString &output);
-  void parsePkgProcessOutput(const QString &pMsg);
+  void parseXBPSProcessOutput(const QString &pMsg);
   void ensureTabVisible(const int index);
   bool isPropertiesTabWidgetVisible();
   bool isSUAvailable();

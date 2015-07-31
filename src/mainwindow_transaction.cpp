@@ -1691,7 +1691,7 @@ bool MainWindow::searchForKeyVerbs(const QString &msg)
 /*
  * Processes the output of the 'pkg process' so we can update percentages and messages at real time
  */
-void MainWindow::parsePkgProcessOutput(const QString &pMsg)
+void MainWindow::parseXBPSProcessOutput(const QString &pMsg)
 {  
   if (m_commandExecuting == ectn_RUN_IN_TERMINAL ||
       m_commandExecuting == ectn_RUN_SYSTEM_UPGRADE_IN_TERMINAL) return;
@@ -1722,7 +1722,7 @@ void MainWindow::parsePkgProcessOutput(const QString &pMsg)
   msg.remove("[c");
   msg.remove("[mo");
 
-  qDebug() << "_treat: " << msg;
+  //qDebug() << "_treat: " << msg;
 
   progressRun = "%";
   progressEnd = "100%";
@@ -1890,7 +1890,7 @@ bool MainWindow::splitOutputStrings(const QString &output)
             }
 
             //std::cout << "Error1: " << aux.toLatin1().data() << std::endl;
-            parsePkgProcessOutput(aux);
+            parseXBPSProcessOutput(aux);
           }
         }
       }
@@ -1899,7 +1899,7 @@ bool MainWindow::splitOutputStrings(const QString &output)
         if (!m.isEmpty())
         {
           //std::cout << "Error2: " << m.toLatin1().data() << std::endl;
-          parsePkgProcessOutput(m);
+          parseXBPSProcessOutput(m);
         }
       }
     }
@@ -1910,7 +1910,7 @@ bool MainWindow::splitOutputStrings(const QString &output)
         if (!m3.isEmpty())
         {
           //std::cout << "Error3: " << m3.toLatin1().data() << std::endl;
-          parsePkgProcessOutput(m3);
+          parseXBPSProcessOutput(m3);
         }
       }
     }
