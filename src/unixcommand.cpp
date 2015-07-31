@@ -1044,6 +1044,10 @@ LinuxDistro UnixCommand::getLinuxDistro()
       {
         ret = ectn_VOID;
       }
+      else
+      {
+        ret = ectn_UNKNOWN;
+      }
     }
 
     firstTime = false;

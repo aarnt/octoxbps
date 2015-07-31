@@ -84,8 +84,8 @@ public:
     return QObject::tr("No news could be found! Press Ctrl+G to download the latest news.");
   }
 
-  static QString getIncompatibleBSDFlavourError(){
-    return QObject::tr("This BSD flavour seems to be incompatible with OctoPkg!");
+  static QString getIncompatibleDistroError(){
+    return QObject::tr("This distro seems to be incompatible with OctoXBPS!");
   }
 
   static QString getInternetUnavailableError(){
@@ -500,7 +500,7 @@ public:
   }
 
   static QString getErrorRunningWithRoot(){
-    return QObject::tr("You can not run OctoPkg with administrator's credentials.");
+    return QObject::tr("You can not run OctoXBPS with administrator's credentials.");
   }
 
   static QString getThereIsAPendingTransaction(){
