@@ -1828,7 +1828,6 @@ void MainWindow::parseXBPSProcessOutput(const QString &pMsg)
     {
       int rp = msg.indexOf(")");
       if (rp == -1) return; //Guard!
-
       order = msg.left(rp+2);
       msg = msg.remove(0, rp+2);
     }
@@ -2016,6 +2015,7 @@ void MainWindow::writeToTabOutputExt(const QString &msg, TreatURLLinks treatURLL
               newMsg.contains(QRegularExpression("Verifying")) ||
               newMsg.contains(QRegularExpression("Checking")) ||
               newMsg.contains(QRegularExpression("Configuring")) ||
+              newMsg.contains(QRegularExpression("Downloading")) ||
               newMsg.contains(QRegularExpression("Reinstalling")) ||
               newMsg.contains(QRegularExpression("Installing")) ||
               newMsg.contains(QRegularExpression("Updating")) ||
