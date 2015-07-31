@@ -57,7 +57,6 @@ QString OctopiTabInfo::formatTabInfo(const PackageRepository::PackageData& packa
   QString installedOn = StrConstants::getInstalledOn();
   QString options = StrConstants::getOptions();
   QString dependencies = StrConstants::getDependencies();
-
   //Let's put package description in UTF-8 format  
   QString pkgDescription;
 
@@ -145,6 +144,9 @@ QString OctopiTabInfo::formatTabInfo(const PackageRepository::PackageData& packa
 
   if(package.downloadSize != 0)
     html += "<tr><td>" + downloadSize + "</td><td>" + Package::kbytesToSize(package.downloadSize) + "</td></tr>";
+
+  if (!package.installed())
+    html += "<tr><td>" + downloadSize + "</td><td>" + Package::getRemoteFilenameSize(package.name) + "</td></tr>";
 
   if(! pid.installedSizeAsString.isEmpty() && pid.installedSizeAsString != "0.00B")
     html += "<tr><td>" + installedSize + "</td><td>" + pid.installedSizeAsString + "</td></tr>";
