@@ -14,7 +14,7 @@ To run it:
 
 	$ bin/octoxbps
 
-You'll also need a privilege escalation tool to use it. 
+You'll also need "curl" and a privilege escalation tool to use it. 
 OctoXBPS supports "kdesu" and "gksu" for that.
 
 Enjoy!
