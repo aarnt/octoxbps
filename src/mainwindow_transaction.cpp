@@ -1937,6 +1937,7 @@ void MainWindow::actionsProcessRaisedError()
 void MainWindow::writeToTabOutput(const QString &msg, TreatURLLinks treatURLLinks)
 {
   QTextBrowser *text = ui->twProperties->widget(ctn_TABINDEX_OUTPUT)->findChild<QTextBrowser*>("textBrowser");
+
   if (text)
   {
     ensureTabVisible(ctn_TABINDEX_OUTPUT);
@@ -2016,6 +2017,7 @@ void MainWindow::writeToTabOutputExt(const QString &msg, TreatURLLinks treatURLL
               newMsg.contains(QRegularExpression("Verifying")) ||
               newMsg.contains(QRegularExpression("Checking")) ||
               newMsg.contains(QRegularExpression("Configuring")) ||
+              newMsg.contains(QRegularExpression("Downloading")) ||
               newMsg.contains(QRegularExpression("Reinstalling")) ||
               newMsg.contains(QRegularExpression("Installing")) ||
               newMsg.contains(QRegularExpression("Updating")) ||
