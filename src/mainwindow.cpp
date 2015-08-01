@@ -181,6 +181,29 @@ QTextBrowser *MainWindow::getOutputTextBrowser()
 }
 
 /*
+ * Extracts the real pkg name of the given anchor
+ */
+QString MainWindow::extractPkgNameFromAnchor(const QString &pkgName)
+{
+  int sign = pkgName.indexOf(">");
+  if (sign == -1)
+  {
+    sign = pkgName.indexOf("<");
+  }
+  if (sign == -1)
+  {
+    sign = pkgName.indexOf("=");
+  }
+
+  QString res = pkgName.left(sign);
+  res.remove("%3E");
+  res.remove(QRegularExpression("-[0-9.]+$")); //CHANDED - WARNING!!!
+  res.remove(QRegularExpression("-[0-9.]+_[0-9.]+$")); //CHANDED - WARNING!!!
+
+  return res;
+}
+
+/*
  * Shows comment of given anchor
  */
 void MainWindow::showAnchorDescription(const QUrl &link)
@@ -189,18 +212,7 @@ void MainWindow::showAnchorDescription(const QUrl &link)
   {
     QString pkgName = link.toString().mid(5);
 
-    int sign = pkgName.indexOf(">");
-    if (sign == -1)
-    {
-      sign = pkgName.indexOf("<");
-    }
-    if (sign == -1)
-    {
-      sign = pkgName.indexOf("=");
-    }
-
-    pkgName = pkgName.left(sign);
-    pkgName.remove("%3E");
+    pkgName = extractPkgNameFromAnchor(pkgName);
 
     QFuture<QString> f;
     disconnect(&g_fwToolTipInfo, SIGNAL(finished()), this, SLOT(execToolTip()));
@@ -261,19 +273,7 @@ void MainWindow::outputTextBrowserAnchorClicked(const QUrl &link)
 
     if (m_packageModel->getPackageCount() > 0)
     {
-      int sign = pkgName.indexOf(">");
-
-      if (sign == -1)
-      {
-        sign = pkgName.indexOf("<");
-      }
-      if (sign == -1)
-      {
-        sign = pkgName.indexOf("=");
-      }
-
-      pkgName = pkgName.left(sign);
-      pkgName.remove("%3E");
+      pkgName = extractPkgNameFromAnchor(pkgName);
 
       bool indIncremented = false;
       QItemSelectionModel*const selectionModel = ui->tvPackages->selectionModel();

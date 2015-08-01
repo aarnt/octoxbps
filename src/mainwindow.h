@@ -250,6 +250,8 @@ private:
   void showPackagesWithNoDescription();
   void prepareSystemUpgrade();
 
+  QString extractPkgNameFromAnchor(const QString &pkgName);
+
   //Tab Transaction related methods
   bool isThereAPendingTransaction();
   void tvTransactionAdjustItemText(QStandardItem *item);
