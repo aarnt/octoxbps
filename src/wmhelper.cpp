@@ -46,7 +46,6 @@ bool WMHelper::isKDERunning(){
 
   if (firstTime)
   {
-    QStringList slParam;
     QProcess proc;
     ret = false;
     QStringList kdeDesktops = QStringList() << ctn_KDE_DESKTOP << ctn_KDE_X11_DESKTOP << ctn_KDE_WAYLAND_DESKTOP;
@@ -54,10 +53,7 @@ bool WMHelper::isKDERunning(){
 
     for (constIterator = kdeDesktops.constBegin(); constIterator != kdeDesktops.constEnd(); ++constIterator) {
       QString desktop = (*constIterator).toLocal8Bit().constData();
-      slParam.clear();
-      slParam << "-A";
-      slParam << "-o command";
-      proc.start("ps", slParam);
+      proc.start("ps -A -o command");
       proc.waitForStarted();
       proc.waitForFinished();
 
@@ -82,12 +78,8 @@ bool WMHelper::isKDERunning(){
  * Checks if TDE is running
  */
 bool WMHelper::isTDERunning(){
-  QStringList slParam;
   QProcess proc;
-  slParam << "-A";
-  slParam << "-o command";
-
-  proc.start("ps", slParam);
+  proc.start("ps -A -o command");
   proc.waitForStarted();
   proc.waitForFinished();
 
@@ -104,12 +96,8 @@ bool WMHelper::isTDERunning(){
  * Checks if XFCE is running
  */
 bool WMHelper::isXFCERunning(){
-  QStringList slParam;
   QProcess proc;
-  slParam << "-A";
-  slParam << "-o command";
-
-  proc.start("ps", slParam);
+  proc.start("ps -A -o command");
   proc.waitForStarted();
   proc.waitForFinished();
   QString out = proc.readAll();
@@ -125,12 +113,8 @@ bool WMHelper::isXFCERunning(){
  * Checks if LXDE is running
  */
 bool WMHelper::isLXDERunning(){
-  QStringList slParam;
   QProcess proc;
-  slParam << "-A";
-  slParam << "-o command";
-
-  proc.start("ps", slParam);
+  proc.start("ps -A -o command");
   proc.waitForStarted();
   proc.waitForFinished();
   QString out = proc.readAll();
@@ -147,12 +131,8 @@ bool WMHelper::isLXDERunning(){
  */
 bool WMHelper::isLXQTRunning()
 {
-  QStringList slParam;
   QProcess proc;
-  slParam << "-A";
-  slParam << "-o command";
-
-  proc.start("ps", slParam);
+  proc.start("ps -A -o command");
   proc.waitForStarted();
   proc.waitForFinished();
   QString out = proc.readAll();
@@ -168,12 +148,8 @@ bool WMHelper::isLXQTRunning()
  * Checks if OpenBox is running
  */
 bool WMHelper::isOPENBOXRunning(){
-  QStringList slParam;
   QProcess proc;
-  slParam << "-A";
-  slParam << "-o command";
-
-  proc.start("ps", slParam);
+  proc.start("ps -A -o command");
   proc.waitForStarted();
   proc.waitForFinished();
   QString out = proc.readAll();
@@ -191,10 +167,7 @@ bool WMHelper::isOPENBOXRunning(){
 bool WMHelper::isMATERunning(){
   QStringList slParam;
   QProcess proc;
-  slParam << "-A";
-  slParam << "-o command";
-
-  proc.start("ps", slParam);
+  proc.start("ps -A -o command");
   proc.waitForStarted();
   proc.waitForFinished();
   QString out = proc.readAll();
@@ -210,12 +183,8 @@ bool WMHelper::isMATERunning(){
  * Checks if Cinnamon is running
  */
 bool WMHelper::isCinnamonRunning(){
-  QStringList slParam;
   QProcess proc;
-  slParam << "-A";
-  slParam << "-o command";
-
-  proc.start("ps", slParam);
+  proc.start("ps -A -o command");
   proc.waitForStarted();
   proc.waitForFinished();
   QString out = proc.readAll();
@@ -232,12 +201,8 @@ bool WMHelper::isCinnamonRunning(){
  */
 bool WMHelper::isRazorQtRunning()
 {
-  QStringList slParam;
   QProcess proc;
-  slParam << "-A";
-  slParam << "-o command";
-
-  proc.start("ps", slParam);
+  proc.start("ps -A -o command");
   proc.waitForStarted();
   proc.waitForFinished();
   QString out = proc.readAll();

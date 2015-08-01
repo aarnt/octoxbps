@@ -58,20 +58,10 @@ void MainWindow::initTabHelpUsage()
     QString("<h3><p>") + tr("A Qt5-based XBPS front-end,") + " " +
     tr("licensed under the terms of") + " ";
 
-  if ((!WMHelper::isKDERunning() && (!WMHelper::isRazorQtRunning())))
-  {
-    html +=
-      QString("<a style=\"color:'#4BC413'\" href=\"http://www.gnu.org/licenses/gpl-2.0.html\">GPL v2</a>.</p></h3>") +
-      QString("<h4><p>") + strForMoreInfo + " " +
-      QString("<a style=\"color:'#4BC413'\" href=\"https://github.com/aarnt/octoxbps\">https://github.com/aarnt/octoxbps</a>.</p></h4><br>");
-  }
-  else
-  {
-    html +=
-      QString("<a href=\"http://www.gnu.org/licenses/gpl-2.0.html\">GPL v2</a>.</p></h3>") +
-      QString("<h4><p>") + strForMoreInfo + " " +
-      QString("<a href=\"https://github.com/aarnt/octoxbps\">https://github.com/aarnt/octoxbps</a>.</p></h4><br>");
-  }
+  html +=
+    QString("<a href=\"http://www.gnu.org/licenses/gpl-2.0.html\">GPL v2</a>.</p></h3>") +
+    QString("<h4><p>") + strForMoreInfo + " " +
+    QString("<a href=\"https://github.com/aarnt/octoxbps\">https://github.com/aarnt/octoxbps</a>.</p></h4><br>");
 
   html += tr("Package classification:") +
   QString("<ul type=\"square\"><li>") + iconPath + "installed.png\"/> " +
