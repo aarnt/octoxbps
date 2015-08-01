@@ -1102,7 +1102,7 @@ QString Package::getInformationInstalledSize(const QString &pkgName, bool foreig
 /*
  * Retrieves the dependencies list of packages for the given pkgName
  */
-QString Package::getDependencies(const QString &pkgName)
+QString Package::getDependencies(const QString &pkgName, PackageAnchor pkgAnchorState)
 {
   QStringList pkgList;
   QString res;
@@ -1113,7 +1113,10 @@ QString Package::getDependencies(const QString &pkgName)
 
   foreach(QString dependency, pkgList)
   {
-    res += "<a href=\"goto:" + dependency + "\">" + dependency + "</a> ";
+    if (pkgAnchorState == ectn_WITH_PACKAGE_ANCHOR)
+      res += "<a href=\"goto:" + dependency + "\">" + dependency + "</a> ";
+    else
+      res += dependency + " ";
   }
 
   return res.trimmed();
@@ -1182,6 +1185,31 @@ QString Package::parseSearchString(QString searchStr, bool exactMatch)
 
   searchStr.replace("?", ".");
   return searchStr;
+}
+
+/*
+ * Extracts the real pkg name of the given anchor
+ */
+QString Package::extractPkgNameFromAnchor(const QString &pkgName)
+{
+  int sign = pkgName.indexOf(">");
+
+  if (sign == -1)
+  {
+    sign = pkgName.indexOf("<");
+  }
+  if (sign == -1)
+  {
+    sign = pkgName.indexOf("=");
+  }
+
+  QString res = pkgName.left(sign);
+
+  res.remove("%3E");
+  res.remove(QRegularExpression("-[0-9.]+$")); //CHANDED - WARNING!!!
+  res.remove(QRegularExpression("-[0-9.]+_[0-9.]+$")); //CHANDED - WARNING!!!
+
+  return res;
 }
 
 /*

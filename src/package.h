@@ -37,6 +37,8 @@ const QString ctn_PACMAN_DATABASE_DIR = "/var/lib/pacman";
 const QString ctn_XBPS_CORE_DB_FILE = "pkgdb*.plist";
 const QString ctn_PKGNG_FAKE_REPOSITORY = "_WWW";
 
+enum PackageAnchor { ectn_WITH_PACKAGE_ANCHOR, ectn_WITHOUT_PACKAGE_ANCHOR };
+
 enum PackageStatus { ectn_INSTALLED, ectn_NON_INSTALLED, ectn_OUTDATED, ectn_NEWER,
                      ectn_FOREIGN, ectn_FOREIGN_OUTDATED };
 
@@ -181,7 +183,7 @@ class Package{
     static double getDownloadSizeDescription(const QString &pkgName);
     static QString getInformationDescription(const QString &pkgName, bool foreignPackage = false);
     static QString getInformationInstalledSize(const QString &pkgName, bool foreignPackage = false);
-    static QString getDependencies(const QString &pkgName);
+    static QString getDependencies(const QString &pkgName, PackageAnchor pkgAnchorState = ectn_WITH_PACKAGE_ANCHOR);
     static QStringList getContents(const QString &pkgName, bool isInstalled);
     static QStringList getOptionalDeps(const QString &pkgName);
     static QString getName(const QString &pkgInfo);
@@ -219,6 +221,8 @@ class Package{
     static QString makeURLClickable(const QString &information);
     static QString getBaseName( const QString& pkgName );
     static QString parseSearchString( QString searchStr, bool exactMatch = false );
+
+    static QString extractPkgNameFromAnchor(const QString &pkgName);
 
     static bool hasPkgNGDatabase();
     static bool isForbidden(const QString pkgName);

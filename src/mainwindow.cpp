@@ -181,29 +181,6 @@ QTextBrowser *MainWindow::getOutputTextBrowser()
 }
 
 /*
- * Extracts the real pkg name of the given anchor
- */
-QString MainWindow::extractPkgNameFromAnchor(const QString &pkgName)
-{
-  int sign = pkgName.indexOf(">");
-  if (sign == -1)
-  {
-    sign = pkgName.indexOf("<");
-  }
-  if (sign == -1)
-  {
-    sign = pkgName.indexOf("=");
-  }
-
-  QString res = pkgName.left(sign);
-  res.remove("%3E");
-  res.remove(QRegularExpression("-[0-9.]+$")); //CHANDED - WARNING!!!
-  res.remove(QRegularExpression("-[0-9.]+_[0-9.]+$")); //CHANDED - WARNING!!!
-
-  return res;
-}
-
-/*
  * Shows comment of given anchor
  */
 void MainWindow::showAnchorDescription(const QUrl &link)
@@ -212,7 +189,7 @@ void MainWindow::showAnchorDescription(const QUrl &link)
   {
     QString pkgName = link.toString().mid(5);
 
-    pkgName = extractPkgNameFromAnchor(pkgName);
+    pkgName = Package::extractPkgNameFromAnchor(pkgName);
 
     QFuture<QString> f;
     disconnect(&g_fwToolTipInfo, SIGNAL(finished()), this, SLOT(execToolTip()));
@@ -273,7 +250,7 @@ void MainWindow::outputTextBrowserAnchorClicked(const QUrl &link)
 
     if (m_packageModel->getPackageCount() > 0)
     {
-      pkgName = extractPkgNameFromAnchor(pkgName);
+      pkgName = Package::extractPkgNameFromAnchor(pkgName);
 
       bool indIncremented = false;
       QItemSelectionModel*const selectionModel = ui->tvPackages->selectionModel();
@@ -1372,118 +1349,35 @@ void MainWindow::tvPackagesSelectionChanged(const QItemSelection&, const QItemSe
 }
 
 /*
-void MainWindow::gistSysInfo()
+ * Iterate over every installed pkg to see if their dependencies can be found in repo
+ */
+void MainWindow::testSpecialDependencies()
 {
-  if (!UnixCommand::hasTheExecutable("gist") ||
-      m_commandExecuting != ectn_NONE) return;
+  const QList<PackageRepository::PackageData*> packageList = m_packageRepo.getPackageList();
+  QString pkgName;
+  QStringList specialDeps;
 
-  CPUIntensiveComputing *cic = new CPUIntensiveComputing(this);
-  disableTransactionActions();
-  QTime time = QTime::currentTime();
-  qsrand(time.minute() + time.second() + time.msec());
-  QFile *tempFile = new QFile(ctn_TEMP_ACTIONS_FILE + QString::number(qrand()));
-  tempFile->open(QIODevice::ReadWrite|QIODevice::Text);
-  tempFile->setPermissions(QFile::Permissions(QFile::ExeOwner|QFile::ReadOwner));
-
-  QByteArray out;
-
-  if (UnixCommand::getBSDFlavour() == ectn_KAOS)
+  foreach (PackageRepository::PackageData* pkgData, packageList)
   {
-    tempFile->write("----------------------------------------------------------------------------------------------------------\n");
-    tempFile->write("cat /etc/KaOS-release\n");
-    tempFile->write("----------------------------------------------------------------------------------------------------------\n\n");
-    out = UnixCommand::getCommandOutput("cat /etc/KaOS-release");
-    tempFile->write(out);
-    tempFile->write("\n\n");
-  }
-  else
-  {
-    tempFile->write("----------------------------------------------------------------------------------------------------------\n");
-    tempFile->write("cat /etc/lsb-release\n");
-    tempFile->write("----------------------------------------------------------------------------------------------------------\n\n");
-    out = UnixCommand::getCommandOutput("cat /etc/lsb-release");
-    tempFile->write(out);
-    tempFile->write("\n\n");
+    pkgName = pkgData->name;
+    QStringList deps = Package::getDependencies(pkgName, ectn_WITHOUT_PACKAGE_ANCHOR).split(" ");
+
+    foreach(QString dep, deps)
+    {
+      if (dep.indexOf("=")==-1 && dep.indexOf(">")==-1 && dep.indexOf("<")==-1)
+      {
+        dep = Package::extractPkgNameFromAnchor(dep);
+        if (!dep.isEmpty() && !specialDeps.contains(dep))
+          specialDeps.append(dep);
+      }
+    }
   }
 
-  if (UnixCommand::hasTheExecutable("inxi"))
+  foreach (QString pkg, specialDeps)
   {
-    tempFile->write("----------------------------------------------------------------------------------------------------------\n");
-    tempFile->write("inxi -Fxz\n");
-    tempFile->write("----------------------------------------------------------------------------------------------------------\n\n");
-    out = UnixCommand::getCommandOutput("inxi -Fxz -c 0");
-    tempFile->write(out);
-    tempFile->write("\n\n");
+    PackageRepository::PackageData *package = m_packageRepo.getFirstPackageByName(pkg);
+
+    if (package == NULL)
+      qDebug() << "Special pkg: " << pkg << " is not found in repo!";
   }
-  else
-  {
-    tempFile->write("----------------------------------------------------------------------------------------------------------\n");
-    tempFile->write("uname -a\n");
-    tempFile->write("----------------------------------------------------------------------------------------------------------\n\n");
-    out = UnixCommand::getCommandOutput("uname -a");
-    tempFile->write(out);
-    tempFile->write("\n\n");
-  }
-
-  if (UnixCommand::hasTheExecutable("mhwd"))
-  {
-    tempFile->write("----------------------------------------------------------------------------------------------------------\n");
-    tempFile->write("mhwd -li -d\n");
-    tempFile->write("----------------------------------------------------------------------------------------------------------\n\n");
-    out = UnixCommand::getCommandOutput("mhwd -li -d");
-    tempFile->write(out);
-    tempFile->write("\n\n");
-  }
-
-  tempFile->write("----------------------------------------------------------------------------------------------------------\n");
-  tempFile->write("journalctl -b -p err\n");
-  tempFile->write("----------------------------------------------------------------------------------------------------------\n\n");
-  out = UnixCommand::getCommandOutput("journalctl -b -p err");
-  tempFile->write(out);
-  tempFile->write("\n\n");
-
-  tempFile->write("----------------------------------------------------------------------------------------------------------\n");
-  tempFile->write("cat /etc/pacman.conf\n");
-  tempFile->write("----------------------------------------------------------------------------------------------------------\n\n");
-  out = UnixCommand::getCommandOutput("cat /etc/pacman.conf");
-  tempFile->write(out);
-  tempFile->write("\n\n");
-
-  tempFile->write("----------------------------------------------------------------------------------------------------------\n");
-  tempFile->write("pacman -Qm\n");
-  tempFile->write("----------------------------------------------------------------------------------------------------------\n\n");
-  out = UnixCommand::getCommandOutput("pacman -Qm");
-  tempFile->write(out);
-  tempFile->write("\n\n");
-
-  if (UnixCommand::getBSDFlavour() == ectn_KAOS)
-  {
-    tempFile->write("----------------------------------------------------------------------------------------------------------\n");
-    tempFile->write("cat /var/log/pacman.log\n");
-    tempFile->write("----------------------------------------------------------------------------------------------------------\n\n");
-    out = UnixCommand::getCommandOutput("cat /var/log/pacman.log");
-    tempFile->write(out);
-    tempFile->flush();
-    tempFile->close();
-  }
-  else
-  {
-    tempFile->write("----------------------------------------------------------------------------------------------------------\n");
-    tempFile->write("head --bytes=256K /var/log/pacman.log\n");
-    tempFile->write("----------------------------------------------------------------------------------------------------------\n\n");
-    out = UnixCommand::getCommandOutput("head --bytes=256K /var/log/pacman.log");
-    tempFile->write(out);
-    tempFile->flush();
-    tempFile->close();
-  }
-
-  enableTransactionActions();
-
-  //Now we gist the temp file just created!
-  QString gist = UnixCommand::getCommandOutput("gist " + tempFile->fileName());
-  delete cic;
-
-  QString distroPrettyName = UnixCommand::getLinuxDistroPrettyName();
-  QMessageBox::information(this, distroPrettyName + " SysInfo", Package::makeURLClickable(gist), QMessageBox::Ok);
 }
-*/

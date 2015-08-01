@@ -248,9 +248,7 @@ private:
   void refreshStatusBar();
   void clearStatusBar();
   void showPackagesWithNoDescription();
-  void prepareSystemUpgrade();
-
-  QString extractPkgNameFromAnchor(const QString &pkgName);
+  void prepareSystemUpgrade();  
 
   //Tab Transaction related methods
   bool isThereAPendingTransaction();
@@ -439,7 +437,7 @@ private slots:
   void execToolTip();
   void doPreSystemUpgrade();
 
-  //void gistSysInfo();
+  void testSpecialDependencies();
 
 public slots:
   void doSystemUpgrade(SystemUpgradeOptions sysUpgradeOption = ectn_NO_OPT);

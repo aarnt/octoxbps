@@ -824,6 +824,8 @@ void MainWindow::buildPackageList()
     }
 
     m_initializationCompleted = true;
+    //testSpecialDependencies(); //TEST!!!
+
     firstTime = false;
 
     if (m_callSystemUpgrade)
