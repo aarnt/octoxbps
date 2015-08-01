@@ -1122,7 +1122,6 @@ void MainWindow::doInstall()
     if (!doRemovePacmanLockFile()) return;
 
     disableTransactionButtons();
-
     QString command;
     command = "xbps-install -f -y " + listOfTargets;
 
@@ -1721,7 +1720,6 @@ void MainWindow::parseXBPSProcessOutput(const QString &pMsg)
   msg.remove(";37m");
   msg.remove("[c");
   msg.remove("[mo");
-  msg.remove("[1A[K");
 
   //qDebug() << "_treat: " << msg;
 
@@ -1755,7 +1753,9 @@ void MainWindow::parseXBPSProcessOutput(const QString &pMsg)
     target.remove("[*] ");
 
     if(!textInTabOutput(target))
-      writeToTabOutputExt("Updating " + target, ectn_DONT_TREAT_URL_LINK);
+    {
+      writeToTabOutputExt("Updating " + target); //, ectn_DONT_TREAT_URL_LINK);
+    }
 
     return;
   }
@@ -1777,7 +1777,6 @@ void MainWindow::parseXBPSProcessOutput(const QString &pMsg)
     {
       int percentage = perc.left(perc.size()-1).toInt();
       if (!m_progressWidget->isVisible()) m_progressWidget->show();
-
       m_progressWidget->setValue(percentage);
     }
   }
@@ -1824,10 +1823,12 @@ void MainWindow::parseXBPSProcessOutput(const QString &pMsg)
     //std::cout << "debug: " << msg.toLatin1().data() << std::endl;
     QString order;
     int ini = msg.indexOf(QRegularExpression("\\(\\s{0,3}[0-9]{1,4}/[0-9]{1,4}\\) "));
+
     if (ini == 0)
     {
       int rp = msg.indexOf(")");
       if (rp == -1) return; //Guard!
+
       order = msg.left(rp+2);
       msg = msg.remove(0, rp+2);
     }
@@ -2015,7 +2016,6 @@ void MainWindow::writeToTabOutputExt(const QString &msg, TreatURLLinks treatURLL
               newMsg.contains(QRegularExpression("Verifying")) ||
               newMsg.contains(QRegularExpression("Checking")) ||
               newMsg.contains(QRegularExpression("Configuring")) ||
-              newMsg.contains(QRegularExpression("Downloading")) ||
               newMsg.contains(QRegularExpression("Reinstalling")) ||
               newMsg.contains(QRegularExpression("Installing")) ||
               newMsg.contains(QRegularExpression("Updating")) ||

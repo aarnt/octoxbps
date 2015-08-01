@@ -68,7 +68,8 @@ QString Package::makeURLClickable( const QString &s )
 
   rx.setCaseSensitivity( Qt::CaseInsensitive );
 	rx1.setCaseSensitivity( Qt::CaseInsensitive );
-	int search = 0;
+
+  int search = 0;
 	int ini = 0;
 
 	//First we search for the 1st pattern: rx
@@ -76,7 +77,11 @@ QString Package::makeURLClickable( const QString &s )
 		QString s1 = rx.cap();
     QString ns;
 
-    ns = "<a href=\"" + s1 + "\">" + s1 + "</a>";
+    s1.remove(QRegularExpression("</font></b><br>"));
+    s1.remove("`");
+    s1.remove("'");
+
+    ns = "<a href=\"" + s1.trimmed() + "\">" + s1.trimmed() + "</a>";
     sb.replace( ini, s1.length(), ns);
 		search = ini + (2*s1.length()) + 15;	
 	}
@@ -86,9 +91,14 @@ QString Package::makeURLClickable( const QString &s )
 
   //Now, we search for the 2nd pattern: rx1
 	while ( (ini = rx1.indexIn( sb, search )) != -1 ){
-		QString s1 = rx1.cap();
-		QString ns;
-		if (s1[0] == '\n') ns += "\n";
+    QString s1 = rx1.cap();
+    QString ns;
+
+    s1.remove(QRegularExpression("</font></b><br>"));
+    s1.remove("`");
+    s1.remove("'");
+
+    if (s1[0] == '\n') ns += "\n";
 
     int blanks = s1.count(QRegExp("^|[\\s]+"));
 		for (int i=0; i<blanks; i++) ns += " ";
@@ -1179,27 +1189,28 @@ QString Package::parseSearchString(QString searchStr, bool exactMatch)
  */
 bool Package::hasPkgNGDatabase()
 {
-  /*static bool done = false;
+  static bool done = false;
   static bool answer = false;
 
   if (!done)
   {
-    if (UnixCommand::getLinuxDistro() == ectn_PCBSD)
+    if (UnixCommand::getLinuxDistro() == ectn_VOID)
     {
-      QFile f(ctn_PKGNG_PCBSD_CORE_DB_FILE);
-      answer = f.exists();
-    }
-    else
-    {
-      QFile f(ctn_PKGNG_FREEBSD_CORE_DB_FILE);
-      answer = f.exists();
+      QDir info;
+      info.setPath("/var/db/xbps/");
+      QStringList filters;
+      filters << ctn_XBPS_CORE_DB_FILE;
+
+      QStringList entries = info.entryList(filters, QDir::Files | QDir::NoDotAndDotDot);
+
+      if (entries.count() >= 1)
+        answer = true;
     }
 
     done = true;
   }
 
-  return answer;*/
-  return true;
+  return answer;
 }
 
 /*
