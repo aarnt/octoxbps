@@ -152,7 +152,7 @@ void MainWindow::remoteSearchClicked()
   if (m_actionSwitchToRemoteSearch->isChecked())
   {
     m_leFilterPackage->setPlaceholderText(StrConstants::getLineEditTextRemote());
-    m_leFilterPackage->setToolTip(StrConstants::getRemotePackageSearchTip());
+    m_leFilterPackage->setToolTip(StrConstants::getLineEditTextRemote());
     ui->menuSearch->setEnabled(false);
   }
   else
