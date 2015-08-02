@@ -1,5 +1,5 @@
 /*
-* This file is part of OctoPkg, an open-source GUI for pkgng.
+* This file is part of OctoXBPS, an open-source GUI for XBPS.
 * Copyright (C) 2015 Alexandre Albuquerque Arnt
 *
 * This program is free software; you can redistribute it and/or modify
@@ -534,6 +534,8 @@ QList<PackageListData> * Package::getPackageList(const QString &packageName)
  */
 QList<PackageListData> * Package::parsePackageTuple(const QStringList &packageTuples, QStringList &packageCache)
 {
+  Q_UNUSED(packageCache)
+
   QString pkgAux, pkgName, pkgVersion, pkgComment, strStatus, pkgDescription, pkgOrigin;
   PackageStatus pkgStatus;
   double pkgInstalledSize, pkgDownloadedSize;

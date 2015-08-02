@@ -1,5 +1,5 @@
 /*
-* This file is part of OctoPkg, an open-source GUI for pkgng.
+* This file is part of OctoXBPS, an open-source GUI for XBPS.
 * Copyright (C) 2014 Thomas Binkau
 *
 * This program is free software; you can redistribute it and/or modify

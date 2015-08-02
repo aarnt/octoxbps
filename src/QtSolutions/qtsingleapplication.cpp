@@ -37,7 +37,7 @@
 **
 ****************************************************************************/
 
-#ifdef OCTOPKG_EXTENSIONS
+#ifdef OCTOXBPS_EXTENSIONS
   #include "../mainwindow.h"
 #endif
 
@@ -321,7 +321,7 @@ QWidget* QtSingleApplication::activationWindow() const
 */
 void QtSingleApplication::activateWindow(const QString &message)
 {
-#ifdef OCTOPKG_EXTENSIONS
+#ifdef OCTOXBPS_EXTENSIONS
   if (actWin && message == "RAISE") {
         actWin->setWindowState(actWin->windowState() & ~Qt::WindowMinimized);
         actWin->raise();
