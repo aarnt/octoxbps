@@ -370,7 +370,7 @@ public:
   }
 
   static QString getSystemUpgrade(){
-    return QObject::tr("Starting package upgrade...");
+    return QObject::tr("Installing updates...");
   }
 
   static QString getInstallingPackages(){

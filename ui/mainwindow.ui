@@ -297,10 +297,10 @@
      <normaloff>:/resources/images/fast_forward.png</normaloff>:/resources/images/fast_forward.png</iconset>
    </property>
    <property name="text">
-    <string>Package &amp;upgrade</string>
+    <string>Install updates</string>
    </property>
    <property name="toolTip">
-    <string>Package upgrade</string>
+    <string>Install updates</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+U</string>
