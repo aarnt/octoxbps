@@ -1327,7 +1327,6 @@ void MainWindow::toggleTransactionActions(const bool value)
 
     m_actionSwitchToLocalFilter->setEnabled(true);
     m_actionSwitchToRemoteSearch->setEnabled(true);
-
     ui->actionSyncPackages->setEnabled(false);
     ui->actionSystemUpgrade->setEnabled(false);
   }
@@ -1720,6 +1719,7 @@ void MainWindow::parseXBPSProcessOutput(const QString &pMsg)
   msg.remove(";37m");
   msg.remove("[c");
   msg.remove("[mo");
+  msg.remove("[1A[K");
 
   //qDebug() << "_treat: " << msg;
 
@@ -1744,7 +1744,8 @@ void MainWindow::parseXBPSProcessOutput(const QString &pMsg)
     if(!textInTabOutput(target))
       writeToTabOutputExt("<b><font color=\"#FF8040\">" + target + "</font></b>");
   }
-  else if (msg.contains("Updating") && !msg.contains(QRegularExpression("B/s")))
+  else if (msg.contains("Updating") &&
+            (!msg.contains(QRegularExpression("B/s")) || (!msg.contains(QRegularExpression("configuration file")))))
   {
     int p = msg.indexOf("'");
     if (p == -1) return; //Guard!
@@ -2015,6 +2016,7 @@ void MainWindow::writeToTabOutputExt(const QString &msg, TreatURLLinks treatURLL
               newMsg.contains(QRegularExpression("upgraded")) ||
               newMsg.contains(QRegularExpression("updated")) ||
               newMsg.contains(QRegularExpression("Verifying")) ||
+              newMsg.contains(QRegularExpression("Building")) ||
               newMsg.contains(QRegularExpression("Checking")) ||
               newMsg.contains(QRegularExpression("Configuring")) ||
               newMsg.contains(QRegularExpression("Downloading")) ||
