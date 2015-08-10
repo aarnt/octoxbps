@@ -54,8 +54,6 @@ TransactionDialog::TransactionDialog(QWidget* parent) :
 
   setWindowFlags(Qt::MSWindowsFixedSizeDialogHint | Qt::Dialog |
                  Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint);
-
-  //removeYesButton();
 }
 
 void TransactionDialog::setText(const QString text)
@@ -101,4 +99,19 @@ void TransactionDialog::slotRunInTerminal()
 void TransactionDialog::slotYes()
 {
   done(QDialogButtonBox::Yes);
+}
+
+void TransactionDialog::done(int p)
+{
+  //Let's save the dialog size value before closing it.
+  QByteArray windowSize=saveGeometry();
+  SettingsManager::setTransactionWindowSize(windowSize);
+  QDialog::done(p);
+}
+
+int TransactionDialog::exec()
+{
+  //Let's restore the dialog size saved...
+  restoreGeometry(SettingsManager::getTransactionWindowSize());
+  return QDialog::exec();
 }
