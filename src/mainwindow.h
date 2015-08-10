@@ -241,7 +241,6 @@ private:
   void selectFirstItemOfPkgFileList();
   QString extractBaseFileName(const QString &fileName);
   QString getSelectedDirectory();
-  void navigateThroughDirs(QStringList parts, QStringList& auxList, int ind);
 
   void initTabFiles();
   void initActions();
@@ -333,7 +332,6 @@ private slots:
 
   void metaBuildPackageList();
   void onPackageGroupChanged();
-
   void remoteSearchClicked();
   void groupItemSelected();  
 

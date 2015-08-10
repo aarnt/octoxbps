@@ -1125,6 +1125,31 @@ QString Package::getDependencies(const QString &pkgName, PackageAnchor pkgAnchor
 }
 
 /*
+ * Navigate thru directories to build a hierarquic directory list
+ */
+void Package::navigateThroughDirs(QStringList parts, QStringList& auxList, int ind)
+{
+  static QString dir="";
+  dir = dir + "/" + parts[ind];
+
+  if (!auxList.contains(dir+"/"))
+  {
+    auxList.append(dir+"/");
+  }
+
+  if (ind < parts.count()-2)
+  {
+    ind++;
+    navigateThroughDirs(parts, auxList, ind);
+  }
+  else
+  {
+    dir="";
+    return;
+  }
+}
+
+/*
  * Retrieves the file list content of the given package
  */
 QStringList Package::getContents(const QString& pkgName, bool isInstalled)
@@ -1137,9 +1162,22 @@ QStringList Package::getContents(const QString& pkgName, bool isInstalled)
   }
 
   QString aux(result);
-  QStringList rsl = aux.split("\n", QString::SkipEmptyParts);
+  QStringList fileList = aux.split("\n", QString::SkipEmptyParts);
 
-  return rsl;
+  //Let's change that listing a bit...
+  QStringList auxList;
+  foreach(QString file, fileList)
+  {
+    QStringList parts = file.split("/", QString::SkipEmptyParts);
+    navigateThroughDirs(parts, auxList, 0);
+  }
+
+  fileList = fileList + auxList;
+  fileList.sort();
+
+
+
+  return fileList; //rsl;
 }
 
 /*

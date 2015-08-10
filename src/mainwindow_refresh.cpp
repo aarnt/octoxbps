@@ -1107,31 +1107,6 @@ void MainWindow::refreshTabInfo(bool clearContents, bool neverQuit)
 }
 
 /*
- * Navigate thru directories to build a hierarquic directory list
- */
-void MainWindow::navigateThroughDirs(QStringList parts, QStringList& auxList, int ind)
-{
-  static QString dir="";
-  dir = dir + "/" + parts[ind];
-
-  if (!auxList.contains(dir+"/"))
-  {
-    auxList.append(dir+"/");
-  }
-
-  if (ind < parts.count()-2)
-  {
-    ind++;
-    navigateThroughDirs(parts, auxList, ind);
-  }
-  else
-  {
-    dir="";
-    return;
-  }
-}
-
-/*
  * Re-populates the treeview which contains the file list of selected package (tab TWO)
  */
 void MainWindow::refreshTabFiles(bool clearContents, bool neverQuit)
@@ -1219,17 +1194,6 @@ void MainWindow::refreshTabFiles(bool clearContents, bool neverQuit)
     //Let's wait before we get the pkg file list from the other thread...
     el.exec();
     fileList = fwPackageContents.result();
-
-    //Let's change that listing a bit...
-    QStringList auxList;
-    foreach(QString file, fileList)
-    {
-      QStringList parts = file.split("/", QString::SkipEmptyParts);
-      navigateThroughDirs(parts, auxList, 0);
-    }
-
-    fileList = fileList + auxList;
-    fileList.sort();
 
     if (fileList.count() > 0) CPUIntensiveComputing cic;
 
