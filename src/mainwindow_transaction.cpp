@@ -1745,7 +1745,7 @@ void MainWindow::parseXBPSProcessOutput(const QString &pMsg)
       writeToTabOutputExt("<b><font color=\"#FF8040\">" + target + "</font></b>");
   }
   else if (msg.contains("Updating") &&
-            (!msg.contains(QRegularExpression("B/s")) || (!msg.contains(QRegularExpression("configuration file")))))
+            (!msg.contains(QRegularExpression("B/s")) && (!msg.contains(QRegularExpression("configuration file")))))
   {
     int p = msg.indexOf("'");
     if (p == -1) return; //Guard!
@@ -1974,11 +1974,11 @@ void MainWindow::writeToTabOutputExt(const QString &msg, TreatURLLinks treatURLL
        (msg.contains(QRegularExpression("\\d\\)")) &&
         (!msg.contains("target", Qt::CaseInsensitive)) &&
         (!msg.contains("package", Qt::CaseInsensitive))) ||
-
         msg.indexOf("Enter a selection", Qt::CaseInsensitive) == 0 ||
         msg.indexOf("Proceed with", Qt::CaseInsensitive) == 0 ||
         msg.indexOf("%") != -1 ||
-        msg.indexOf("---") != -1)
+        msg.indexOf("---") != -1 ||
+        msg.indexOf("avg rate") != -1)
     {
       return;
     }

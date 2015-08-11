@@ -271,7 +271,6 @@ void MainWindow::keyPressEvent(QKeyEvent* ke)
       doRemovePacmanLockFile(); //If we are not executing any command, let's remove Pacman's lock file
     }
   } 
-
   else if(ke->key() == Qt::Key_T && ke->modifiers() == (Qt::ShiftModifier|Qt::ControlModifier)
           && m_initializationCompleted)
   {
@@ -288,6 +287,11 @@ void MainWindow::keyPressEvent(QKeyEvent* ke)
       }
     }
   }
+
+  /*else if(ke->key() == Qt::Key_Z && ke->modifiers() == (Qt::ShiftModifier|Qt::ControlModifier))
+  {
+    parseXBPSProcessOutput("Updating configuration file `/etc/skel/.bashrc");
+  }*/
 
   else ke->ignore();
 }
