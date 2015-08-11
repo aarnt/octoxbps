@@ -279,6 +279,7 @@ QByteArray UnixCommand::getPackageList(const QString &pkgName)
   if (pkgName.isEmpty())
   {
     result = performQuery("query -l");
+    //result = performQuery("query -Rs -");
   }
   else
   {

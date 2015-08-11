@@ -506,7 +506,11 @@ QList<PackageListData> * Package::getPackageList(const QString &packageName)
         pkgVersion = pkgAux.right(pkgAux.length()-(dash+1));
       }
 
-      pkgStatus = ectn_INSTALLED;
+      if (parts[0] == "[*]" || parts[0] == "i" || parts[0] == "ii")
+        pkgStatus = ectn_INSTALLED;
+      else
+        pkgStatus = ectn_NON_INSTALLED;
+
       pkgDownloadedSize = 0;
       pkgInstalledSize = 0; //strToKBytes(parts[3]);
 

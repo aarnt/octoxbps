@@ -1111,6 +1111,8 @@ void MainWindow::refreshTabInfo(bool clearContents, bool neverQuit)
  */
 void MainWindow::refreshTabFiles(bool clearContents, bool neverQuit)
 {  
+  if (m_progressWidget->isVisible()) return;
+
   if(neverQuit == false &&
      (ui->twProperties->currentIndex() != ctn_TABINDEX_FILES || !isPropertiesTabWidgetVisible()))
   {
@@ -1132,6 +1134,7 @@ void MainWindow::refreshTabFiles(bool clearContents, bool neverQuit)
       bool filterHasFocus = m_leFilterPackage->hasFocus();
       bool tvPackagesHasFocus = ui->tvPackages->hasFocus();
       closeTabFilesSearchBar();
+
       if (filterHasFocus) m_leFilterPackage->setFocus();
       else if (tvPackagesHasFocus) ui->tvPackages->setFocus();
 
@@ -1195,10 +1198,13 @@ void MainWindow::refreshTabFiles(bool clearContents, bool neverQuit)
     el.exec();
     fileList = fwPackageContents.result();
 
-    if (fileList.count() > 0) CPUIntensiveComputing cic;
-
     QString fullPath;
     bool isSymLinkToDir = false;
+
+    int counter = 0;
+    m_progressWidget->setRange(0, fileList.count());
+    m_progressWidget->setValue(0);
+    m_progressWidget->show();
 
     foreach ( QString file, fileList )
     {
@@ -1307,7 +1313,13 @@ void MainWindow::refreshTabFiles(bool clearContents, bool neverQuit)
 
       lastItem = item;
       first = false;
+
+      counter++;
+      m_progressWidget->setValue(counter);
+      qApp->processEvents();
     }
+
+    m_progressWidget->close();
 
     root = fakeRoot;
     fakeModelPkgFileList->sort(0);

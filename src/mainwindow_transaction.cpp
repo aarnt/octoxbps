@@ -134,7 +134,6 @@ void MainWindow::insertRemovePackageIntoTransaction(const QString &pkgName)
   QStandardItem * siPackageToRemove = new QStandardItem(IconHelper::getIconRemoveItem(), pkgName);
   QStandardItemModel *sim = qobject_cast<QStandardItemModel *>(siRemoveParent->model());
   QList<QStandardItem *> foundItems = sim->findItems(pkgName, Qt::MatchRecursive | Qt::MatchExactly);
-
   int slash = pkgName.indexOf("/");
   QString pkg = pkgName.mid(slash+1);
   siPackageToRemove->setText(pkg);
@@ -1599,6 +1598,7 @@ void MainWindow::resetTransaction()
   //  refreshGroupsWidget();
   m_unixCommand->removeTemporaryFile();
   delete m_unixCommand;
+
   m_commandExecuting = ectn_NONE;
   disconnect(this, SIGNAL(buildPackageListDone()), this, SLOT(resetTransaction()));
 }
