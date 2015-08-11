@@ -5,7 +5,7 @@
 #-------------------------------------------------
 
 QT += core gui network xml dbus widgets quick quickwidgets
-DEFINES += OCTOXBPS_EXTENSIONS
+DEFINES += OCTOXBPS_EXTENSIONS UNIFIED_SEARCH
 CONFIG += qt warn_on debug
 QMAKE_CXXFLAGS += -std=c++11
 TEMPLATE = app

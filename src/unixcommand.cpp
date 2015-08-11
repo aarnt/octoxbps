@@ -278,12 +278,14 @@ QByteArray UnixCommand::getPackageList(const QString &pkgName)
 
   if (pkgName.isEmpty())
   {
+#ifdef UNIFIED_SEARCH
+    result = performQuery("query -Rs -");
+#else
     result = performQuery("query -l");
-    //result = performQuery("query -Rs -");
+#endif
   }
   else
   {
-
   }
 
   return result;
@@ -300,7 +302,6 @@ QByteArray UnixCommand::getPackageInformation(const QString &pkgName, bool forei
 
   if(foreignPackage)
   {
-
   }
   else
   {

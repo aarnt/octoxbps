@@ -45,7 +45,7 @@ SearchLineEdit::SearchLineEdit(QWidget *parent, bool hasSLocate) :
   this->m_SearchButton->setCursor(Qt::ArrowCursor);
   this->m_SearchButton->setStyleSheet(this->buttonStyleSheetForCurrentState());
 
-  m_defaultValidator = new QRegularExpressionValidator(QRegularExpression("[a-zA-Z0-9_\\-\\$\\^\\*\\+\\(\\)\\[\\]\\.\\s]+"), this);
+  m_defaultValidator = new QRegularExpressionValidator(QRegularExpression("[a-zA-Z0-9_\\-\\$\\^\\*\\+\\(\\)\\[\\]\\.\\s\\\\]+"), this);
   m_aurValidator = new QRegularExpressionValidator(QRegularExpression("[a-zA-Z0-9_\\-\\s]+"), this);
   m_fileValidator = new QRegularExpressionValidator(QRegularExpression("[a-zA-Z0-9_\\-\\/\\.]+"), this);
 

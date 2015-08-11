@@ -303,19 +303,17 @@ void MainWindow::initToolBar()
   ui->mainToolBar->addAction(m_dummyAction);
   m_leFilterPackage->setMinimumHeight(24);
   ui->mainToolBar->addWidget(m_leFilterPackage);
-
-  /*QWidget * hSpacer = new QWidget(this);
-  hSpacer->setMinimumHeight(22);
-  hSpacer->setMinimumWidth(3);
-  hSpacer->setVisible(true);
-  ui->mainToolBar->addWidget(hSpacer);
-  ui->mainToolBar->addAction(m_actionShowGroups);*/
   ui->mainToolBar->toggleViewAction()->setEnabled(false);
   ui->mainToolBar->toggleViewAction()->setVisible(false);
-
   ui->mainToolBar->setStyleSheet(StrConstants::getToolBarCSS());
 
   m_leFilterPackage->setPlaceholderText(StrConstants::getLineEditTextLocal());
+
+#ifdef UNIFIED_SEARCH
+  m_separatorForActionRemoteSearch->setVisible(false);
+  m_actionSwitchToLocalFilter->setVisible(false);
+  m_actionSwitchToRemoteSearch->setVisible(false);
+#endif
 }
 
 /*
@@ -684,7 +682,7 @@ void MainWindow::initActions()
   actionGroup->addAction(ui->actionSearchByName);
   actionGroup->addAction(ui->actionSearchByFile);
   ui->actionSearchByName->setChecked(true);
-  ui->actionSearchByDescription->setVisible(false);
+  ui->actionSearchByDescription->setVisible(true);
   actionGroup->setExclusive(true);
   connect(actionGroup, SIGNAL(triggered(QAction*)), this, SLOT(tvPackagesSearchColumnChanged(QAction*)));
 

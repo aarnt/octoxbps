@@ -337,9 +337,15 @@ public:
     return QObject::tr("Removing Pacman's transaction lock file...");
   }
 
+#ifdef UNIFIED_SEARCH
+  static QString getLineEditTextLocal(){
+    return QObject::tr("Filter packages");
+  }
+#else
   static QString getLineEditTextLocal(){
     return QObject::tr("Filter installed packages");
   }
+#endif
 
   static QString getLineEditTextRemote(){
     return QObject::tr("Enter your search and press ENTER");
