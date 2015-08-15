@@ -54,6 +54,7 @@ Terminal::Terminal(QObject *parent, const QString &selectedTerminal) : QObject(p
 Terminal::~Terminal()
 {
   m_process->close();
+
   delete m_process;
   delete m_processWrapper;
 }
@@ -352,23 +353,20 @@ void Terminal::runCommandInTerminal(const QStringList &commandList)
   m_process->setProcessEnvironment(env);
 
   QString suCommand = WMHelper::getSUCommand();
+  QString cmd;
 
   if (m_selectedTerminal == ctn_AUTOMATIC)
   {
     if (UnixCommand::hasTheExecutable(ctn_RXVT_TERMINAL))
     {
-      QString cmd =
-          suCommand + " \"" + ctn_RXVT_TERMINAL + " -title pkg -name pkg -e sh -c " + ftemp->fileName() + "\"";
-
+      cmd = suCommand + " \"" + ctn_RXVT_TERMINAL + " -title pkg -name pkg -e sh -c " + ftemp->fileName() + "\"";
       m_process->start(cmd);
     }
     else if(WMHelper::isXFCERunning() && UnixCommand::hasTheExecutable(ctn_XFCE_TERMINAL)){
-      QString cmd = suCommand + " \"" + ctn_XFCE_TERMINAL + " -e \'sh -c " + ftemp->fileName() + "'\"";
+      cmd = suCommand + " \"" + ctn_XFCE_TERMINAL + " -e \'sh -c " + ftemp->fileName() + "'\"";
       m_process->start(cmd);
     }
     else if (WMHelper::isKDERunning() && UnixCommand::hasTheExecutable(ctn_KDE_TERMINAL)){
-      QString cmd;
-
       if (UnixCommand::isRootRunning())
       {
         cmd = "dbus-launch " + ctn_KDE_TERMINAL + " --nofork -e sh -c " + ftemp->fileName();
@@ -381,35 +379,39 @@ void Terminal::runCommandInTerminal(const QStringList &commandList)
       m_process->start(cmd);
     }
     else if (WMHelper::isTDERunning() && UnixCommand::hasTheExecutable(ctn_TDE_TERMINAL)){
-      QString cmd = suCommand + " \"" + ctn_TDE_TERMINAL + " --nofork -e sh -c " + ftemp->fileName() + "\"";
+      cmd = suCommand + " \"" + ctn_TDE_TERMINAL + " --nofork -e sh -c " + ftemp->fileName() + "\"";
       m_process->start(cmd);
     }
     else if (WMHelper::isLXDERunning() && UnixCommand::hasTheExecutable(ctn_LXDE_TERMINAL)){
-      QString cmd = suCommand + " \"" + ctn_LXDE_TERMINAL + " -e \'sh -c " + ftemp->fileName() + "'\"";
+      cmd = suCommand + " \"" + ctn_LXDE_TERMINAL + " -e \'sh -c " + ftemp->fileName() + "'\"";
       m_process->start(cmd);
     }
     else if (WMHelper::isMATERunning() && UnixCommand::hasTheExecutable(ctn_MATE_TERMINAL)){
-      QString cmd = suCommand + " \"" + ctn_MATE_TERMINAL + " -e \'sh -c " + ftemp->fileName() + "'\"";
+      cmd = suCommand + " \"" + ctn_MATE_TERMINAL + " -e \'sh -c " + ftemp->fileName() + "'\"";
+      m_process->start(cmd);
+    }
+    else if (WMHelper::isCinnamonRunning() && UnixCommand::hasTheExecutable(ctn_CINNAMON_TERMINAL)){
+      cmd = suCommand + " \"" + ctn_CINNAMON_TERMINAL + " -e \'bash -c " + ftemp->fileName() + "'\"";
       m_process->start(cmd);
     }
     else if (WMHelper::isLXQTRunning() && UnixCommand::hasTheExecutable(ctn_LXQT_TERMINAL)){
-      QString cmd = suCommand + " \"" + ctn_LXQT_TERMINAL + " -e \'sh -c " + ftemp->fileName() + "'\"";
+      cmd = suCommand + " \"" + ctn_LXQT_TERMINAL + " -e \'sh -c " + ftemp->fileName() + "'\"";
       m_process->start(cmd);
     }
     else if (UnixCommand::hasTheExecutable(ctn_PEK_TERMINAL)){
-      QString cmd = suCommand + " \"" + ctn_PEK_TERMINAL + " -e \'sh -c " + ftemp->fileName() + "'\"";
+      cmd = suCommand + " \"" + ctn_PEK_TERMINAL + " -e \'sh -c " + ftemp->fileName() + "'\"";
       m_process->start(cmd);
     }
     else if (UnixCommand::hasTheExecutable(ctn_XFCE_TERMINAL)){
-      QString cmd = suCommand + " \"" + ctn_XFCE_TERMINAL + " -e \'sh -c " + ftemp->fileName() + "'\"";
+      cmd = suCommand + " \"" + ctn_XFCE_TERMINAL + " -e \'sh -c " + ftemp->fileName() + "'\"";
       m_process->start(cmd);
     }
     else if (UnixCommand::hasTheExecutable(ctn_LXDE_TERMINAL)){
-      QString cmd = suCommand + " \"" + ctn_LXDE_TERMINAL + " -e \'sh -c " + ftemp->fileName() + "'\"";
+      cmd = suCommand + " \"" + ctn_LXDE_TERMINAL + " -e \'sh -c " + ftemp->fileName() + "'\"";
       m_process->start(cmd);
     }
     else if (UnixCommand::hasTheExecutable(ctn_XTERM)){
-      QString cmd = suCommand + " \"" + ctn_XTERM +
+      cmd = suCommand + " \"" + ctn_XTERM +
           " -fn \"*-fixed-*-*-*-18-*\" -fg White -bg Black -title xterm -e \'sh -c " + ftemp->fileName() + "'\"";
       m_process->start(cmd);
     }
@@ -418,18 +420,14 @@ void Terminal::runCommandInTerminal(const QStringList &commandList)
   {
     if (m_selectedTerminal == ctn_RXVT_TERMINAL)
     {
-      QString cmd =
-          suCommand + " \"" + ctn_RXVT_TERMINAL + " -title pkg -name pkg -e sh -c " + ftemp->fileName() + "\"";
-
+      cmd = suCommand + " \"" + ctn_RXVT_TERMINAL + " -title pkg -name pkg -e sh -c " + ftemp->fileName() + "\"";
       m_process->start(cmd);
     }
     else if(m_selectedTerminal == ctn_XFCE_TERMINAL){
-      QString cmd = suCommand + " \"" + ctn_XFCE_TERMINAL + " -e \'sh -c " + ftemp->fileName() + "'\"";
+      cmd = suCommand + " \"" + ctn_XFCE_TERMINAL + " -e \'sh -c " + ftemp->fileName() + "'\"";
       m_process->start(cmd);
     }
     else if (m_selectedTerminal == ctn_KDE_TERMINAL){
-      QString cmd;
-
       if (UnixCommand::isRootRunning())
       {
         cmd = "dbus-launch " + ctn_KDE_TERMINAL + " --nofork -e sh -c " + ftemp->fileName();
@@ -442,27 +440,31 @@ void Terminal::runCommandInTerminal(const QStringList &commandList)
       m_process->start(cmd);
     }
     else if (m_selectedTerminal == ctn_TDE_TERMINAL){
-      QString cmd = suCommand + " \"" + ctn_TDE_TERMINAL + " --nofork -e sh -c " + ftemp->fileName() + "\"";
+      cmd = suCommand + " \"" + ctn_TDE_TERMINAL + " --nofork -e sh -c " + ftemp->fileName() + "\"";
       m_process->start(cmd);
     }
     else if (m_selectedTerminal == ctn_PEK_TERMINAL){
-      QString cmd = suCommand + " \"" + ctn_PEK_TERMINAL + " -e \'sh -c " + ftemp->fileName() + "'\"";
+      cmd = suCommand + " \"" + ctn_PEK_TERMINAL + " -e \'sh -c " + ftemp->fileName() + "'\"";
       m_process->start(cmd);
     }
     else if (m_selectedTerminal == ctn_LXDE_TERMINAL){
-      QString cmd = suCommand + " \"" + ctn_LXDE_TERMINAL + " -e \'sh -c " + ftemp->fileName() + "'\"";
+      cmd = suCommand + " \"" + ctn_LXDE_TERMINAL + " -e \'sh -c " + ftemp->fileName() + "'\"";
       m_process->start(cmd);
     }
     else if (m_selectedTerminal == ctn_MATE_TERMINAL){
-      QString cmd = suCommand + " \"" + ctn_MATE_TERMINAL + " -e \'sh -c " + ftemp->fileName() + "'\"";
+      cmd = suCommand + " \"" + ctn_MATE_TERMINAL + " -e \'sh -c " + ftemp->fileName() + "'\"";
+      m_process->start(cmd);
+    }
+    else if (m_selectedTerminal == ctn_CINNAMON_TERMINAL){
+      cmd = suCommand + " \"" + ctn_CINNAMON_TERMINAL + " -e \'bash -c " + ftemp->fileName() + "'\"";
       m_process->start(cmd);
     }
     else if (m_selectedTerminal == ctn_LXQT_TERMINAL){
-      QString cmd = suCommand + " \"" + ctn_LXQT_TERMINAL + " -e \'sh -c " + ftemp->fileName() + "'\"";
+      cmd = suCommand + " \"" + ctn_LXQT_TERMINAL + " -e \'sh -c " + ftemp->fileName() + "'\"";
       m_process->start(cmd);
     }
     else if (m_selectedTerminal == ctn_XTERM){
-      QString cmd = suCommand + " \"" + ctn_XTERM +
+      cmd = suCommand + " \"" + ctn_XTERM +
           " -fn \"*-fixed-*-*-*-18-*\" -fg White -bg Black -title xterm -e \'sh -c " + ftemp->fileName() + "'\"";
       m_process->start(cmd);
     }
@@ -525,6 +527,9 @@ void Terminal::runCommandInTerminalAsNormalUser(const QStringList &commandList)
     else if (WMHelper::isLXQTRunning() && UnixCommand::hasTheExecutable(ctn_LXQT_TERMINAL)){
       cmd = ctn_LXQT_TERMINAL + " -e sh -c " + ftemp->fileName();
     }
+    else if (WMHelper::isCinnamonRunning() && UnixCommand::hasTheExecutable(ctn_CINNAMON_TERMINAL)){
+      cmd = ctn_CINNAMON_TERMINAL + " -e " + ftemp->fileName();
+    }
     else if (UnixCommand::hasTheExecutable(ctn_PEK_TERMINAL)){
       cmd = ctn_PEK_TERMINAL + " -e " + ftemp->fileName();
     }
@@ -575,6 +580,9 @@ void Terminal::runCommandInTerminalAsNormalUser(const QStringList &commandList)
     }
     else if (m_selectedTerminal == ctn_MATE_TERMINAL){
       cmd = ctn_MATE_TERMINAL + " -e " + ftemp->fileName();
+    }
+    else if (m_selectedTerminal == ctn_CINNAMON_TERMINAL){
+      cmd = ctn_CINNAMON_TERMINAL + " -e " + ftemp->fileName();
     }
     else if (m_selectedTerminal == ctn_LXQT_TERMINAL){
       cmd = ctn_LXQT_TERMINAL + " -e sh -c " + ftemp->fileName();
