@@ -1042,7 +1042,7 @@ LinuxDistro UnixCommand::getLinuxDistro()
 
       QString contents = file.readAll();
 
-      if (contents.contains(QRegExp("Void Linux")))
+      if (contents.contains("PRETTY_NAME=\"void\""))
       {
         ret = ectn_VOID;
       }
