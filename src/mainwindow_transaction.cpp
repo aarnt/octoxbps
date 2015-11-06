@@ -819,10 +819,6 @@ void MainWindow::doSystemUpgrade(SystemUpgradeOptions systemUpgradeOptions)
                        "\n\n" + StrConstants::getTotalDownloadSize().arg(ds).remove(" KB"));
 
     question.setWindowTitle(StrConstants::getConfirmation());
-
-    //IMPORTANT: Let's have the YES button out of "pkg upgrade" for the moment!
-    //question.removeYesButton();
-
     question.setInformativeText(StrConstants::getConfirmationQuestion());
     question.setDetailedText(list);
 
@@ -1993,7 +1989,11 @@ void MainWindow::writeToTabOutputExt(const QString &msg, TreatURLLinks treatURLL
     ensureTabVisible(ctn_TABINDEX_OUTPUT);
     positionTextEditCursorAtEnd();
 
-    if(newMsg.contains(QRegularExpression("<font color")))
+    if (newMsg.contains(QRegularExpression("\\d downloaded, \\d installed, \\d updated, \\d configured, \\d removed")))
+    {
+      newMsg = "<b>" + newMsg + "</b>";
+    }
+    else if(newMsg.contains(QRegularExpression("<font color")))
     {
       newMsg += "<br>";
     }

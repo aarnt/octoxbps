@@ -344,53 +344,28 @@ TransactionInfo Package::getTargetUpgradeList(const QString &pkgName)
   QString targets = UnixCommand::getTargetUpgradeList(pkgName);
   QString pkg;
   QStringList infoTuples = targets.split(QRegularExpression("\\n"), QString::SkipEmptyParts);
-  QStringList downloadSizes;
   TransactionInfo res;
   res.packages = new QStringList();
-  int pos, space;
-
-  foreach(QString infoTuple, infoTuples)
-  {
-    pos = infoTuple.indexOf("update");
-    if (pos == -1)
-    {
-      pos = infoTuple.indexOf("install");
-    }
-
-    if (pos != -1) //We are dealing with packages HERE!
-    {
-      space = infoTuple.indexOf(" ");
-      if (space != -1)
-      {
-        pkg = infoTuple.left(space);
-        pos = pkg.lastIndexOf("-");
-        pkg = pkg.left(pos);
-        res.packages->append(pkg);
-        downloadSizes.append(getRemoteFilenameSize(pkg));
-      }
-    }
-  }
-
+  int pos;
   QString strSum;
   double number;
   double sum;
 
-  //Let's sum up the download sizes of all packages
-  foreach (QString ds, downloadSizes)
+  foreach(QString infoTuple, infoTuples)
   {
-    if (ds.indexOf("MB") != -1)
-    {
-      ds = ds.remove("MB").trimmed();
-      number = ds.toDouble() * 1024;
+    QStringList t = infoTuple.split(" ");
+    pkg = t.at(0);
+    pos = pkg.lastIndexOf("-");
+    pkg = pkg.left(pos);
+    res.packages->append(pkg);
+
+    if (t.size() == 5){
+      QString ds = t.at(4);
+      number = ds.toDouble() / 1024;
     }
-    else if (ds.indexOf("KB") != -1)
-    {
-      ds = ds.remove("KB").trimmed();
-      number = ds.toDouble();
-    }
-    else if (ds.indexOf("B") != -1)
-    {
-      ds = ds.remove("B").trimmed();
+
+    if (t.size() == 6){
+      QString ds = t.at(5);
       number = ds.toDouble() / 1024;
     }
 
