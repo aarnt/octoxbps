@@ -1974,6 +1974,7 @@ void MainWindow::writeToTabOutputExt(const QString &msg, TreatURLLinks treatURLL
         msg.indexOf("Proceed with", Qt::CaseInsensitive) == 0 ||
         msg.indexOf("%") != -1 ||
         msg.indexOf("---") != -1 ||
+        msg.indexOf("removed obsolete entry") != -1 ||
         msg.indexOf("avg rate") != -1)
     {
       return;
