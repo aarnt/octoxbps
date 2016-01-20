@@ -1990,7 +1990,7 @@ void MainWindow::writeToTabOutputExt(const QString &msg, TreatURLLinks treatURLL
     ensureTabVisible(ctn_TABINDEX_OUTPUT);
     positionTextEditCursorAtEnd();
 
-    if (newMsg.contains(QRegularExpression("\\d downloaded, \\d installed, \\d updated, \\d configured, \\d removed")))
+    if (newMsg.contains(QRegularExpression("\\d+ downloaded, \\d+ installed, \\d+ updated, \\d+ configured, \\d+ removed")))
     {
       newMsg = "<b>" + newMsg + "</b>";
     }
