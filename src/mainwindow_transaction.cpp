@@ -1807,6 +1807,7 @@ void MainWindow::parseXBPSProcessOutput(const QString &pMsg)
     msg.remove(QRegularExpression("Fontconfig warning.+"));
     msg.remove(QRegularExpression("reading configurations from.+"));
     msg.remove(QRegularExpression(".+annot load library.+"));
+    msg.remove(QRegularExpression("pci id for fd \\d+.+"));
 
     //Gksu buggy strings
     msg.remove(QRegularExpression("you should recompile libgtop and dependent applications.+"));

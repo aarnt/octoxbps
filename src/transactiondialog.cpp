@@ -44,7 +44,6 @@ TransactionDialog::TransactionDialog(QWidget* parent) :
 
   QPushButton *yesButton = ui->buttonBox->button(QDialogButtonBox::Yes);
   QPushButton *noButton = ui->buttonBox->button(QDialogButtonBox::No);
-
   noButton->setFocus();
 
   connect(m_runInTerminalButton, SIGNAL(clicked()), this,
@@ -54,6 +53,11 @@ TransactionDialog::TransactionDialog(QWidget* parent) :
 
   setWindowFlags(Qt::MSWindowsFixedSizeDialogHint | Qt::Dialog |
                  Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint);
+
+  if (WMHelper::getSUCommand().contains(ctn_LXQTSU))
+  {
+    removeRunInTerminalButton();
+  }
 }
 
 void TransactionDialog::setText(const QString text)
@@ -84,6 +88,11 @@ void TransactionDialog::removeYesButton()
 {
   QPushButton *yesButton = ui->buttonBox->button(QDialogButtonBox::Yes);
   ui->buttonBox->removeButton(yesButton);
+}
+
+void TransactionDialog::removeRunInTerminalButton()
+{
+  ui->buttonBox->removeButton(m_runInTerminalButton);
 }
 
 void TransactionDialog::reject()

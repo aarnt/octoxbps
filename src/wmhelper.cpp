@@ -272,6 +272,16 @@ QString WMHelper::getGKSUCommand(){
 }
 
 /*
+ * Retrieves the LXQTSU command...
+ */
+QString WMHelper::getLXQTSUCommand(){
+  QString result = ctn_LXQTSU;
+  result += " -s ";
+
+  return result;
+}
+
+/*
  * The generic SU get method. It retrieves the SU you have installed in your system!
  */
 QString WMHelper::getSUCommand(){
@@ -286,6 +296,9 @@ QString WMHelper::getSUCommand(){
   else if (isTDERunning() && UnixCommand::hasTheExecutable(ctn_TDESU)){
     result = getTDESUCommand();
   }
+  else if (UnixCommand::hasTheExecutable(ctn_LXQTSU)){
+    result = getLXQTSUCommand();
+  }
   else if (UnixCommand::hasTheExecutable(ctn_GKSU_2)){
     result = getGKSUCommand();
   }
@@ -294,7 +307,7 @@ QString WMHelper::getSUCommand(){
   }
   else if (UnixCommand::hasTheExecutable(ctn_TDESU)){
     result = getTDESUCommand();
-  }
+  } 
 
   return result;
 }
@@ -529,6 +542,7 @@ void WMHelper::openDirectory( const QString& dirName ){
 void WMHelper::openTerminal(const QString& dirName)
 {
   QFileInfo f(dirName);
+
   if (f.exists())
   {
     Terminal *term = new Terminal(0, SettingsManager::getTerminal());

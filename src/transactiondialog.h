@@ -37,8 +37,8 @@ public:
   void setText(const QString text);
   void setInformativeText(const QString text);
   void setDetailedText(const QString detailedtext);
-
   void removeYesButton();
+  void removeRunInTerminalButton();
 
 public slots:
   virtual void reject();

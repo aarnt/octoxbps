@@ -5,6 +5,7 @@
   Now Transaction dialog saves its size between calls.
   Now pkg list shows non installed packages.
   Added Search by description option in menu.
+  Added support for lxqt-sudo (but it removes "run in terminal mode").
 
 0.1.0 
   Initial Proof of Concept release.

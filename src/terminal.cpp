@@ -243,7 +243,7 @@ void Terminal::openRootTerminal()
     }
     else if (WMHelper::isLXQTRunning() && UnixCommand::hasTheExecutable(ctn_LXQT_TERMINAL)){
       QString cmd = WMHelper::getSUCommand() + " \"" + ctn_LXQT_TERMINAL + "\"";
-      m_process->startDetached(cmd);
+      m_process->start(cmd);
     }
     else if (WMHelper::isMATERunning() && UnixCommand::hasTheExecutable(ctn_MATE_TERMINAL)){
       QString cmd = WMHelper::getSUCommand() + " \"" + ctn_MATE_TERMINAL + "\"";
