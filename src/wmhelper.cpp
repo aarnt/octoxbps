@@ -296,9 +296,6 @@ QString WMHelper::getSUCommand(){
   else if (isTDERunning() && UnixCommand::hasTheExecutable(ctn_TDESU)){
     result = getTDESUCommand();
   }
-  else if (UnixCommand::hasTheExecutable(ctn_LXQTSU)){
-    result = getLXQTSUCommand();
-  }
   else if (UnixCommand::hasTheExecutable(ctn_GKSU_2)){
     result = getGKSUCommand();
   }
@@ -308,6 +305,9 @@ QString WMHelper::getSUCommand(){
   else if (UnixCommand::hasTheExecutable(ctn_TDESU)){
     result = getTDESUCommand();
   } 
+  else if (UnixCommand::hasTheExecutable(ctn_LXQTSU)){
+    result = getLXQTSUCommand();
+  }
 
   return result;
 }
