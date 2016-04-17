@@ -1,5 +1,5 @@
 /*
-* This file is part of OctoPkp, an open-source GUI for XBPS.
+* This file is part of OctoXBPS, an open-source GUI for XBPS.
 * Copyright (C) 2015 Alexandre Albuquerque Arnt
 *
 * This program is free software; you can redistribute it and/or modify
@@ -219,6 +219,8 @@ void MainWindow::keyPressEvent(QKeyEvent* ke)
   }
   else if(ke->key() == Qt::Key_F && ke->modifiers() == Qt::ControlModifier)
   {
+    if (m_commandExecuting != ectn_NONE) return;
+
     if (isPropertiesTabWidgetVisible() &&
         (ui->twProperties->currentIndex() == ctn_TABINDEX_INFORMATION ||
          ui->twProperties->currentIndex() == ctn_TABINDEX_OUTPUT ||
@@ -259,10 +261,10 @@ void MainWindow::keyPressEvent(QKeyEvent* ke)
   }
   else if(ke->key() == Qt::Key_C && ke->modifiers() == (Qt::ShiftModifier|Qt::ControlModifier))
   {
-    if (m_commandExecuting == ectn_NONE)
+    /*if (m_commandExecuting == ectn_NONE)
     {
       doCleanCache(); //If we are not executing any command, let's clean the cache
-    }
+    }*/
   }
   else if(ke->key() == Qt::Key_R && ke->modifiers() == (Qt::ShiftModifier|Qt::ControlModifier))
   {
@@ -273,7 +275,9 @@ void MainWindow::keyPressEvent(QKeyEvent* ke)
   } 
   else if(ke->key() == Qt::Key_T && ke->modifiers() == (Qt::ShiftModifier|Qt::ControlModifier)
           && m_initializationCompleted)
-  {
+  {   
+    if (m_commandExecuting != ectn_NONE) return;
+
     QStringList terminals = Terminal::getListOfAvailableTerminals();
 
     if (terminals.count() > 2)
