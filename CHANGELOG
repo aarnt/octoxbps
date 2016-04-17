@@ -1,9 +1,9 @@
 0.2.0
   BugFix: Block some events while executing a transaction.
   BugFix in parser code.
-  BugFix in tab Files retrieve.
-  Now tab Files shows progress bar.
-  Now Transaction dialog saves its size between calls.
+  BugFix in Files tab retrieve.
+  Now Files tab shows progress bar.
+  Faster Transaction dialog and it saves its size between calls.
   Now pkg list shows non installed packages.
   Added Search by description option in menu.
   Added support for lxqt-sudo (but it removes "run in terminal mode").
