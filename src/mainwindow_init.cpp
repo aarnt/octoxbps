@@ -302,12 +302,11 @@ void MainWindow::initToolBar()
   m_dummyAction->setVisible(false);
   ui->mainToolBar->addAction(m_dummyAction);
   m_leFilterPackage->setMinimumHeight(24);
+  m_leFilterPackage->setPlaceholderText(StrConstants::getLineEditTextLocal() + "  (Ctrl+L)");
   ui->mainToolBar->addWidget(m_leFilterPackage);
   ui->mainToolBar->toggleViewAction()->setEnabled(false);
   ui->mainToolBar->toggleViewAction()->setVisible(false);
   ui->mainToolBar->setStyleSheet(StrConstants::getToolBarCSS());
-
-  m_leFilterPackage->setPlaceholderText(StrConstants::getLineEditTextLocal());
 
 #ifdef UNIFIED_SEARCH
   m_separatorForActionRemoteSearch->setVisible(false);
@@ -770,6 +769,11 @@ void MainWindow::initActions()
   {
     text = ac->text().remove("&");
     ac->setText(qApp->translate("MainWindow", text.toUtf8(), 0));
+
+    if (!ac->shortcut().isEmpty())
+    {
+      ac->setToolTip(ac->toolTip() + "  (" + ac->shortcut().toString() + ")");
+    }
   }
 
   ui->actionInstallLocalPackage->setVisible(false);

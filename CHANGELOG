@@ -6,6 +6,7 @@
   Now Files tab shows progress bar.
   Faster Transaction dialog and it saves its size between calls.
   Now pkg list shows non installed packages.
+  Added shortcut text to all button tooltips.
   Added 'xbps-remove -O' for cache clean in XBPS.
   Added dependencies list for non installed pkgs.
   Added Search by description option in menu.
