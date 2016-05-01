@@ -2,9 +2,11 @@
   BugFix: Block some events while executing a transaction.
   BugFix in parser code.
   BugFix in Files tab retrieve.
+  BugFix in 'edit' context menu.
   Now Files tab shows progress bar.
   Faster Transaction dialog and it saves its size between calls.
   Now pkg list shows non installed packages.
+  Added 'xbps-remove -O' for cache clean in XBPS.
   Added Search by description option in menu.
   Added support for lxqt-sudo (but it removes "run in terminal mode").
 

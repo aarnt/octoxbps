@@ -76,7 +76,7 @@ const QString ctn_LXQT_FILE_MANAGER("pcmanfm-qt");
 const QString ctn_LXQT_EDITOR("juffed");
 
 const QString ctn_MATE_DESKTOP("mate-session");
-const QString ctn_MATE_EDITOR("mate-open");
+const QString ctn_MATE_EDITOR("pluma");
 const QString ctn_MATE_FILE_MANAGER("caja");
 const QString ctn_MATE_TERMINAL("mate-terminal");
 

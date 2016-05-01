@@ -261,10 +261,10 @@ void MainWindow::keyPressEvent(QKeyEvent* ke)
   }
   else if(ke->key() == Qt::Key_C && ke->modifiers() == (Qt::ShiftModifier|Qt::ControlModifier))
   {
-    /*if (m_commandExecuting == ectn_NONE)
+    if (m_commandExecuting == ectn_NONE)
     {
       doCleanCache(); //If we are not executing any command, let's clean the cache
-    }*/
+    }
   }
   else if(ke->key() == Qt::Key_R && ke->modifiers() == (Qt::ShiftModifier|Qt::ControlModifier))
   {

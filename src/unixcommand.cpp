@@ -120,7 +120,7 @@ QString UnixCommand::discoverBinaryPath(const QString& binary){
 bool UnixCommand::cleanPacmanCache()
 {
   QProcess pacman;
-  QString commandStr = "\"yes | pacman -Scc\"";
+  QString commandStr = "\"xbps-remove -O\"";
 
   QString command = WMHelper::getSUCommand() + " " + commandStr;
   pacman.start(command);
@@ -158,8 +158,9 @@ QByteArray UnixCommand::performQuery(const QString &args)
 {
   QByteArray result("");
   QProcess pacman;
-
   QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+  env.remove("COLUMNS");
+  env.insert("COLUMNS", "170");
   env.insert("LANG", "C");
   env.insert("LC_MESSAGES", "C");
   env.insert("LC_ALL", "C");
@@ -168,7 +169,6 @@ QByteArray UnixCommand::performQuery(const QString &args)
   pacman.start("xbps-" + args);
   pacman.waitForFinished();
   result = pacman.readAllStandardOutput();
-
   pacman.close();
   return result;
 }

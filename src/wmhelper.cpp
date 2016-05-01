@@ -252,7 +252,6 @@ QString WMHelper::getQSUDOCommand()
  */
 QString WMHelper::getTDESUCommand(){
   QString result = ctn_TDESU;
-
   result += " -d ";
   result += " -t ";
   result += " --noignorebutton ";
@@ -342,7 +341,6 @@ void WMHelper::openFile(const QString& fileName){
   QProcess *p = new QProcess(qApp->activeWindow());
   QStringList s;
 
-  //BSDFlavour distro = UnixCommand::getBSDFlavour();
   if (isXFCERunning() && UnixCommand::hasTheExecutable(ctn_XFCE_FILE_MANAGER)){
     s << fileToOpen;
     p->startDetached( ctn_XFCE_FILE_MANAGER, s );
@@ -369,13 +367,13 @@ void WMHelper::openFile(const QString& fileName){
     s << "file:" + fileToOpen;
     p->startDetached( ctn_TDE_FILE_MANAGER, s );
   }
-  else if (isMATERunning() && UnixCommand::hasTheExecutable(ctn_MATE_EDITOR)){
+  else if (isMATERunning() && UnixCommand::hasTheExecutable(ctn_MATE_FILE_MANAGER)){
     s << fileToOpen;
-    p->startDetached( ctn_MATE_EDITOR, s );
+    p->startDetached( ctn_MATE_FILE_MANAGER, s );
   }
-  else if (isCinnamonRunning() && UnixCommand::hasTheExecutable(ctn_CINNAMON_EDITOR)){
+  else if (isCinnamonRunning() && UnixCommand::hasTheExecutable(ctn_CINNAMON_FILE_MANAGER)){
     s << fileToOpen;
-    p->startDetached( ctn_CINNAMON_EDITOR, s );
+    p->startDetached( ctn_CINNAMON_FILE_MANAGER, s );
   }
   else if (isLXQTRunning() && UnixCommand::hasTheExecutable(ctn_LXQT_FILE_MANAGER)){
     s << fileToOpen;
