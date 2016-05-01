@@ -1175,9 +1175,7 @@ QStringList Package::getContents(const QString& pkgName, bool isInstalled)
   fileList = fileList + auxList;
   fileList.sort();
 
-
-
-  return fileList; //rsl;
+  return fileList;
 }
 
 /*
