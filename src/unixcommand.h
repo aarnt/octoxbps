@@ -89,6 +89,7 @@ public:
   static QByteArray getOutdatedAURPackageList();
   static QByteArray getForeignPackageList();
   static QByteArray getDependenciesList(const QString &pkgName);
+  static QByteArray getRemoteDependenciesList(const QString &pkgName);
   static QByteArray getPackageList(const QString &pkgName = "");
   static QByteArray getPackageInformation(const QString &pkgName, bool foreignPackage);
   static QByteArray getAURPackageVersionInformation();
@@ -149,7 +150,6 @@ public:
 
   static void execCommandAsNormalUser(const QString &pCommand);
   static void execCommand(const QString &pCommand);
-
   static QByteArray getCommandOutput(const QString &pCommand);
 
   void executeCommand(const QString &pCommand, Language lang=ectn_LANG_ENGLISH);

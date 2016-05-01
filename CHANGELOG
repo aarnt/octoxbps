@@ -7,6 +7,7 @@
   Faster Transaction dialog and it saves its size between calls.
   Now pkg list shows non installed packages.
   Added 'xbps-remove -O' for cache clean in XBPS.
+  Added dependencies list for non installed pkgs.
   Added Search by description option in menu.
   Added support for lxqt-sudo (but it removes "run in terminal mode").
 

@@ -94,7 +94,6 @@ QString UnixCommand::discoverBinaryPath(const QString& binary){
   env.insert("LANG", "C");
   env.insert("LC_MESSAGES", "C");
   proc.setProcessEnvironment(env);
-
   proc.start("/usr/local/bin/bash -c \"which " + binary + "\"");
   proc.waitForFinished();
   QString res = proc.readAllStandardOutput();
@@ -258,11 +257,20 @@ QByteArray UnixCommand::getForeignPackageList()
 }
 
 /*
- * Retrieves the dependencies pkg list with 'pkg query %dn' command
+ * Retrieves the dependencies pkg list
  */
 QByteArray UnixCommand::getDependenciesList(const QString &pkgName)
 {
   QByteArray result = performQuery("query -x " + pkgName);
+  return result;
+}
+
+/*
+ * Retrieves the remote dependencies pkg list
+ */
+QByteArray UnixCommand::getRemoteDependenciesList(const QString &pkgName)
+{
+  QByteArray result = performQuery("query -Rx " + pkgName);
   return result;
 }
 

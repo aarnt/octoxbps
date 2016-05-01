@@ -184,7 +184,9 @@ class Package{
     static double getDownloadSizeDescription(const QString &pkgName);
     static QString getInformationDescription(const QString &pkgName, bool foreignPackage = false);
     static QString getInformationInstalledSize(const QString &pkgName, bool foreignPackage = false);
+    static QString formatDependencies(const QString &dependenciesList, PackageAnchor pkgAnchorState = ectn_WITH_PACKAGE_ANCHOR);
     static QString getDependencies(const QString &pkgName, PackageAnchor pkgAnchorState = ectn_WITH_PACKAGE_ANCHOR);
+    static QString getRemoteDependencies(const QString &pkgName, PackageAnchor pkgAnchorState = ectn_WITH_PACKAGE_ANCHOR);
     static QStringList getContents(const QString &pkgName, bool isInstalled);
     static QStringList getOptionalDeps(const QString &pkgName);
     static QString getName(const QString &pkgInfo);

@@ -1080,16 +1080,16 @@ QString Package::getInformationInstalledSize(const QString &pkgName, bool foreig
   return kbytesToSize(getInstalledSize(pkgInfo));
 }
 
+
 /*
- * Retrieves the dependencies list of packages for the given pkgName
+ * Format dependencies list
  */
-QString Package::getDependencies(const QString &pkgName, PackageAnchor pkgAnchorState)
+QString Package::formatDependencies(const QString &dependenciesList, PackageAnchor pkgAnchorState)
 {
   QStringList pkgList;
   QString res;
 
-  QString aux = UnixCommand::getDependenciesList(pkgName);
-  pkgList = aux.split("\n", QString::SkipEmptyParts);
+  pkgList = dependenciesList.split("\n", QString::SkipEmptyParts);
   pkgList.sort();
 
   foreach(QString dependency, pkgList)
@@ -1101,6 +1101,27 @@ QString Package::getDependencies(const QString &pkgName, PackageAnchor pkgAnchor
   }
 
   return res.trimmed();
+}
+
+
+/*
+ * Retrieves the dependencies list of packages for the given pkgName
+ */
+QString Package::getDependencies(const QString &pkgName, PackageAnchor pkgAnchorState)
+{
+  QString aux = UnixCommand::getDependenciesList(pkgName);
+
+  return formatDependencies(aux, pkgAnchorState);
+}
+
+/*
+ * Retrieves the dependencies list of packages for the given remote pkgName
+ */
+QString Package::getRemoteDependencies(const QString &pkgName, PackageAnchor pkgAnchorState)
+{
+  QString aux = UnixCommand::getRemoteDependenciesList(pkgName);
+
+  return formatDependencies(aux, pkgAnchorState);
 }
 
 /*

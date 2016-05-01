@@ -53,7 +53,7 @@ QString OctopiTabInfo::formatTabInfo(const PackageRepository::PackageData& packa
   QString downloadSize = StrConstants::getDownloadSize();
   QString installedSize = StrConstants::getInstalledSize();
   QString maintainer = StrConstants::getMaintainer();
-  QString architecture = StrConstants::getArchitecture();
+  //QString architecture = StrConstants::getArchitecture();
   QString installedOn = StrConstants::getInstalledOn();
   QString options = StrConstants::getOptions();
   QString dependencies = StrConstants::getDependencies();
@@ -154,12 +154,19 @@ QString OctopiTabInfo::formatTabInfo(const PackageRepository::PackageData& packa
   if (!packagerName.isEmpty())
     html += "<tr><td>" + maintainer + "</td><td>" + packagerName + "</td></tr>";
 
-  if (!pid.arch.isEmpty())
-    html += "<tr><td>" + architecture + "</td><td>" + pid.arch + "</td></tr>";
+  /*if (!pid.arch.isEmpty())
+    html += "<tr><td>" + architecture + "</td><td>" + pid.arch + "</td></tr>";*/
 
   QString dependenciesList = Package::getDependencies(package.name);
   if ( !dependenciesList.isEmpty())
   {
+    html += "<br><tr><td>" + dependencies + "</td><td>" + dependenciesList + "</td></tr>";
+    if (! pid.options.isEmpty()) html += "<br>";
+  }
+  //We have to get dependencies list for remote pkg
+  else
+  {
+    dependenciesList = Package::getRemoteDependencies(package.name);
     html += "<br><tr><td>" + dependencies + "</td><td>" + dependenciesList + "</td></tr>";
     if (! pid.options.isEmpty()) html += "<br>";
   }
