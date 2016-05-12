@@ -1557,23 +1557,11 @@ void MainWindow::actionsProcessFinished(int exitCode, QProcess::ExitStatus exitS
           connect(this, SIGNAL(buildPackageListDone()), this, SLOT(resetTransaction()));
         }
       }
-      else
+      else //For any other command...
       {
-        if (isRemoteSearchSelected())
-        {
-          //bRefreshGroups = false;
-          m_leFilterPackage->clear();
-          m_actionSwitchToRemoteSearch->setChecked(false);          
-          m_actionSwitchToLocalFilter->setChecked(true);
-          m_commandExecuting = ectn_LOCAL_PKG_REFRESH;
-          remoteSearchClicked();
-        }
-        else
-        {
-          m_leFilterPackage->clear();
-          metaBuildPackageList();
-          connect(this, SIGNAL(buildPackageListDone()), this, SLOT(resetTransaction()));
-        }
+        m_leFilterPackage->clear();
+        metaBuildPackageList();
+        connect(this, SIGNAL(buildPackageListDone()), this, SLOT(resetTransaction()));
       }
     }
   }
@@ -1590,11 +1578,8 @@ void MainWindow::actionsProcessFinished(int exitCode, QProcess::ExitStatus exitS
 void MainWindow::resetTransaction()
 {
   enableTransactionActions();
-  //if (m_commandExecuting != ectn_MIRROR_CHECK && bRefreshGroups)
-  //  refreshGroupsWidget();
   m_unixCommand->removeTemporaryFile();
   delete m_unixCommand;
-
   m_commandExecuting = ectn_NONE;
   disconnect(this, SIGNAL(buildPackageListDone()), this, SLOT(resetTransaction()));
 }
@@ -1826,7 +1811,6 @@ void MainWindow::parseXBPSProcessOutput(const QString &pMsg)
     {
       int rp = msg.indexOf(")");
       if (rp == -1) return; //Guard!
-
       order = msg.left(rp+2);
       msg = msg.remove(0, rp+2);
     }
