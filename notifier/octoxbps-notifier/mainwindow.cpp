@@ -1,5 +1,5 @@
 /*
-* This file is part of OctoXBPS, an open-source GUI for pacman.
+* This file is part of OctoXBPS, an open-source GUI for XBPS.
 * Copyright (C) 2015 Alexandre Albuquerque Arnt
 *
 * This program is free software; you can redistribute it and/or modify
