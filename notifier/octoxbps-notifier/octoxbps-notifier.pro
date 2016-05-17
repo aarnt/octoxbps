@@ -10,7 +10,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += qt console warn_on debug
 QMAKE_CXXFLAGS += -std=c++11
-TARGET = octopi-notifier
+TARGET = octoxbps-notifier
 TEMPLATE = app
 DESTDIR += ../bin
 OBJECTS_DIR += ../build-octoxbps-notifier

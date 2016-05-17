@@ -890,7 +890,9 @@ bool UnixCommand::isAppRunning(const QString &appName, bool justOneInstance)
   QProcess proc;
 
   slParam << "-C";
-  slParam << appName;
+  //ps only works with 15 char process names
+  QString app = appName.left(15);
+  slParam << app;
   proc.start("ps", slParam);
   proc.waitForFinished();
 
@@ -899,14 +901,14 @@ bool UnixCommand::isAppRunning(const QString &appName, bool justOneInstance)
 
   if (justOneInstance)
   {
-    if (out.count(appName)>0)
+    if (out.count(app)>0)
       return true;
     else
       return false;
   }
   else
   {
-    if (out.count(appName)>1)
+    if (out.count(app)>1)
       return true;
     else
       return false;
