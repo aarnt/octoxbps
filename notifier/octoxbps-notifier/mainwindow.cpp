@@ -101,11 +101,11 @@ void MainWindow::initSystemTrayIcon()
 
   m_actionAbout = new QAction(StrConstants::getHelpAbout(), this);
   m_actionAbout->setIconVisibleInMenu(true);
-  connect(m_actionAbout, SIGNAL(triggered()), this, SLOT(aboutOctopiNotifier()));
+  connect(m_actionAbout, SIGNAL(triggered()), this, SLOT(aboutOctoXBPSNotifier()));
 
-  m_actionOctopi = new QAction(this);
-  m_actionOctopi->setText("OctoXBPS...");
-  connect(m_actionOctopi, SIGNAL(triggered()), this, SLOT(startOctopi()));
+  m_actionOctoXBPS = new QAction(this);
+  m_actionOctoXBPS->setText("OctoXBPS...");
+  connect(m_actionOctoXBPS, SIGNAL(triggered()), this, SLOT(startOctoXBPS()));
 
   m_actionSetInterval = new QAction(this);
   m_actionSetInterval->setText(StrConstants::getSetInterval());
@@ -121,12 +121,12 @@ void MainWindow::initSystemTrayIcon()
   m_actionSystemUpgrade->setIconVisibleInMenu(true);
   m_actionSystemUpgrade->setText(tr("System upgrade"));
   m_actionSystemUpgrade->setIcon(IconHelper::getIconSystemUpgrade());
-  connect(m_actionSystemUpgrade, SIGNAL(triggered()), this, SLOT(runOctopiSysUpgrade()));
+  connect(m_actionSystemUpgrade, SIGNAL(triggered()), this, SLOT(runOctoXBPSSysUpgrade()));
 
   m_systemTrayIconMenu = new QMenu( this );
 
   if (UnixCommand::hasTheExecutable("octoxbps"))
-    m_systemTrayIconMenu->addAction(m_actionOctopi);
+    m_systemTrayIconMenu->addAction(m_actionOctoXBPS);
 
   m_systemTrayIconMenu->addAction(m_actionSetInterval);
   m_systemTrayIconMenu->addAction(m_actionSyncDatabase);
@@ -235,17 +235,17 @@ void MainWindow::pacmanHelperTimerTimeout()
 }
 
 /*
- * Helper to a runOctopi with a call to SystemUpgrade
+ * Helper to a runOctoXBPS with a call to SystemUpgrade
  */
-void MainWindow::runOctopiSysUpgrade()
+void MainWindow::runOctoXBPSSysUpgrade()
 {
-  runOctopi(ectn_SYSUPGRADE_EXEC_OPT);
+  runOctoXBPS(ectn_SYSUPGRADE_EXEC_OPT);
 }
 
 /*
- * Shows Octopi About Dialog...
+ * Shows OctoXBPS About Dialog...
  */
-void MainWindow::aboutOctopiNotifier()
+void MainWindow::aboutOctoXBPSNotifier()
 {
   m_actionAbout->setEnabled(false);
 
@@ -264,9 +264,9 @@ void MainWindow::aboutOctopiNotifier()
 }
 
 /*
- * Hides Octopi
+ * Hides OctoXBPS
  */
-void MainWindow::hideOctopi()
+void MainWindow::hideOctoXBPS()
 {  
   QProcess::startDetached("octoxbps -hide");
 }
@@ -290,7 +290,7 @@ bool MainWindow::_isSUAvailable()
 }
 
 /*
- * Calls only the Octopi system upgrade window
+ * Calls only the OctoXBPS system upgrade window
  */
 void MainWindow::doSystemUpgrade()
 {
@@ -418,11 +418,11 @@ void MainWindow::doSystemUpgradeFinished()
 }
 
 /*
- * Enables and Disables some UI elements of Octopi-notifier
+ * Enables and Disables some UI elements of OctoXBPS-notifier
  */
 void MainWindow::toggleEnableInterface(bool state)
 {
-  m_actionOctopi->setEnabled(state);
+  m_actionOctoXBPS->setEnabled(state);
   m_actionSyncDatabase->setEnabled(state);
   m_actionSetInterval->setEnabled(state);
   m_actionExit->setEnabled(state);
@@ -470,7 +470,6 @@ void MainWindow::finishedPkexec(int)
                                         notification, m_systemTrayIcon->iconName());
         #else
           m_systemTrayIcon->setToolTip(notification);
-          //if (!UnixCommand::isAppRunning("spun", true)) sendNotification(notification);
         #endif
       }
       else if (m_numberOfOutdatedPackages > 1)
@@ -483,7 +482,6 @@ void MainWindow::finishedPkexec(int)
                                         notification, m_systemTrayIcon->iconName());
         #else
           m_systemTrayIcon->setToolTip(notification);
-          //if (!UnixCommand::isAppRunning("spun", true)) sendNotification(notification);
         #endif
       }
     }
@@ -502,7 +500,6 @@ void MainWindow::finishedPkexec(int)
                                       notification, m_systemTrayIcon->iconName());
       #else
         m_systemTrayIcon->setToolTip(notification);
-        //if (!UnixCommand::isAppRunning("spun", true)) sendNotification(notification);
       #endif
     }
     else if (numberOfOutdatedPackages > 1)
@@ -515,7 +512,6 @@ void MainWindow::finishedPkexec(int)
                                       notification, m_systemTrayIcon->iconName());
       #else
         m_systemTrayIcon->setToolTip(notification);
-        //if (!UnixCommand::isAppRunning("spun", true)) sendNotification(notification);
       #endif
     }
   }
@@ -724,11 +720,11 @@ void MainWindow::execSystemTrayActivated(QSystemTrayIcon::ActivationReason ar)
   {
     if (m_outdatedStringList->count() > 0)
     {
-      runOctopi(ectn_SYSUPGRADE_EXEC_OPT);
+      runOctoXBPS(ectn_SYSUPGRADE_EXEC_OPT);
     }
     else
     {
-      runOctopi(ectn_NORMAL_EXEC_OPT);
+      runOctoXBPS(ectn_NORMAL_EXEC_OPT);
     }
 
     break;
@@ -737,7 +733,7 @@ void MainWindow::execSystemTrayActivated(QSystemTrayIcon::ActivationReason ar)
   {
     if (UnixCommand::isAppRunning("octoxbps", true))
     {
-      hideOctopi();
+      hideOctoXBPS();
     }
 
     break;
@@ -751,16 +747,16 @@ void MainWindow::execSystemTrayActivated(QSystemTrayIcon::ActivationReason ar)
  */
 void MainWindow::execSystemTrayKF5()
 {
-  static bool hidingOctopi = true;
+  static bool hidingOctoXBPS = true;
 
   if (UnixCommand::isAppRunning("octoxbps", true))
   {
-    if (!hidingOctopi)
-      runOctopi(ectn_NORMAL_EXEC_OPT);
+    if (!hidingOctoXBPS)
+      runOctoXBPS(ectn_NORMAL_EXEC_OPT);
     else
-      hideOctopi();
+      hideOctoXBPS();
 
-    hidingOctopi = !hidingOctopi;
+    hidingOctoXBPS = !hidingOctoXBPS;
   }
 }
 
@@ -775,9 +771,9 @@ void MainWindow::exitNotifier()
 }
 
 /*
- * Execs Octopi
+ * Execs OctoXBPS
  */
-void MainWindow::runOctopi(ExecOpt execOptions)
+void MainWindow::runOctoXBPS(ExecOpt execOptions)
 {
   if (execOptions == ectn_SYSUPGRADE_NOCONFIRM_EXEC_OPT)
   {

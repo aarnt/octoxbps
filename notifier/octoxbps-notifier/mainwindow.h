@@ -34,7 +34,7 @@ class QIcon;
 class QMenu;
 class QAction;
 class QFileSystemWatcher;
-class PacmanHelperClient;
+//class PacmanHelperClient;
 class SetupDialog;
 class TransactionDialog;
 
@@ -58,18 +58,17 @@ private slots:
   void afterPacmanHelperSyncDatabase();
 
   void finishedPkexec(int);
-
   void execSystemTrayActivated(QSystemTrayIcon::ActivationReason);
   void execSystemTrayKF5();
 
   void syncDatabase();
   void refreshAppIcon();
-  void runOctopi(ExecOpt execOptions = ectn_SYSUPGRADE_EXEC_OPT);
-  void runOctopiSysUpgrade();  
+  void runOctoXBPS(ExecOpt execOptions = ectn_SYSUPGRADE_EXEC_OPT);
+  void runOctoXBPSSysUpgrade();
 
-  inline void startOctopi() { runOctopi(ectn_NORMAL_EXEC_OPT); }
-  void aboutOctopiNotifier();
-  void hideOctopi();
+  inline void startOctoXBPS() { runOctoXBPS(ectn_NORMAL_EXEC_OPT); }
+  void aboutOctoXBPSNotifier();
+  void hideOctoXBPS();
   void exitNotifier();
   void doSystemUpgrade();
   void doSystemUpgradeFinished();
@@ -86,7 +85,7 @@ private:
   CommandExecuting m_commandExecuting;
   UnixCommand *m_unixCommand;
 
-  QAction *m_actionOctopi;
+  QAction *m_actionOctoXBPS;
   QAction *m_actionSetInterval;
   QAction *m_actionSyncDatabase;
   QAction *m_actionSystemUpgrade;
@@ -95,7 +94,6 @@ private:
 
   QIcon m_icon;
   QMap<QString, OutdatedPackageInfo> *m_outdatedStringList;
-  //QStringList *m_outdatedAURStringList;
   QTimer *m_pacmanHelperTimer;
   bool m_debugInfo;
 
@@ -107,7 +105,7 @@ private:
 
   QMenu *m_systemTrayIconMenu;
   QFileSystemWatcher *m_pacmanDatabaseSystemWatcher;
-  PacmanHelperClient *m_pacmanHelperClient;
+  //PacmanHelperClient *m_pacmanHelperClient;
 
   bool _isSUAvailable();
   void initSystemTrayIcon();
