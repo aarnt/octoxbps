@@ -58,7 +58,7 @@ void MainWindow::refreshDistroNews(bool searchForLatestNews, bool gotoNewsTab)
 
     if (gotoNewsTab && distro == ectn_VOID)
     {
-      writeToTabOutputExt("<b>" +
+      writeToTabOutput("<b>" +
                           StrConstants::getSearchingForBSDNews().arg("Void Linux") + "</b>");
     }
 

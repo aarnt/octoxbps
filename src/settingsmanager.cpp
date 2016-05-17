@@ -103,9 +103,9 @@ int SettingsManager::getSyncDbInterval()
     p_instance.getSYSsettings()->setValue(ctn_KEY_SYNC_DB_INTERVAL, n);
     p_instance.getSYSsettings()->sync();
   }
-  else if (n > 1380)
+  else if (n > 44640)
   {
-    n = 1380; //This is 23 hours, the maximum allowed!
+    n = 44640; //This is 1 month, the maximum allowed!
     p_instance.getSYSsettings()->setValue(ctn_KEY_SYNC_DB_INTERVAL, n);
     p_instance.getSYSsettings()->sync();
   }

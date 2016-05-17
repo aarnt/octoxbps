@@ -615,7 +615,7 @@ public:
   }
 
   static QString getOnceEveryDesc(){
-    return QObject::tr("(value in minutes: 5 to 1380)");
+    return QObject::tr("(value in minutes: %1 to %2)");
   }
 
   static QString getSetInterval(){

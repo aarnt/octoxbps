@@ -26,6 +26,11 @@
 #include <QStandardItemModel>
 #include <QModelIndex>
 #include <QProcess>
+#include "constants.h"
+
+class QTextEdit;
+class QTextBrowser;
+class SearchBar;
 
 namespace utils{
 
@@ -59,6 +64,23 @@ QString showFullPathOfItem( const QModelIndex &index );
 QList<QModelIndex> * findFileInTreeView( const QString& name, const QStandardItemModel *sim);
 QString retrieveDistroNews(bool searchForLatestNews);
 QString parseDistroNews();
+
+//QTextBrowser related
+bool strInQTextEdit(QTextBrowser *text, const QString& findText);
+void positionTextEditCursorAtEnd(QTextEdit *textEdit);
+void writeToTextBrowser(QTextBrowser* text, const QString &str, TreatURLLinks treatURLLinks = ectn_TREAT_URL_LINK);
+
+//SearchBar related
+void positionInFirstMatch(QTextBrowser *tb, SearchBar *sb);
+void searchBarTextChangedInTextBrowser(QTextBrowser *tb, SearchBar *sb, const QString textToSearch);
+void searchBarFindNextInTextBrowser(QTextBrowser *tb, SearchBar *sb);
+void searchBarFindPreviousInTextBrowser(QTextBrowser *tb, SearchBar *sb);
+void searchBarClosedInTextBrowser(QTextBrowser *tb, SearchBar *sb);
+
+//QDialog related
+#if QT_VERSION >= 0x050000
+  void positionWindowAtScreenCenter(QWidget *w);
+#endif
 
 } //namespace utils
 

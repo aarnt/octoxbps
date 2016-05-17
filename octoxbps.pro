@@ -35,7 +35,9 @@ HEADERS += src/QtSolutions/qtsingleapplication.h \
         src/ui/octopitabinfo.h \
         src/utils.h \
         src/terminal.h \
-        src/terminalselectordialog.h
+        src/terminalselectordialog.h \
+        src/constants.h \
+        src/xbpsexec.h
 
 SOURCES += src/QtSolutions/qtsingleapplication.cpp \
         src/QtSolutions/qtlocalpeer.cpp \
@@ -64,7 +66,8 @@ SOURCES += src/QtSolutions/qtsingleapplication.cpp \
         src/ui/octopitabinfo.cpp \
         src/utils.cpp \
         src/terminal.cpp \
-        src/terminalselectordialog.cpp
+        src/terminalselectordialog.cpp \
+        src/xbpsexec.cpp
 
 FORMS   += ui/mainwindow.ui \
         ui/transactiondialog.ui \

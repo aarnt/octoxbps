@@ -20,10 +20,10 @@
 
 #ifndef WMHELPER_H
 #define WMHELPER_H
-
+#include "constants.h"
 #include <QString>
 
-const QString ctn_NO_SU_COMMAND("none");
+/*const QString ctn_NO_SU_COMMAND("none");
 const QString ctn_ROOT_SH("/bin/sh -c ");
 
 const QString ctn_QSUDO("qsudo");
@@ -90,7 +90,7 @@ const QString ctn_PEK_TERMINAL("sakura");
 const QString ctn_XTERM("xterm");
 
 enum EditOptions { ectn_EDIT_AS_ROOT, ectn_EDIT_AS_NORMAL_USER };
-
+*/
 /*
  * This class exposes some services of the underlying Window Manager being used
  */

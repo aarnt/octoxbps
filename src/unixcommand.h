@@ -29,7 +29,7 @@
 #include "package.h"
 #include "utils.h"
 
-const QString ctn_MIRROR_CHECK_APP("mirror-check");
+/*const QString ctn_MIRROR_CHECK_APP("mirror-check");
 
 enum CommandExecuting { ectn_NONE, ectn_MIRROR_CHECK, ectn_SYNC_DATABASE,
                         ectn_SYSTEM_UPGRADE, ectn_INSTALL,
@@ -39,7 +39,7 @@ enum CommandExecuting { ectn_NONE, ectn_MIRROR_CHECK, ectn_SYNC_DATABASE,
 
 enum LinuxDistro { ectn_VOID, ectn_UNKNOWN };
 
-enum Language { ectn_LANG_ENGLISH, ectn_LANG_USER_DEFINED };
+enum Language { ectn_LANG_ENGLISH, ectn_LANG_USER_DEFINED };*/
 
 //Forward class declarations.
 class QString;
@@ -132,6 +132,8 @@ public:
 
     return m_temporaryFile;
   }
+
+  static bool isPackageInstalled(const QString& pkgName);
 
   static void removeTemporaryFile(){
     if (m_temporaryFile != 0){

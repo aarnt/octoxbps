@@ -22,7 +22,7 @@
 #define PACKAGE_H
 
 #include "settingsmanager.h"
-
+#include "constants.h"
 #include <QStringList>
 #include <QSettings>
 #include <QDir>
@@ -32,17 +32,17 @@
 #include <QHash>
 #include <QSet>
 
-const QString ctn_TEMP_ACTIONS_FILE ( QDir::homePath() + QDir::separator() + ".config/octoxbps" + QDir::separator() + ".qt_temp_" );
-const QString ctn_PACMAN_DATABASE_DIR = "/var/lib/pacman";
+//const QString ctn_TEMP_ACTIONS_FILE ( QDir::homePath() + QDir::separator() + ".config/octoxbps" + QDir::separator() + ".qt_temp_" );
+//const QString ctn_PACMAN_DATABASE_DIR = "/var/lib/pacman";
 const QString ctn_XBPS_CORE_DB_FILE = "pkgdb*.plist";
 const QString ctn_PKGNG_FAKE_REPOSITORY = "_WWW";
 
 enum PackageAnchor { ectn_WITH_PACKAGE_ANCHOR, ectn_WITHOUT_PACKAGE_ANCHOR };
 
-enum PackageStatus { ectn_INSTALLED, ectn_NON_INSTALLED, ectn_OUTDATED, ectn_NEWER,
-                     ectn_FOREIGN, ectn_FOREIGN_OUTDATED };
+//enum PackageStatus { ectn_INSTALLED, ectn_NON_INSTALLED, ectn_OUTDATED, ectn_NEWER,
+//                     ectn_FOREIGN, ectn_FOREIGN_OUTDATED };
 
-enum ViewOptions { ectn_ALL_PKGS, ectn_INSTALLED_PKGS, ectn_NON_INSTALLED_PKGS };
+//enum ViewOptions { ectn_ALL_PKGS, ectn_INSTALLED_PKGS, ectn_NON_INSTALLED_PKGS };
 
 struct PackageListData{
   QString name;
