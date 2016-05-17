@@ -95,7 +95,7 @@ private:
 
   QIcon m_icon;
   QMap<QString, OutdatedPackageInfo> *m_outdatedStringList;
-  QStringList *m_outdatedAURStringList;
+  //QStringList *m_outdatedAURStringList;
   QTimer *m_pacmanHelperTimer;
   bool m_debugInfo;
 
