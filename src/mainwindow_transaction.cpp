@@ -1314,6 +1314,7 @@ void MainWindow::toggleTransactionActions(const bool value)
   ui->actionRemove->setEnabled(value);
   ui->actionPacmanLogViewer->setEnabled(value);
   ui->actionCacheCleaner->setEnabled(value);
+  ui->actionCleanXBPSCache->setEnabled(value);
   ui->actionRepositoryEditor->setEnabled(value);  
   m_actionSysInfo->setEnabled(value);
   ui->actionGetNews->setEnabled(value);
@@ -1345,6 +1346,7 @@ void MainWindow::toggleSystemActions(const bool value)
   }
 
   ui->actionInstallLocalPackage->setEnabled(value);
+  ui->actionCleanXBPSCache->setEnabled(value);
   ui->actionGetNews->setEnabled(value);
 
   if (value == true && !state && m_outdatedStringList->count() > 0)
