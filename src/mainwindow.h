@@ -89,7 +89,7 @@ protected:
 private:
   Ui::MainWindow *ui;
   CPUIntensiveComputing *m_cic;
-  XBPSExec *m_pacmanExec;
+  XBPSExec *m_xbpsExec;
 
   UnixCommand *m_unixCommand;
   bool m_initializationCompleted;
@@ -392,12 +392,12 @@ private slots:
 
   void resetTransaction();
 
-  void actionsProcessStarted();
+  //void actionsProcessStarted();
   void pacmanProcessFinished(int exitCode, QProcess::ExitStatus);
-  void actionsProcessReadOutput();
-  void actionsProcessReadOutputErrorMirrorCheck();
-  void actionsProcessReadOutputMirrorCheck();
-  void actionsProcessRaisedError();
+  //void actionsProcessReadOutput();
+  //void actionsProcessReadOutputErrorMirrorCheck();
+  //void actionsProcessReadOutputMirrorCheck();
+  //void actionsProcessRaisedError();
 
   void insertIntoRemovePackage();
   void insertIntoInstallPackage();

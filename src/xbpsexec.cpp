@@ -475,7 +475,11 @@ void XBPSExec::onStarted()
   {
     prepareTextToPrint("<b>" + StrConstants::getSyncMirror() + "</b><br><br>", ectn_DONT_TREAT_STRING, ectn_DONT_TREAT_URL_LINK);
   }*/
-  if (m_commandExecuting == ectn_SYNC_DATABASE)
+  if (m_commandExecuting == ectn_CLEAN_CACHE)
+  {
+    prepareTextToPrint("<b>" + StrConstants::getCleaningPackageCache() + "</b><br><br>", ectn_DONT_TREAT_STRING, ectn_DONT_TREAT_URL_LINK);
+  }
+  else if (m_commandExecuting == ectn_SYNC_DATABASE)
   {
     prepareTextToPrint("<b>" + StrConstants::getSyncDatabases() + "</b><br><br>", ectn_DONT_TREAT_STRING, ectn_DONT_TREAT_URL_LINK);
   }
@@ -634,10 +638,22 @@ void XBPSExec::onFinished(int exitCode, QProcess::ExitStatus es)
 /*
  * Calls mirro-check to check mirrors and returns output to UI
  */
-void XBPSExec::doMirrorCheck()
+/*void XBPSExec::doMirrorCheck()
 {
   m_commandExecuting = ectn_MIRROR_CHECK;
   m_unixCommand->executeCommandAsNormalUser(ctn_MIRROR_CHECK_APP);
+}*/
+
+/*
+ * Cleans XBPS's package cache.
+ */
+void XBPSExec::doCleanCache()
+{
+  QString command = "xbps-remove -O";
+  m_lastCommandList.clear();
+
+  m_commandExecuting = ectn_CLEAN_CACHE;
+  m_unixCommand->executeCommand(command);
 }
 
 /*

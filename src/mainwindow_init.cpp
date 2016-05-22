@@ -690,7 +690,9 @@ void MainWindow::initActions()
 
   connect(ui->tvPackages->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
           this, SLOT(invalidateTabs()));
-  connect(ui->actionInstallLocalPackage, SIGNAL(triggered()), this, SLOT(installLocalPackage()));
+
+  //connect(ui->actionInstallLocalPackage, SIGNAL(triggered()), this, SLOT(installLocalPackage()));
+  connect(ui->actionCleanXBPSCache, SIGNAL(triggered()), this, SLOT(doCleanCache()));
   connect(ui->actionRemoveTransactionItem, SIGNAL(triggered()), this, SLOT(onPressDelete()));
   connect(ui->actionRemoveTransactionItems, SIGNAL(triggered()), this, SLOT(onPressDelete()));
   connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(close()));

@@ -658,28 +658,17 @@ void MainWindow::doSyncDatabase()
   disableTransactionActions();
   clearTabOutput();
 
-  m_pacmanExec = new XBPSExec();
+  m_xbpsExec = new XBPSExec();
   if (m_debugInfo)
-    m_pacmanExec->setDebugMode(true);
+    m_xbpsExec->setDebugMode(true);
 
-  QObject::connect(m_pacmanExec, SIGNAL( finished ( int, QProcess::ExitStatus )),
+  QObject::connect(m_xbpsExec, SIGNAL( finished ( int, QProcess::ExitStatus )),
                    this, SLOT( pacmanProcessFinished(int, QProcess::ExitStatus) ));
 
-  QObject::connect(m_pacmanExec, SIGNAL(percentage(int)), this, SLOT(incrementPercentage(int)));
-  QObject::connect(m_pacmanExec, SIGNAL(textToPrintExt(QString)), this, SLOT(outputText(QString)));
+  QObject::connect(m_xbpsExec, SIGNAL(percentage(int)), this, SLOT(incrementPercentage(int)));
+  QObject::connect(m_xbpsExec, SIGNAL(textToPrintExt(QString)), this, SLOT(outputText(QString)));
 
-  m_pacmanExec->doSyncDatabase();
-
-  /*m_unixCommand = new UnixCommand(this);
-  QObject::connect(m_unixCommand, SIGNAL( started() ), this, SLOT( actionsProcessStarted()));
-  QObject::connect(m_unixCommand, SIGNAL( readyReadStandardOutput()),
-                   this, SLOT( actionsProcessReadOutput() ));
-  QObject::connect(m_unixCommand, SIGNAL( finished ( int, QProcess::ExitStatus )),
-                   this, SLOT( actionsProcessFinished(int, QProcess::ExitStatus) ));
-  QObject::connect(m_unixCommand, SIGNAL( readyReadStandardError() ),
-                   this, SLOT( actionsProcessRaisedError() ));
-  QString command = "xbps-install -Sy";
-  m_unixCommand->executeCommand(command);*/
+  m_xbpsExec->doSyncDatabase();
 }
 
 /*
@@ -692,30 +681,15 @@ void MainWindow::prepareSystemUpgrade()
 
   clearTabOutput();
 
-  m_pacmanExec = new XBPSExec();
+  m_xbpsExec = new XBPSExec();
   if (m_debugInfo)
-    m_pacmanExec->setDebugMode(true);
+    m_xbpsExec->setDebugMode(true);
 
-  QObject::connect(m_pacmanExec, SIGNAL( finished ( int, QProcess::ExitStatus )),
+  QObject::connect(m_xbpsExec, SIGNAL( finished ( int, QProcess::ExitStatus )),
                    this, SLOT( pacmanProcessFinished(int, QProcess::ExitStatus) ));
 
-  QObject::connect(m_pacmanExec, SIGNAL(percentage(int)), this, SLOT(incrementPercentage(int)));
-  QObject::connect(m_pacmanExec, SIGNAL(textToPrintExt(QString)), this, SLOT(outputText(QString)));
-
-  /*m_lastCommandList.clear();
-  m_lastCommandList.append("xbps-install -u;");
-  m_lastCommandList.append("echo -e;");
-  m_lastCommandList.append("read -n1 -p \"" + StrConstants::getPressAnyKey() + "\"");
-
-  m_unixCommand = new UnixCommand(this);
-
-  QObject::connect(m_unixCommand, SIGNAL( started() ), this, SLOT( actionsProcessStarted()));
-  QObject::connect(m_unixCommand, SIGNAL( readyReadStandardOutput()),
-                   this, SLOT( actionsProcessReadOutput() ));
-  QObject::connect(m_unixCommand, SIGNAL( finished ( int, QProcess::ExitStatus )),
-                   this, SLOT( actionsProcessFinished(int, QProcess::ExitStatus) ));
-  QObject::connect(m_unixCommand, SIGNAL( readyReadStandardError() ),
-                   this, SLOT( actionsProcessRaisedError() ));*/
+  QObject::connect(m_xbpsExec, SIGNAL(percentage(int)), this, SLOT(incrementPercentage(int)));
+  QObject::connect(m_xbpsExec, SIGNAL(textToPrintExt(QString)), this, SLOT(outputText(QString)));
 
   disableTransactionActions();
 }
@@ -801,9 +775,6 @@ void MainWindow::doSystemUpgrade(SystemUpgradeOptions systemUpgradeOptions)
   {
     //This is a bug and should be shown to the user!
     clearTabOutput();
-    //writeToTabOutputExt(UnixCommand::getTargetUpgradeList());
-    //QString out = UnixCommand::getTargetUpgradeList();
-    //splitOutputStrings(out);
     return;
   }
 
@@ -820,14 +791,12 @@ void MainWindow::doSystemUpgrade(SystemUpgradeOptions systemUpgradeOptions)
     prepareSystemUpgrade();
 
     m_commandExecuting = ectn_SYSTEM_UPGRADE;
-    m_pacmanExec->doSystemUpgrade();
+    m_xbpsExec->doSystemUpgrade();
     m_commandQueued = ectn_NONE;
   }
   else
   {
     //Let's build the system upgrade transaction dialog...
-    /*totalDownloadSize = totalDownloadSize / 1024;
-      QString ds = Package::kbytesToSize(totalDownloadSize);*/
     QString ds = ti.sizeToDownload;
 
     TransactionDialog question(this);
@@ -853,13 +822,13 @@ void MainWindow::doSystemUpgrade(SystemUpgradeOptions systemUpgradeOptions)
       if (result == QDialogButtonBox::Yes)
       {
         m_commandExecuting = ectn_SYSTEM_UPGRADE;
-        m_pacmanExec->doSystemUpgrade();
+        m_xbpsExec->doSystemUpgrade();
         m_commandQueued = ectn_NONE;
       }
       else if (result == QDialogButtonBox::AcceptRole)
       {
         m_commandExecuting = ectn_RUN_SYSTEM_UPGRADE_IN_TERMINAL;
-        m_pacmanExec->doSystemUpgradeInTerminal();
+        m_xbpsExec->doSystemUpgradeInTerminal();
         m_commandQueued = ectn_NONE;
       }
     }
@@ -948,50 +917,27 @@ void MainWindow::doRemoveAndInstall()
     disableTransactionButtons();
     clearTabOutput();
 
-    m_pacmanExec = new XBPSExec();
+    m_xbpsExec = new XBPSExec();
     if (m_debugInfo)
-      m_pacmanExec->setDebugMode(true);
+      m_xbpsExec->setDebugMode(true);
 
-    QObject::connect(m_pacmanExec, SIGNAL( finished ( int, QProcess::ExitStatus )),
+    QObject::connect(m_xbpsExec, SIGNAL( finished ( int, QProcess::ExitStatus )),
                      this, SLOT( pacmanProcessFinished(int, QProcess::ExitStatus) ));
 
-    QObject::connect(m_pacmanExec, SIGNAL(percentage(int)), this, SLOT(incrementPercentage(int)));
-    QObject::connect(m_pacmanExec, SIGNAL(textToPrintExt(QString)), this, SLOT(outputText(QString)));
-
-    /*QString command;
-    command = "xbps-remove -R -f -y " + listOfRemoveTargets;
-
-    m_lastCommandList.clear();
-    m_lastCommandList.append("xbps-remove -R -f " + listOfRemoveTargets + ";");
-    m_lastCommandList.append("xbps-install -f " + listOfInstallTargets + ";");
-    m_lastCommandList.append("echo -e;");
-    m_lastCommandList.append("read -n1 -p \"" + StrConstants::getPressAnyKey() + "\"");
-
-    m_unixCommand = new UnixCommand(this);
-
-    QObject::connect(m_unixCommand, SIGNAL( started() ), this, SLOT( actionsProcessStarted()));
-    QObject::connect(m_unixCommand, SIGNAL( readyReadStandardOutput()),
-                     this, SLOT( actionsProcessReadOutput() ));
-    QObject::connect(m_unixCommand, SIGNAL( finished ( int, QProcess::ExitStatus )),
-                     this, SLOT( pacmanProcessFinished(int, QProcess::ExitStatus) ));
-    QObject::connect(m_unixCommand, SIGNAL( readyReadStandardError() ),
-                     this, SLOT( actionsProcessRaisedError() ));*/
+    QObject::connect(m_xbpsExec, SIGNAL(percentage(int)), this, SLOT(incrementPercentage(int)));
+    QObject::connect(m_xbpsExec, SIGNAL(textToPrintExt(QString)), this, SLOT(outputText(QString)));
 
     disableTransactionActions();
 
     if (result == QDialogButtonBox::Yes)
     {
       m_commandExecuting = ectn_REMOVE;
-      //m_commandQueued = ectn_INSTALL;
-      m_pacmanExec->doRemoveAndInstall(listOfRemoveTargets, listOfInstallTargets);
-
-      //qDebug() << command;
-      //m_unixCommand->executeCommand(command);
+      m_xbpsExec->doRemoveAndInstall(listOfRemoveTargets, listOfInstallTargets);
     }
     else if (result == QDialogButtonBox::AcceptRole)
     {
       m_commandExecuting = ectn_RUN_IN_TERMINAL;
-      m_pacmanExec->doRemoveAndInstallInTerminal(listOfRemoveTargets, listOfInstallTargets);
+      m_xbpsExec->doRemoveAndInstallInTerminal(listOfRemoveTargets, listOfInstallTargets);
     }
   }
   else
@@ -1050,46 +996,27 @@ void MainWindow::doRemove()
     //disableTransactionButtons();
     clearTabOutput();
 
-    m_pacmanExec = new XBPSExec();
+    m_xbpsExec = new XBPSExec();
     if (m_debugInfo)
-      m_pacmanExec->setDebugMode(true);
+      m_xbpsExec->setDebugMode(true);
 
-    QObject::connect(m_pacmanExec, SIGNAL( finished ( int, QProcess::ExitStatus )),
+    QObject::connect(m_xbpsExec, SIGNAL( finished ( int, QProcess::ExitStatus )),
                      this, SLOT( pacmanProcessFinished(int, QProcess::ExitStatus) ));
-
-    QObject::connect(m_pacmanExec, SIGNAL(percentage(int)), this, SLOT(incrementPercentage(int)));
-    QObject::connect(m_pacmanExec, SIGNAL(textToPrintExt(QString)), this, SLOT(outputText(QString)));
-
-    /*QString command;
-    command = "xbps-remove -R -f -y " + listOfTargets;
-
-    m_lastCommandList.clear();
-    m_lastCommandList.append("xbps-remove -R -f " + listOfTargets + ";");
-    m_lastCommandList.append("echo -e;");
-    m_lastCommandList.append("read -n1 -p \"" + StrConstants::getPressAnyKey() + "\"");
-
-    m_unixCommand = new UnixCommand(this);
-
-    QObject::connect(m_unixCommand, SIGNAL( started() ), this, SLOT( actionsProcessStarted()));
-    QObject::connect(m_unixCommand, SIGNAL( readyReadStandardOutput()),
-                     this, SLOT( actionsProcessReadOutput() ));
-    QObject::connect(m_unixCommand, SIGNAL( finished ( int, QProcess::ExitStatus )),
-                     this, SLOT( pacmanProcessFinished(int, QProcess::ExitStatus) ));
-    QObject::connect(m_unixCommand, SIGNAL( readyReadStandardError() ),
-                     this, SLOT( actionsProcessRaisedError() ));*/
+    QObject::connect(m_xbpsExec, SIGNAL(percentage(int)), this, SLOT(incrementPercentage(int)));
+    QObject::connect(m_xbpsExec, SIGNAL(textToPrintExt(QString)), this, SLOT(outputText(QString)));
 
     disableTransactionActions();
 
     if (result == QDialogButtonBox::Yes)
     {
       m_commandExecuting = ectn_REMOVE;
-      m_pacmanExec->doRemove(listOfTargets);
+      m_xbpsExec->doRemove(listOfTargets);
     }
 
     if (result == QDialogButtonBox::AcceptRole)
     {
       m_commandExecuting = ectn_RUN_IN_TERMINAL;
-      m_pacmanExec->doRemoveInTerminal(listOfTargets);
+      m_xbpsExec->doRemoveInTerminal(listOfTargets);
     }
   }
   else
@@ -1160,45 +1087,25 @@ void MainWindow::doInstall()
     disableTransactionActions();
     clearTabOutput();
 
-    m_pacmanExec = new XBPSExec();
+    m_xbpsExec = new XBPSExec();
     if (m_debugInfo)
-      m_pacmanExec->setDebugMode(true);
+      m_xbpsExec->setDebugMode(true);
 
-    QObject::connect(m_pacmanExec, SIGNAL( finished ( int, QProcess::ExitStatus )),
+    QObject::connect(m_xbpsExec, SIGNAL( finished ( int, QProcess::ExitStatus )),
                      this, SLOT( pacmanProcessFinished(int, QProcess::ExitStatus) ));
 
-    QObject::connect(m_pacmanExec, SIGNAL(percentage(int)), this, SLOT(incrementPercentage(int)));
-    QObject::connect(m_pacmanExec, SIGNAL(textToPrintExt(QString)), this, SLOT(outputText(QString)));
-
-
-    /*QString command;
-    command = "xbps-install -f -y " + listOfTargets;
-
-    m_lastCommandList.clear();
-    m_lastCommandList.append("xbps-install -f " + listOfTargets + ";");
-    m_lastCommandList.append("echo -e;");
-    m_lastCommandList.append("read -n1 -p \"" + StrConstants::getPressAnyKey() + "\"");
-
-    disableTransactionActions();
-    m_unixCommand = new UnixCommand(this);
-
-    QObject::connect(m_unixCommand, SIGNAL( started() ), this, SLOT( actionsProcessStarted()));
-    QObject::connect(m_unixCommand, SIGNAL( finished ( int, QProcess::ExitStatus )),
-                     this, SLOT( actionsProcessFinished(int, QProcess::ExitStatus) ));
-    QObject::connect(m_unixCommand, SIGNAL( readyReadStandardOutput()),
-                     this, SLOT( actionsProcessReadOutput() ));
-    QObject::connect(m_unixCommand, SIGNAL( readyReadStandardError() ),
-                     this, SLOT( actionsProcessRaisedError() ));*/
+    QObject::connect(m_xbpsExec, SIGNAL(percentage(int)), this, SLOT(incrementPercentage(int)));
+    QObject::connect(m_xbpsExec, SIGNAL(textToPrintExt(QString)), this, SLOT(outputText(QString)));
 
     if (result == QDialogButtonBox::Yes)
     {
       m_commandExecuting = ectn_INSTALL;
-      m_pacmanExec->doInstall(listOfTargets);
+      m_xbpsExec->doInstall(listOfTargets);
     }
     else if (result == QDialogButtonBox::AcceptRole)
     {
       m_commandExecuting = ectn_RUN_IN_TERMINAL;
-      m_pacmanExec->doInstallInTerminal(listOfTargets);
+      m_xbpsExec->doInstallInTerminal(listOfTargets);
     }
   }
   else
@@ -1329,20 +1236,20 @@ void MainWindow::doCleanCache()
 
   if (res == QMessageBox::Yes)
   {
-    qApp->processEvents();
-
     clearTabOutput();
-    writeToTabOutput("<b>" + StrConstants::getCleaningPackageCache() + "</b>");
-    qApp->processEvents();
-    bool res = UnixCommand::cleanPacmanCache();
-    qApp->processEvents();
 
-    if (res)
-    {
-      writeToTabOutput("<b>" + StrConstants::getCommandFinishedOK() + "</b>");
-    }
-    else
-      writeToTabOutput("<b>" + StrConstants::getCommandFinishedWithErrors() + "</b>");
+    m_xbpsExec = new XBPSExec();
+    if (m_debugInfo)
+      m_xbpsExec->setDebugMode(true);
+
+    QObject::connect(m_xbpsExec, SIGNAL( finished ( int, QProcess::ExitStatus )),
+                     this, SLOT( pacmanProcessFinished(int, QProcess::ExitStatus) ));
+    QObject::connect(m_xbpsExec, SIGNAL(percentage(int)), this, SLOT(incrementPercentage(int)));
+    QObject::connect(m_xbpsExec, SIGNAL(textToPrintExt(QString)), this, SLOT(outputText(QString)));
+
+    disableTransactionActions();
+    m_commandExecuting = ectn_CLEAN_CACHE;
+    m_xbpsExec->doCleanCache();
   }
 }
 
@@ -1484,59 +1391,11 @@ void MainWindow::cancelTransaction()
 }
 
 /*
- * This SLOT is called whenever Pacman's process has just started execution
- */
-void MainWindow::actionsProcessStarted()
-{
-  m_progressWidget->setValue(0);
-  m_progressWidget->setMaximum(100);
-  m_iLoveCandy = UnixCommand::isILoveCandyEnabled();
-
-  clearTabOutput();
-
-  //First we output the name of action we are starting to execute!
-
-  if (m_commandExecuting == ectn_SYNC_DATABASE)
-  {
-    writeToTabOutput("<b>" + StrConstants::getSyncDatabases() + "</b><br><br>");
-  }
-  else if (m_commandExecuting == ectn_SYSTEM_UPGRADE || m_commandExecuting == ectn_RUN_SYSTEM_UPGRADE_IN_TERMINAL)
-  {
-    writeToTabOutput("<b>" + StrConstants::getSystemUpgrade() + "</b><br><br>");
-  }
-  else if (m_commandExecuting == ectn_REMOVE)
-  {
-    writeToTabOutput("<b>" + StrConstants::getRemovingPackages() + "</b><br><br>");
-  }
-  else if (m_commandExecuting == ectn_INSTALL)
-  {
-    writeToTabOutput("<b>" + StrConstants::getInstallingPackages() + "</b><br><br>");
-  }
-  else if (m_commandExecuting == ectn_REMOVE_INSTALL)
-  {
-    writeToTabOutput("<b>" + StrConstants::getRemovingAndInstallingPackages() + "</b><br><br>");
-  }
-  else if (m_commandExecuting == ectn_RUN_IN_TERMINAL)
-  {
-    writeToTabOutput("<b>" + StrConstants::getRunningCommandInTerminal() + "</b><br><br>");
-  }
-
-  QString msg = m_unixCommand->readAllStandardOutput();
-  msg = msg.trimmed();
-
-  if (!msg.isEmpty())
-  {
-    writeToTabOutput(msg);
-  }
-}
-
-/*
  * This SLOT is called when Pacman's process has finished execution
  *
  */
 void MainWindow::pacmanProcessFinished(int exitCode, QProcess::ExitStatus exitStatus)
 {
-  //bool bRefreshGroups = true;
   m_progressWidget->close();
   ui->twProperties->setTabText(ctn_TABINDEX_OUTPUT, StrConstants::getTabOutputName());
 
@@ -1570,13 +1429,16 @@ void MainWindow::pacmanProcessFinished(int exitCode, QProcess::ExitStatus exitSt
     {
       clearTransactionTreeView();
 
+      if (m_commandExecuting == ectn_CLEAN_CACHE)
+      {
+        resetTransaction();
+      }
       //After the command, we can refresh the package list, so any change can be seem.
-      if (m_commandExecuting == ectn_SYNC_DATABASE)
+      else if (m_commandExecuting == ectn_SYNC_DATABASE)
       {
         //Retrieves the RSS News from respective Distro site...
         if (isRemoteSearchSelected())
         {
-          //bRefreshGroups = false;
           m_leFilterPackage->clear();
           m_actionSwitchToRemoteSearch->setChecked(false);
           m_actionSwitchToLocalFilter->setChecked(true);
@@ -1632,63 +1494,9 @@ void MainWindow::pacmanProcessFinished(int exitCode, QProcess::ExitStatus exitSt
 void MainWindow::resetTransaction()
 {
   enableTransactionActions();
-  //m_unixCommand->removeTemporaryFile();
-  //delete m_unixCommand;
-  delete m_pacmanExec;
-
+  delete m_xbpsExec;
   m_commandExecuting = ectn_NONE;
   disconnect(this, SIGNAL(buildPackageListDone()), this, SLOT(resetTransaction()));
-}
-
-/*
- * This SLOT is called whenever Mirror-check process has something to output to Standard ERROR out
- */
-void MainWindow::actionsProcessReadOutputErrorMirrorCheck()
-{
-  QString msg = m_unixCommand->readAllStandardError();
-
-  msg.remove("[01;33m");
-  msg.remove("\033[01;37m");
-  msg.remove("\033[00m");
-  msg.remove("\033[00;32m");
-  msg.remove("[00;31m");
-  msg.remove("\n");
-
-  if (msg.contains("Checking"), Qt::CaseInsensitive)
-    msg += "<br>";
-
-  writeToTabOutput(msg, ectn_DONT_TREAT_URL_LINK);
-}
-
-/*
- * This SLOT is called whenever Mirror-check process has something to output to Standard out
- */
-void MainWindow::actionsProcessReadOutputMirrorCheck()
-{
-  QString msg = m_unixCommand->readAllStandardOutput();
-
-  msg.remove("[01;33m");
-  msg.remove("\033[01;37m");
-  msg.remove("\033[00m");
-  msg.remove("\033[00;32m");
-  msg.remove("[00;31m");
-  msg.replace("[", "'");
-  msg.replace("]", "'");
-  msg.remove("\n");
-
-  if (msg.contains("Checking", Qt::CaseInsensitive))
-  {
-    msg += "<br>";
-  }
-
-  writeToTabOutput(msg, ectn_DONT_TREAT_URL_LINK);
-}
-
-/*
- * This SLOT is called whenever Pacman's process has something to output to Standard out
- */
-void MainWindow::actionsProcessReadOutput()
-{
 }
 
 /*
@@ -1699,13 +1507,6 @@ bool MainWindow::searchForKeyVerbs(const QString &msg)
   return (msg.contains(QRegularExpression("Fetching ")) ||
           msg.contains(QRegularExpression("Updating ")) ||
           msg.contains(QRegularExpression("Processing ")));
-}
-
-/*
- * This SLOT is called whenever Pacman's process has something to output to Standard error
- */
-void MainWindow::actionsProcessRaisedError()
-{
 }
 
 /*
@@ -1739,6 +1540,7 @@ void MainWindow::writeToTabOutput(const QString &msg, TreatURLLinks treatURLLink
 void MainWindow::incrementPercentage(int percentage)
 {
   if (!m_progressWidget->isVisible()) m_progressWidget->show();
+
   m_progressWidget->setValue(percentage);
 }
 

@@ -589,6 +589,8 @@ void MainWindow::startPkexec()
  */
 void MainWindow::refreshAppIcon()
 {
+  if (m_commandExecuting != ectn_NONE) return;
+
   disconnect(m_pacmanDatabaseSystemWatcher,
           SIGNAL(directoryChanged(QString)), this, SLOT(refreshAppIcon()));
 
@@ -670,18 +672,6 @@ void MainWindow::refreshAppIcon()
     m_systemTrayIcon->setStatus(KStatusNotifierItem::NeedsAttention);
 #endif
   }
-  /*else if(m_outdatedAURStringList->count() > 0) //YELLOW ICON!
-  {
-    m_actionSystemUpgrade->setVisible(false);
-    m_icon = IconHelper::getIconOctopiYellow();
-    if (m_debugInfo)
-      qDebug() << "Got a YELLOW icon!";
-
-#ifdef KSTATUS
-    m_systemTrayIcon->setAttentionIconByPixmap(m_icon);
-    m_systemTrayIcon->setStatus(KStatusNotifierItem::NeedsAttention);
-#endif
-  }*/
   else //YEAHHH... GREEN ICON!
   {
     m_actionSystemUpgrade->setVisible(false);

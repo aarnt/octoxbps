@@ -61,9 +61,11 @@ public:
   static void removeDatabaseLock();
 
   //MIRROR-CHECK
-  void doMirrorCheck();
+  //void doMirrorCheck();
 
-  //PACMAN
+  //XBPS
+  void doCleanCache();
+
   void doInstall(const QString &listOfPackages);
   void doInstallInTerminal(const QString &listOfPackages);
 

@@ -136,7 +136,7 @@
      <x>0</x>
      <y>0</y>
      <width>552</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <property name="contextMenuPolicy">
@@ -175,6 +175,7 @@
     <addaction name="actionSystemUpgrade"/>
     <addaction name="separator"/>
     <addaction name="actionInstallLocalPackage"/>
+    <addaction name="actionCleanXBPSCache"/>
     <addaction name="actionOpenRootTerminal"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
@@ -544,6 +545,11 @@
    </property>
    <property name="text">
     <string>By &amp;file</string>
+   </property>
+  </action>
+  <action name="actionCleanXBPSCache">
+   <property name="text">
+    <string>Clean XBPS cache</string>
    </property>
   </action>
  </widget>
