@@ -765,7 +765,11 @@ void MainWindow::exitNotifier()
  */
 void MainWindow::runOctoXBPS(ExecOpt execOptions)
 {
-  if (execOptions == ectn_SYSUPGRADE_NOCONFIRM_EXEC_OPT)
+  Q_UNUSED(execOptions);
+
+  doSystemUpgrade();
+
+  /*if (execOptions == ectn_SYSUPGRADE_NOCONFIRM_EXEC_OPT)
   {
     if (!WMHelper::isKDERunning() && (!WMHelper::isRazorQtRunning()) && (!WMHelper::isLXQTRunning()))
     {
@@ -803,7 +807,7 @@ void MainWindow::runOctoXBPS(ExecOpt execOptions)
     {
       QProcess::startDetached("octoxbps");
     }
-  }
+  }*/
 }
 
 /*
