@@ -61,11 +61,13 @@ void OutputDialog::init()
 
   setWindowTitle(QCoreApplication::translate("MainWindow", "System upgrade"));
   setWindowIcon(IconHelper::getIconSystemUpgrade());
+
   m_mainLayout = new QVBoxLayout(this);
   m_textBrowser = new QTextBrowser(this);
   m_progressBar = new QProgressBar(this);
 
   m_textBrowser->setGeometry(QRect(0, 0, 650, 500));
+  m_textBrowser->setFrameShape(QFrame::NoFrame);
 
   m_mainLayout->addWidget(m_textBrowser);
 
