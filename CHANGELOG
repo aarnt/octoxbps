@@ -1,3 +1,7 @@
+0.2.1
+  BugFix: Clicking notifier hides OctoXBPS when it's running.
+  BugFix: Notifier was not starting OctoXBPS when action was triggered.
+
 0.2.0
   BugFix: Block some events while executing a transaction.
   BugFix in parser code.

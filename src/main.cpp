@@ -38,7 +38,17 @@ int main(int argc, char *argv[])
 
   if (app.isRunning())
   {    
-    app.sendMessage("RAISE");
+    if (argList->getSwitch("-close"))
+    {
+      app.sendMessage("CLOSE");
+    }
+    else if (argList->getSwitch("-hide"))
+    {
+      app.sendMessage("HIDE");
+    }
+    else
+      app.sendMessage("RAISE");
+
     return 0;
   }
 

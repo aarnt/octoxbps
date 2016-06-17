@@ -765,10 +765,6 @@ void MainWindow::exitNotifier()
  */
 void MainWindow::runOctoXBPS(ExecOpt execOptions)
 {
-  Q_UNUSED(execOptions);
-
-  doSystemUpgrade();
-
   /*if (execOptions == ectn_SYSUPGRADE_NOCONFIRM_EXEC_OPT)
   {
     if (!WMHelper::isKDERunning() && (!WMHelper::isRazorQtRunning()) && (!WMHelper::isLXQTRunning()))
@@ -808,6 +804,22 @@ void MainWindow::runOctoXBPS(ExecOpt execOptions)
       QProcess::startDetached("octoxbps");
     }
   }*/
+
+  if (execOptions == ectn_SYSUPGRADE_EXEC_OPT && m_outdatedStringList->count() > 0)
+  {
+    doSystemUpgrade();
+  }
+  else if (execOptions == ectn_NORMAL_EXEC_OPT)
+  {
+    if (!WMHelper::isKDERunning() && (!WMHelper::isRazorQtRunning()) && (!WMHelper::isLXQTRunning()))
+    {
+      QProcess::startDetached("octoxbps -style gtk");
+    }
+    else
+    {
+      QProcess::startDetached("octoxbps");
+    }
+  }
 }
 
 /*
