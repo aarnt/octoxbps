@@ -28,7 +28,6 @@
 #include "strconstants.h"
 #include "xbpsexec.h"
 #include "searchbar.h"
-#include <iostream>
 
 #include <QStandardItemModel>
 #include <QModelIndex>
@@ -87,7 +86,7 @@ void utils::ProcessWrapper::executeCommand(QString command)
 void utils::ProcessWrapper::onProcessStarted()
 {  
   m_pidTerminal = m_process->pid();
-  //std::cout << "First PID: " << m_pidTerminal << std::endl;
+  //qDebug() << "First PID: " << m_pidTerminal;
   m_timerSingleShot->start(2000);
   emit startedTerminal();
 }
@@ -193,7 +192,7 @@ void utils::ProcessWrapper::onTimer()
   QProcess proc;
   QString cmd = QString("ps -p %1 %2").arg(m_pidSH).arg(m_pidAUR);
 
-  //std::cout << "PIDS: " << cmd.toLatin1().data() << "\n" << std::endl;
+  //qDebug() << "PIDS: " << cmd << "\n";
 
   proc.start(cmd);
   proc.waitForFinished(-1);
@@ -201,7 +200,7 @@ void utils::ProcessWrapper::onTimer()
   //If any of the processes have finished...
   QString out = proc.readAll();
 
-  //std::cout << "Output: " << out.toLatin1().data() << "\n" << std::endl;
+  //qDebug() << "Output: " << out << "\n";
 
   if (!out.contains(".qt_temp_", Qt::CaseInsensitive))
   {

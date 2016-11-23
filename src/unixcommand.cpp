@@ -94,7 +94,7 @@ QString UnixCommand::discoverBinaryPath(const QString& binary){
   env.insert("LANG", "C");
   env.insert("LC_MESSAGES", "C");
   proc.setProcessEnvironment(env);
-  proc.start("/usr/local/bin/bash -c \"which " + binary + "\"");
+  proc.start("/usr/bin/sh -c \"which " + binary + "\"");
   proc.waitForFinished();
   QString res = proc.readAllStandardOutput();
 
