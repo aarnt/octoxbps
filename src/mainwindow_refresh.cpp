@@ -1187,6 +1187,7 @@ void MainWindow::refreshTabFiles(bool clearContents, bool neverQuit)
     QStandardItem *lastDir, *item, *lastItem=root, *parent;
     bool first=true;
     lastDir = root;
+
     QEventLoop el;
     QFuture<QStringList> f;
     QFutureWatcher<QStringList> fwPackageContents;
@@ -1316,7 +1317,6 @@ void MainWindow::refreshTabFiles(bool clearContents, bool neverQuit)
 
       counter++;
       m_progressWidget->setValue(counter);
-      qApp->processEvents();
     }
 
     m_progressWidget->close();
