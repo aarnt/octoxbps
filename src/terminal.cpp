@@ -391,7 +391,7 @@ void Terminal::runCommandInTerminal(const QStringList &commandList)
       m_process->start(cmd);
     }
     else if (WMHelper::isCinnamonRunning() && UnixCommand::hasTheExecutable(ctn_CINNAMON_TERMINAL)){
-      cmd = suCommand + " \"" + ctn_CINNAMON_TERMINAL + " -e \'bash -c " + ftemp->fileName() + "'\"";
+      cmd = suCommand + " \"" + ctn_CINNAMON_TERMINAL + " -e \'sh -c " + ftemp->fileName() + "'\"";
       m_process->start(cmd);
     }
     else if (WMHelper::isLXQTRunning() && UnixCommand::hasTheExecutable(ctn_LXQT_TERMINAL)){
@@ -456,7 +456,7 @@ void Terminal::runCommandInTerminal(const QStringList &commandList)
       m_process->start(cmd);
     }
     else if (m_selectedTerminal == ctn_CINNAMON_TERMINAL){
-      cmd = suCommand + " \"" + ctn_CINNAMON_TERMINAL + " -e \'bash -c " + ftemp->fileName() + "'\"";
+      cmd = suCommand + " \"" + ctn_CINNAMON_TERMINAL + " -e \'sh -c " + ftemp->fileName() + "'\"";
       m_process->start(cmd);
     }
     else if (m_selectedTerminal == ctn_LXQT_TERMINAL){
