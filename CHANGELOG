@@ -1,3 +1,7 @@
+0.2.2
+  BugFix: Reset ProgressWidget range value to 100, so transactions could update 
+	percentages once again.
+
 0.2.1
   BugFix: Clicking notifier hides OctoXBPS when it's running.
   BugFix: Notifier was not starting OctoXBPS when action was triggered.

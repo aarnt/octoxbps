@@ -60,12 +60,8 @@ public:
   static bool isDatabaseLocked();
   static void removeDatabaseLock();
 
-  //MIRROR-CHECK
-  //void doMirrorCheck();
-
   //XBPS
   void doCleanCache();
-
   void doInstall(const QString &listOfPackages);
   void doInstallInTerminal(const QString &listOfPackages);
 

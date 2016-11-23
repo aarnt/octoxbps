@@ -652,6 +652,7 @@ bool MainWindow::isSUAvailable()
  */
 void MainWindow::doSyncDatabase()
 {
+  m_progressWidget->setRange(0, 100);
   if (!doRemovePacmanLockFile()) return;
 
   m_commandExecuting = ectn_SYNC_DATABASE;
@@ -760,6 +761,8 @@ void MainWindow::doSystemUpgrade(SystemUpgradeOptions systemUpgradeOptions)
 
   if (!isSUAvailable()) return;
 
+  m_progressWidget->setRange(0, 100);
+
   //Shows a dialog indicating the targets needed to be retrieved and asks for the user's permission.
   TransactionInfo ti = g_fwTargetUpgradeList.result(); //Package::getTargetUpgradeList();
   QStringList *targets = ti.packages;
@@ -856,6 +859,7 @@ void MainWindow::doPreRemoveAndInstall()
  */
 void MainWindow::doRemoveAndInstall()
 {
+  m_progressWidget->setRange(0, 100);
   QString listOfRemoveTargets = getTobeRemovedPackages();
   QString removeList;
   QString allLists;
@@ -952,7 +956,8 @@ void MainWindow::doRemoveAndInstall()
  */
 void MainWindow::doRemove()
 {
-  QString listOfTargets = getTobeRemovedPackages();  
+  m_progressWidget->setRange(0, 100);
+  QString listOfTargets = getTobeRemovedPackages();
   QStringList *_targets = Package::getTargetRemovalList(listOfTargets);
   listOfTargets = "";      
   QString list;
@@ -1040,6 +1045,7 @@ void MainWindow::doPreInstall()
  */
 void MainWindow::doInstall()
 {
+  m_progressWidget->setRange(0, 100);
   QString listOfTargets = getTobeInstalledPackages();
 
   TransactionInfo ti = g_fwTargetUpgradeList.result();
@@ -1154,6 +1160,8 @@ void MainWindow::doInstallLocalPackages()
   QString listOfTargets;
   QString list;
   QFileInfo fi;
+
+  m_progressWidget->setRange(0, 100);
 
   foreach(QString target, m_packagesToInstallList)
   {

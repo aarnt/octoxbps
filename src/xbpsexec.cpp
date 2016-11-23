@@ -18,13 +18,13 @@
 *
 */
 
-#include <iostream>
 #include "xbpsexec.h"
 #include "strconstants.h"
 #include "unixcommand.h"
 #include "wmhelper.h"
 
 #include <QRegularExpression>
+#include <QDebug>
 
 /*
  * This class decouples pacman commands executing and parser code from Octopi's interface
@@ -146,7 +146,7 @@ bool XBPSExec::splitOutputStrings(QString output)
               aux += "%";
             }
 
-            if (m_debugMode) std::cout << "_split - case1: " << aux.toLatin1().data() << std::endl;
+            if (m_debugMode) qDebug() << "_split - case1: " << aux;
             parseXBPSProcessOutput(aux);
           }
         }
@@ -155,7 +155,7 @@ bool XBPSExec::splitOutputStrings(QString output)
       {
         if (!m.isEmpty())
         {
-          if (m_debugMode) std::cout << "_split - case2: " << m.toLatin1().data() << std::endl;
+          if (m_debugMode) qDebug() << "_split - case2: " << m;
           parseXBPSProcessOutput(m);
         }
       }
@@ -166,7 +166,7 @@ bool XBPSExec::splitOutputStrings(QString output)
       {
         if (!m3.isEmpty())
         {
-          if (m_debugMode) std::cout << "_split - case3: " << m3.toLatin1().data() << std::endl;
+          if (m_debugMode) qDebug() << "_split - case3: " << m3;
           parseXBPSProcessOutput(m3);
         }
       }
@@ -212,7 +212,7 @@ void XBPSExec::parseXBPSProcessOutput(QString output)
   msg.remove("[mo");
   msg.remove("[1A[K");
 
-  //qDebug() << "_treat: " << msg;
+  if (m_debugMode) qDebug() << "_treat: " << msg;
 
   progressRun = "%";
   progressEnd = "100%";
@@ -261,7 +261,7 @@ void XBPSExec::parseXBPSProcessOutput(QString output)
     else if (msg.at(p-3).isSpace())
       perc = msg.mid(p-2, 3).trimmed();
 
-    //qDebug() << "percentage is: " << perc;
+    if (m_debugMode) qDebug() << "percentage is: " << perc;
 
     //Here we print the transaction percentage updating
     if(!perc.isEmpty() && perc.indexOf("%") > 0)
@@ -311,7 +311,6 @@ void XBPSExec::parseXBPSProcessOutput(QString output)
     msg.remove(QRegularExpression("pid [0-9]+"));
     msg = msg.trimmed();
 
-    //std::cout << "debug: " << msg.toLatin1().data() << std::endl;
     QString order;
     int ini = msg.indexOf(QRegularExpression("\\(\\s{0,3}[0-9]{1,4}/[0-9]{1,4}\\) "));
 
@@ -350,7 +349,7 @@ void XBPSExec::parseXBPSProcessOutput(QString output)
  */
 void XBPSExec::prepareTextToPrint(QString str, TreatString ts, TreatURLLinks tl)
 {
-  if (m_debugMode) std::cout << "_print: " << str.toLatin1().data() << std::endl;
+  if (m_debugMode) qDebug() << "_print: " << str;
 
   if (ts == ectn_DONT_TREAT_STRING)
   {
@@ -471,10 +470,6 @@ void XBPSExec::prepareTextToPrint(QString str, TreatString ts, TreatURLLinks tl)
 void XBPSExec::onStarted()
 {
   //First we output the name of action we are starting to execute!
-  /*if (m_commandExecuting == ectn_MIRROR_CHECK)
-  {
-    prepareTextToPrint("<b>" + StrConstants::getSyncMirror() + "</b><br><br>", ectn_DONT_TREAT_STRING, ectn_DONT_TREAT_URL_LINK);
-  }*/
   if (m_commandExecuting == ectn_CLEAN_CACHE)
   {
     prepareTextToPrint("<b>" + StrConstants::getCleaningPackageCache() + "</b><br><br>", ectn_DONT_TREAT_STRING, ectn_DONT_TREAT_URL_LINK);
@@ -520,30 +515,6 @@ void XBPSExec::onStarted()
  */
 void XBPSExec::onReadOutput()
 {
-  if (m_commandExecuting == ectn_MIRROR_CHECK)
-  {
-    QString output = m_unixCommand->readAllStandardOutput();
-
-    output.remove("[01;33m");
-    output.remove("\033[01;37m");
-    output.remove("\033[00m");
-    output.remove("\033[00;32m");
-    output.remove("[00;31m");
-    output.replace("[", "'");
-    output.replace("]", "'");
-    output.remove("\n");
-
-    if (output.contains("Checking", Qt::CaseInsensitive))
-    {
-      output += "<br>";
-    }
-
-    prepareTextToPrint(output, ectn_TREAT_STRING, ectn_DONT_TREAT_URL_LINK);
-
-    emit readOutput();
-    return;
-  }
-
   if (WMHelper::getSUCommand().contains("kdesu"))
   {
     QString output = m_unixCommand->readAllStandardOutput();
@@ -584,26 +555,6 @@ void XBPSExec::onReadOutput()
  */
 void XBPSExec::onReadOutputError()
 {
-  if (m_commandExecuting == ectn_MIRROR_CHECK)
-  {
-    QString output = m_unixCommand->readAllStandardError();
-
-    output.remove("[01;33m");
-    output.remove("\033[01;37m");
-    output.remove("\033[00m");
-    output.remove("\033[00;32m");
-    output.remove("[00;31m");
-    output.remove("\n");
-
-    if (output.contains("Checking"), Qt::CaseInsensitive)
-      output += "<br>";
-
-    prepareTextToPrint(output, ectn_TREAT_STRING, ectn_DONT_TREAT_URL_LINK);
-
-    emit readOutputError();
-    return;
-  }
-
   QString msg = m_unixCommand->readAllStandardError();
   msg = msg.remove("Fontconfig warning: \"/etc/fonts/conf.d/50-user.conf\", line 14:");
   msg = msg.remove("reading configurations from ~/.fonts.conf is deprecated. please move it to /home/arnt/.config/fontconfig/fonts.conf manually");
@@ -621,28 +572,10 @@ void XBPSExec::onReadOutputError()
  */
 void XBPSExec::onFinished(int exitCode, QProcess::ExitStatus es)
 {
-  /*if (m_commandExecuting == ectn_REMOVE_KCP_PKG)
-  {
-    if (UnixCommand::getLinuxDistro() == ectn_KAOS &&
-        UnixCommand::hasTheExecutable("kcp") &&
-        !UnixCommand::isRootRunning())
-
-      UnixCommand::execCommandAsNormalUser("kcp -u");
-  }*/
-
   emit finished(exitCode, es);
 }
 
 // --------------------- DO METHODS ------------------------------------
-
-/*
- * Calls mirro-check to check mirrors and returns output to UI
- */
-/*void XBPSExec::doMirrorCheck()
-{
-  m_commandExecuting = ectn_MIRROR_CHECK;
-  m_unixCommand->executeCommandAsNormalUser(ctn_MIRROR_CHECK_APP);
-}*/
 
 /*
  * Cleans XBPS's package cache.
@@ -827,83 +760,6 @@ void XBPSExec::doSyncDatabase()
   m_commandExecuting = ectn_SYNC_DATABASE;
   m_unixCommand->executeCommand(command);
 }
-
-/*
- * Calls AUR tool to upgrade given packages inside a terminal
- */
-/*void PacmanExec::doAURUpgrade(const QString &listOfPackages)
-{
-  m_lastCommandList.clear();
-
-  if (StrConstants::getForeignRepositoryToolName() == "pacaur")
-  {
-    m_lastCommandList.append(StrConstants::getForeignRepositoryToolName() + " -Sa " + listOfPackages + ";");
-  }
-  else if (StrConstants::getForeignRepositoryToolName() == "yaourt")
-  {
-    m_lastCommandList.append(StrConstants::getForeignRepositoryToolName() + " -S " + listOfPackages + ";");
-  }
-
-  m_lastCommandList.append("echo -e;");
-  m_lastCommandList.append("read -n 1 -p \"" + StrConstants::getPressAnyKey() + "\"");
-
-  m_commandExecuting = ectn_RUN_IN_TERMINAL;
-  m_unixCommand->runCommandInTerminalAsNormalUser(m_lastCommandList);
-}*/
-
-/*
- * Calls AUR tool to install given packages inside a terminal
- */
-/*void PacmanExec::doAURInstall(const QString &listOfPackages)
-{
-  m_lastCommandList.clear();
-
-  if (UnixCommand::getLinuxDistro() == ectn_KAOS)
-    m_lastCommandList.append(StrConstants::getForeignRepositoryToolName() + " -i " + listOfPackages + ";");
-  else if (StrConstants::getForeignRepositoryToolName() == "pacaur")
-    m_lastCommandList.append(StrConstants::getForeignRepositoryToolName() + " -Sa " + listOfPackages + ";");
-  else if (StrConstants::getForeignRepositoryToolName() == "yaourt" ||
-           StrConstants::getForeignRepositoryToolName() == "ccr")
-    m_lastCommandList.append(StrConstants::getForeignRepositoryToolName() + " -S " + listOfPackages + ";");
-
-  m_lastCommandList.append("echo -e;");
-  m_lastCommandList.append("read -n 1 -p \"" + StrConstants::getPressAnyKey() + "\"");
-
-  m_commandExecuting = ectn_RUN_IN_TERMINAL;
-  m_unixCommand->runCommandInTerminalAsNormalUser(m_lastCommandList);
-}*/
-
-/*
- * Calls AUR tool to remove given packages inside a terminal
- */
-/*void PacmanExec::doAURRemove(const QString &listOfPackages)
-{
-  m_lastCommandList.clear();
-
-  if (StrConstants::getForeignRepositoryToolName() == "ccr" ||
-      StrConstants::getForeignRepositoryToolName() == "kcp")
-  {
-    m_lastCommandList.append("pacman -R " + listOfPackages + ";");
-  }
-  else
-  {
-    m_lastCommandList.append(StrConstants::getForeignRepositoryToolName() +
-                             " -R " + listOfPackages + ";");
-  }
-
-  m_lastCommandList.append("echo -e;");
-  m_lastCommandList.append("read -n 1 -p \"" + StrConstants::getPressAnyKey() + "\"");
-
-  if (StrConstants::getForeignRepositoryToolName() == "kcp")
-    m_commandExecuting = ectn_REMOVE_KCP_PKG;
-  else
-    m_commandExecuting = ectn_RUN_IN_TERMINAL;
-
-  if (StrConstants::getForeignRepositoryToolName() != "yaourt" && StrConstants::getForeignRepositoryToolName() != "pacaur")
-    m_unixCommand->runCommandInTerminal(m_lastCommandList);
-  else
-    m_unixCommand->runCommandInTerminalAsNormalUser(m_lastCommandList);
-}*/
 
 /*
  * Runs latest command inside a terminal (probably due to some previous error)
