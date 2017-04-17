@@ -47,7 +47,7 @@ SearchLineEdit::SearchLineEdit(QWidget *parent, bool hasSLocate) :
 
   m_defaultValidator = new QRegularExpressionValidator(QRegularExpression("[a-zA-Z0-9_\\-\\$\\^\\*\\+\\(\\)\\[\\]\\.\\s\\\\]+"), this);
   m_aurValidator = new QRegularExpressionValidator(QRegularExpression("[a-zA-Z0-9_\\-\\s]+"), this);
-  m_fileValidator = new QRegularExpressionValidator(QRegularExpression("[a-zA-Z0-9_\\-\\/\\.]+"), this);
+  m_fileValidator = new QRegularExpressionValidator(QRegularExpression("[a-zA-Z0-9_\\-\\/\\.\\*]+"), this);
 
   setValidator(m_defaultValidator);
 

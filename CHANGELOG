@@ -1,3 +1,6 @@
+0.3.0 (dev)
+  BugFix: Enable '*' char in the "Search/by file" option.
+
 0.2.2
   BugFix: Reset ProgressWidget range value to 100, so transactions could update 
 	percentages once again.
