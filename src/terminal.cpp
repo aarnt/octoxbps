@@ -115,6 +115,10 @@ void Terminal::openTerminal(const QString &dirName)
       s << "--working-directory=" + dirName;
       m_process->startDetached( ctn_XFCE_TERMINAL, s );
     }
+    else if (UnixCommand::hasTheExecutable(ctn_MATE_TERMINAL)){
+      s << "--working-directory=" + dirName;
+      m_process->startDetached( ctn_MATE_TERMINAL, s );
+    }
     else if (UnixCommand::hasTheExecutable(ctn_LXDE_TERMINAL)){
       s << "--working-directory=" + dirName;
       m_process->startDetached( ctn_LXDE_TERMINAL, s );
@@ -259,6 +263,10 @@ void Terminal::openRootTerminal()
     }
     else if (UnixCommand::hasTheExecutable(ctn_XFCE_TERMINAL)){
       QString cmd = WMHelper::getSUCommand() + " \"" + ctn_XFCE_TERMINAL + "\"";
+      m_process->startDetached(cmd);
+    }
+    else if (UnixCommand::hasTheExecutable(ctn_MATE_TERMINAL)){
+      QString cmd = WMHelper::getSUCommand() + " \"" + ctn_MATE_TERMINAL + "\"";
       m_process->startDetached(cmd);
     }
     else if (UnixCommand::hasTheExecutable(ctn_LXDE_TERMINAL)){
