@@ -414,6 +414,10 @@ void Terminal::runCommandInTerminal(const QStringList &commandList)
       cmd = suCommand + " \"" + ctn_XFCE_TERMINAL + " -e \'sh -c " + ftemp->fileName() + "'\"";
       m_process->start(cmd);
     }
+    else if (UnixCommand::hasTheExecutable(ctn_MATE_TERMINAL)){
+      cmd = suCommand + " \"" + ctn_MATE_TERMINAL + " -e \'sh -c " + ftemp->fileName() + "'\"";
+      m_process->start(cmd);
+    }
     else if (UnixCommand::hasTheExecutable(ctn_LXDE_TERMINAL)){
       cmd = suCommand + " \"" + ctn_LXDE_TERMINAL + " -e \'sh -c " + ftemp->fileName() + "'\"";
       m_process->start(cmd);
