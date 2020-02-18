@@ -1,6 +1,7 @@
 0.3.0-dev
+  BugFix: Removed all xbps-install -f (force) commands.
   BugFix: Enable '*' char in the "Search/by file" option.
-  BugFix: Void Linux RSS news page was wrong.
+  BugFix: Void Linux RSS news page was outdated.
   BugFix: Files tab now shows file list of non installed packages.
   Added new sudo tool called "octoxbps-sudo". It's based on "lxqt-sudo" code 
 	(without LXQt libs) and its use is mandatory in OctoXBPS.
