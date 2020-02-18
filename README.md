@@ -26,6 +26,6 @@ To run it:
 
 $ octoxbps
 
-You'll also need "curl".
+You'll need "curl" and "sudo" installed and your user to be a member of the wheel group.
 
 Enjoy!
