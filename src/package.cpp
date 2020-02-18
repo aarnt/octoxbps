@@ -1114,10 +1114,7 @@ QStringList Package::getContents(const QString& pkgName, bool isInstalled)
 {
   QByteArray result;
 
-  if (isInstalled)
-  {
-    result = UnixCommand::getPackageContentsUsingPacman(pkgName);
-  }
+  result = UnixCommand::getPackageContentsUsingXBPS(pkgName, isInstalled);
 
   QString aux(result);
   QStringList fileList = aux.split("\n", QString::SkipEmptyParts);

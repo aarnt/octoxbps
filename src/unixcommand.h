@@ -92,10 +92,7 @@ public:
   static QByteArray getPackageList(const QString &pkgName = "");
   static QByteArray getPackageInformation(const QString &pkgName, bool foreignPackage);
   static QByteArray getAURPackageVersionInformation();
-  static QByteArray getPackageContentsUsingPacman(const QString &pkgName);
-  static bool isPkgfileInstalled();
-  static QByteArray getPackageContentsUsingPkgfile(const QString &pkgName);
-
+  static QByteArray getPackageContentsUsingXBPS(const QString &pkgName, bool isInstalled);
   static QString getPackageByFilePath(const QString &filePath);
   static QStringList getFilePathSuggestions(const QString &file);
   static QByteArray getPackageGroups();

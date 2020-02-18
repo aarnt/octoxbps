@@ -985,7 +985,7 @@ void MainWindow::invalidateTabs()
   }
   else if(ui->twProperties->currentIndex() == ctn_TABINDEX_FILES) //This is TabFiles
   {
-    refreshTabFiles(true);
+    refreshTabFiles();
     return;
   }
 }

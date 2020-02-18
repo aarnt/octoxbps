@@ -1191,6 +1191,9 @@ void MainWindow::refreshTabFiles(bool clearContents, bool neverQuit)
     bool first=true;
     lastDir = root;
 
+    m_progressWidget->setValue(0);
+    m_progressWidget->show();
+
     QEventLoop el;
     QFuture<QStringList> f;
     QFutureWatcher<QStringList> fwPackageContents;
@@ -1207,8 +1210,6 @@ void MainWindow::refreshTabFiles(bool clearContents, bool neverQuit)
 
     int counter = 0;
     m_progressWidget->setRange(0, fileList.count());
-    m_progressWidget->setValue(0);
-    m_progressWidget->show();
 
     foreach ( QString file, fileList )
     {
