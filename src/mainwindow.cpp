@@ -609,29 +609,36 @@ void MainWindow::execContextMenuPackages(QPoint point)
         menu->addAction(m_actionPackageInfo);
       }
 
-      if (package && package->installed()) {
+      if (package) {
         menu->addAction(ui->actionFindFileInPackage);
         menu->addSeparator();
       }
     }
 
     bool allInstallable = true;
-    bool allRemovable = true;    
+    bool allRemovable = true;
+    bool forbidden = false;
     int numberOfSelPkgs = selectedRows.count();
 
     foreach(QModelIndex item, selectedRows)
     {
       const PackageRepository::PackageData*const package = m_packageModel->getData(item);
 
-      if (package->installed() == false /*|| package->required*/ || Package::isForbidden(package->name))
+      forbidden = Package::isForbidden(package->name);
+      if (package->installed() == false || forbidden)
       {
         allRemovable = false;
+        break;
+      }
+      else if (package->installed())
+      {
+        allInstallable = false;
       }
     }
 
     if (allInstallable) // implicitly foreign packages == 0
     {
-      menu->addAction(ui->actionInstall);
+      if (!forbidden) menu->addAction(ui->actionInstall);
 
       if (!isAllCategoriesSelected() && !isRemoteSearchSelected()) //&& numberOfSelPkgs > 1)
       {
@@ -647,7 +654,7 @@ void MainWindow::execContextMenuPackages(QPoint point)
 
     if (allRemovable)
     {
-      menu->removeAction(ui->actionInstall);
+      //menu->removeAction(ui->actionInstall);
       menu->addAction(ui->actionRemove);
 
       if (!isAllCategoriesSelected() && !isRemoteSearchSelected())
