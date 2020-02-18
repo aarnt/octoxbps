@@ -4,11 +4,15 @@
 
 You'll need "git" and "qt5" packages in order to get latest dev version!
 
-To download the source code, type:
+To download and build the source code, type:
 
 ```
 $ git clone https://github.com/aarnt/octoxbps
 $ cd octoxbps/sudo
+$ qmake-qt5
+$ make
+# make install
+$ cd ../notifier
 $ qmake-qt5
 $ make
 # make install
