@@ -63,6 +63,8 @@ void MainWindow::loadSettings(){
     }
   }
   else assert(false);
+
+  ui->actionUseInstantSearch->setChecked(SettingsManager::isInstantSearchSelected());
 }
 
 /*
@@ -272,7 +274,7 @@ void MainWindow::initMenuBar()
   foreach (QAction * act,  ui->menuBar->actions())
   {
     QString text = act->text();
-    text = text.remove("&");
+    //text = text.remove("&");
     act->setText(qApp->translate("MainWindow", text.toUtf8(), 0));
   }
 }
@@ -325,7 +327,6 @@ void MainWindow::initStatusBar()
   m_progressWidget = new QProgressBar(this);
   m_progressWidget->close();
   m_progressWidget->setMaximumWidth(250);
-
   ui->statusBar->addWidget(m_lblSelCounter);
   ui->statusBar->addWidget(m_lblTotalCounters);
   ui->statusBar->addPermanentWidget(m_progressWidget);
@@ -451,7 +452,8 @@ void MainWindow::initTabTransaction()
  * This is the LineEdit widget used to filter the package list
  */
 void MainWindow::initLineEditFilterPackages(){
-  connect(m_leFilterPackage, SIGNAL(textChanged(QString)), this, SLOT(reapplyPackageFilter()));
+  //connect(m_leFilterPackage, SIGNAL(textChanged(QString)), this, SLOT(reapplyPackageFilter()));
+  toggleInstantSearch();
 }
 
 /*
@@ -459,22 +461,9 @@ void MainWindow::initLineEditFilterPackages(){
  */
 void MainWindow::initPackageTreeView()
 {
-  ui->tvPackages->setAlternatingRowColors(true);
-  ui->tvPackages->setItemDelegate(new TreeViewPackagesItemDelegate(ui->tvPackages));
-  ui->tvPackages->setContextMenuPolicy(Qt::CustomContextMenu);
-  ui->tvPackages->setSelectionMode(QAbstractItemView::ExtendedSelection);
-  ui->tvPackages->setEditTriggers(QAbstractItemView::NoEditTriggers);
-  ui->tvPackages->setVerticalScrollMode(QAbstractItemView::ScrollPerItem);
-  ui->tvPackages->setAllColumnsShowFocus( true );
+  ui->tvPackages->init();
   ui->tvPackages->setModel(m_packageModel.get());
-  ui->tvPackages->setSortingEnabled( true );
-  ui->tvPackages->setIndentation( 0 );
-  ui->tvPackages->header()->setSortIndicatorShown(true);
-  ui->tvPackages->header()->setSectionsClickable(true);
-  ui->tvPackages->header()->setSectionsMovable(false);
-  ui->tvPackages->header()->setSectionResizeMode(QHeaderView::Interactive);
-  ui->tvPackages->header()->setDefaultAlignment( Qt::AlignLeft );
-  resizePackageView();
+  ui->tvPackages->resizePackageView();
 
   connect(ui->tvPackages->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
           this, SLOT(tvPackagesSelectionChanged(QItemSelection,QItemSelection)));
@@ -485,16 +474,6 @@ void MainWindow::initPackageTreeView()
   connect(ui->tvPackages, SIGNAL(customContextMenuRequested(QPoint)), this,
           SLOT(execContextMenuPackages(QPoint)));
   connect(ui->tvPackages, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(onDoubleClickPackageList()));
-}
-
-void MainWindow::resizePackageView()
-{
-  ui->tvPackages->setColumnWidth(PackageModel::ctn_PACKAGE_ICON_COLUMN,
-                                 SettingsManager::getPackageIconColumnWidth());
-  ui->tvPackages->setColumnWidth(PackageModel::ctn_PACKAGE_NAME_COLUMN,
-                                 SettingsManager::getPackageNameColumnWidth());
-  //ui->tvPackages->setColumnWidth(PackageModel::ctn_PACKAGE_VERSION_COLUMN,
-  //                               SettingsManager::getPackageVersionColumnWidth());
 }
 
 /*
@@ -639,6 +618,11 @@ void MainWindow::initActions()
     connect(m_actionMirrorCheck, SIGNAL(triggered()), this, SLOT(doMirrorCheck()));
   }  
 
+  ui->actionOpenRootTerminal->setVisible(false);
+
+  m_actionPackageInfo = new QAction(this);
+  m_actionPackageInfo->setText(StrConstants::getTabInfoName());
+
   m_actionSwitchToLocalFilter = new QAction(this);
   m_actionSwitchToLocalFilter->setIcon(IconHelper::getIconHardDrive());
   m_actionSwitchToLocalFilter->setText(StrConstants::getFilterLocalPackages());
@@ -688,6 +672,7 @@ void MainWindow::initActions()
   ui->actionInstallLocalPackage->setIcon(IconHelper::getIconFolder());
   ui->actionOpenDirectory->setIcon(IconHelper::getIconFolder());
 
+  connect(ui->actionUseInstantSearch, SIGNAL(triggered(bool)), this, SLOT(toggleInstantSearch()));
   connect(ui->tvPackages->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
           this, SLOT(invalidateTabs()));
 
@@ -707,6 +692,7 @@ void MainWindow::initActions()
   connect(ui->twProperties, SIGNAL(currentChanged(int)), this, SLOT(changedTabIndex()));
   connect(ui->actionHelpUsage, SIGNAL(triggered()), this, SLOT(onHelpUsage()));
   connect(ui->actionHelpAbout, SIGNAL(triggered()), this, SLOT(onHelpAbout()));
+  connect(m_actionPackageInfo, SIGNAL(triggered()), this, SLOT(showPackageInfo()));
 
   //Actions from tvPkgFileList context menu
   connect(ui->actionCollapseAllItems, SIGNAL(triggered()), this, SLOT(collapseAllContentItems()));
@@ -717,7 +703,7 @@ void MainWindow::initActions()
   connect(ui->actionEditFile, SIGNAL(triggered()), this, SLOT(editFile()));
   connect(ui->actionOpenDirectory, SIGNAL(triggered()), this, SLOT(openDirectory()));
   connect(ui->actionOpenTerminal, SIGNAL(triggered()), this, SLOT(openTerminal()));
-  connect(ui->actionOpenRootTerminal, SIGNAL(triggered()), this, SLOT(openRootTerminal()));
+  //connect(ui->actionOpenRootTerminal, SIGNAL(triggered()), this, SLOT(openRootTerminal()));
 
   // Use theme icons for QActions
   ui->actionSyncPackages->setIcon(IconHelper::getIconSyncDatabase());
@@ -739,7 +725,7 @@ void MainWindow::initActions()
   ui->actionRemoveTransactionItem->setIcon(IconHelper::getIconClose());
   ui->actionRemoveTransactionItems->setIcon(IconHelper::getIconClose());
   ui->actionFindFileInPackage->setIcon(IconHelper::getIconFindFileInPackage());
-  ui->actionOpenRootTerminal->setIcon(IconHelper::getIconTerminal());
+  //ui->actionOpenRootTerminal->setIcon(IconHelper::getIconTerminal());
 
   //Actions for the View menu
   connect(ui->actionViewAllPackages, SIGNAL(triggered()), this, SLOT(selectedAllPackagesMenu()));
@@ -769,7 +755,7 @@ void MainWindow::initActions()
   QString text;
   foreach(QAction* ac, this->findChildren<QAction*>(QRegularExpression("(m_a|a)ction\\S*")))
   {
-    text = ac->text().remove("&");
+    text = ac->text(); //.remove("&");
     ac->setText(qApp->translate("MainWindow", text.toUtf8(), 0));
 
     if (!ac->shortcut().isEmpty())

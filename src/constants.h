@@ -69,6 +69,7 @@ const QString ctn_KEY_PACKAGE_ICON_COLUMN_WIDTH("Package_Icon_Column_Width");
 const QString ctn_KEY_PACKAGE_NAME_COLUMN_WIDTH("Package_Name_Column_Width");
 const QString ctn_KEY_PACKAGE_VERSION_COLUMN_WIDTH("Package_Version_Column_Width");
 const QString ctn_KEY_TERMINAL("Terminal");
+const QString ctn_KEY_INSTANT_SEARCH("Instant_Search");
 const QString ctn_AUTOMATIC("automatic");
 
 //Notifier related
@@ -95,6 +96,7 @@ const int ctn_RUN_IN_TERMINAL(328);
 
 //WMHelper related
 const QString ctn_NO_SU_COMMAND("none");
+const QString ctn_OCTOXBPS_SUDO("/usr/lib/octoxbps/octoxbps-sudo");
 const QString ctn_ROOT_SH("/bin/sh -c ");
 
 const QString ctn_LXQTSU("lxqt-sudo");
@@ -165,9 +167,9 @@ enum EditOptions { ectn_EDIT_AS_ROOT, ectn_EDIT_AS_NORMAL_USER };
 
 const QString ctn_PKEXEC_BINARY = "/usr/bin/pkexec";
 
-const QString ctn_PACMANHELPER_BINARY = "/usr/lib/octoxbps/pacmanhelper";
+//const QString ctn_PACMANHELPER_BINARY = "/usr/lib/octoxbps/pacmanhelper";
 
-const QString ctn_DBUS_PACMANHELPER_SERVICE = "/usr/share/dbus-1/system-services/org.octoxbps.pacmanhelper.service";
+//const QString ctn_DBUS_PACMANHELPER_SERVICE = "/usr/share/dbus-1/system-services/org.octoxbps.pacmanhelper.service";
 
 enum ExecOpt { ectn_NORMAL_EXEC_OPT, ectn_SYSUPGRADE_EXEC_OPT,
                ectn_SYSUPGRADE_NOCONFIRM_EXEC_OPT };

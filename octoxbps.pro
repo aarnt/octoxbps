@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT += core gui network xml dbus widgets quick quickwidgets
+QT += core gui network xml widgets
 DEFINES += OCTOXBPS_EXTENSIONS UNIFIED_SEARCH
 CONFIG += qt warn_on debug
 QMAKE_CXXFLAGS += -std=c++11
@@ -23,6 +23,7 @@ HEADERS += src/QtSolutions/qtsingleapplication.h \
         src/settingsmanager.h \
         src/uihelper.h \
         src/package.h \
+        src/packagetreeview.h \
         src/unixcommand.h \
         src/wmhelper.h \
         src/treeviewpackagesitemdelegate.h \
@@ -35,7 +36,6 @@ HEADERS += src/QtSolutions/qtsingleapplication.h \
         src/ui/octopitabinfo.h \
         src/utils.h \
         src/terminal.h \
-        src/terminalselectordialog.h \
         src/constants.h \
         src/xbpsexec.h
 
@@ -43,10 +43,12 @@ SOURCES += src/QtSolutions/qtsingleapplication.cpp \
         src/QtSolutions/qtlocalpeer.cpp \
         src/main.cpp\
         src/mainwindow.cpp \
+        src/strconstants.cpp \
         src/searchlineedit.cpp \
         src/argumentlist.cpp \
         src/settingsmanager.cpp \
         src/package.cpp \
+        src/packagetreeview.cpp \
         src/unixcommand.cpp \
         src/wmhelper.cpp \
         src/treeviewpackagesitemdelegate.cpp \
@@ -66,7 +68,6 @@ SOURCES += src/QtSolutions/qtsingleapplication.cpp \
         src/ui/octopitabinfo.cpp \
         src/utils.cpp \
         src/terminal.cpp \
-        src/terminalselectordialog.cpp \
         src/xbpsexec.cpp
 
 FORMS   += ui/mainwindow.ui \
@@ -76,3 +77,26 @@ FORMS   += ui/mainwindow.ui \
 RESOURCES += resources.qrc
 
 #TRANSLATIONS += resources/translations/octoxbps_pt_BR.ts
+
+# install
+isEmpty(PREFIX) {
+    PREFIX = /usr
+}
+
+isEmpty(BINDIR) {
+    BINDIR = $$PREFIX/bin
+}
+
+isEmpty(DATADIR) {
+    DATADIR = $$PREFIX/share
+}
+
+target.path = $$BINDIR
+
+desktop.path = $$DATADIR/applications
+desktop.files += octoxbps.desktop
+
+icon.path = $$DATADIR/icons
+icon.files += resources/images/octopi.png
+
+INSTALLS += target desktop icon

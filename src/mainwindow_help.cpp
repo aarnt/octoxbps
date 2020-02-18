@@ -156,8 +156,8 @@ void MainWindow::initTabHelpUsage()
   QString("</li><li>") +
      tr("F10 to maximize/demaximize package list view") +
   QString("</li><li>") +
-     tr("F12 to maximize/demaximize Tab's view") +
-  QString("</li></ul>");
+     tr("F11 to maximize/demaximize Tab's view") +
+  QString("</li></ul><br>");
 
   text->setText(html);
   int tindex = ui->twProperties->addTab(tabHelpUsage, StrConstants::getHelpUsage() );
@@ -194,6 +194,6 @@ void MainWindow::onHelpAbout()
   aboutText += "&copy; Alexandre Albuquerque Arnt<br><br>";
   aboutText += "<b>" + UnixCommand::getXBPSVersion() + "</b><br>";
   aboutText += "<a href=\"https://github.com/voidlinux/xbps/\">https://github.com/voidlinux/xbps</a><br>";
-  aboutText += "&copy; Juan Romero Pardines";
+  aboutText += "&copy; Juan Romero Pardines & Void Linux team";
   QMessageBox::about(this, StrConstants::getHelpAbout(), aboutText);
 }

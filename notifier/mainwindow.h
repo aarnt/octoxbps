@@ -34,8 +34,7 @@ class QIcon;
 class QMenu;
 class QAction;
 class QFileSystemWatcher;
-//class PacmanHelperClient;
-class SetupDialog;
+class OptionsDialog;
 class TransactionDialog;
 
 #ifdef KSTATUS
@@ -66,19 +65,25 @@ private slots:
   void runOctoXBPS(ExecOpt execOptions = ectn_SYSUPGRADE_EXEC_OPT);
   void runOctoXBPSSysUpgrade();
 
-  inline void startOctoXBPS() { runOctoXBPS(ectn_NORMAL_EXEC_OPT); }
+  inline void startOctoXBPS() {
+    if (m_numberOfOutdatedPackages == 0)
+      runOctoXBPS(ectn_NORMAL_EXEC_OPT);
+    else
+      runOctoXBPS(ectn_SYSUPGRADE_EXEC_OPT);
+  }
+
   void aboutOctoXBPSNotifier();
   void hideOctoXBPS();
   void exitNotifier();
   void doSystemUpgrade();
   void doSystemUpgradeFinished();
   void toggleEnableInterface(bool state);
-  void showConfigDialog();
+  void showOptionsDialog();
 
 private:
 
   TransactionDialog *m_transactionDialog;
-  SetupDialog *m_setupDialog;
+  OptionsDialog *m_optionsDialog;
   int m_numberOfOutdatedPackages;
   int m_numberOfOutdatedAURPackages;
   bool m_systemUpgradeDialog;
@@ -86,7 +91,7 @@ private:
   UnixCommand *m_unixCommand;
 
   QAction *m_actionOctoXBPS;
-  QAction *m_actionSetInterval;
+  QAction *m_actionOptions;
   QAction *m_actionSyncDatabase;
   QAction *m_actionSystemUpgrade;
   QAction *m_actionAbout;
@@ -105,7 +110,6 @@ private:
 
   QMenu *m_systemTrayIconMenu;
   QFileSystemWatcher *m_pacmanDatabaseSystemWatcher;
-  //PacmanHelperClient *m_pacmanHelperClient;
 
   bool _isSUAvailable();
   void initSystemTrayIcon();

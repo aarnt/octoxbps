@@ -119,9 +119,9 @@ QString UnixCommand::discoverBinaryPath(const QString& binary){
 bool UnixCommand::cleanPacmanCache()
 {
   QProcess pacman;
-  QString commandStr = "\"xbps-remove -O\"";
+  QString commandStr = "/usr/bin/xbps-remove -O";
 
-  QString command = WMHelper::getSUCommand() + " " + commandStr;
+  QString command = WMHelper::getSUCommand() + commandStr;
   pacman.start(command);
   pacman.waitForFinished();
 
@@ -165,7 +165,7 @@ QByteArray UnixCommand::performQuery(const QString &args)
   env.insert("LC_ALL", "C");
   pacman.setProcessEnvironment(env);
 
-  pacman.start("xbps-" + args);
+  pacman.start("/usr/bin/xbps-" + args);
   pacman.waitForFinished();
   result = pacman.readAllStandardOutput();
   pacman.close();
@@ -262,15 +262,11 @@ QByteArray UnixCommand::getForeignPackageList()
 QByteArray UnixCommand::getDependenciesList(const QString &pkgName)
 {
   QByteArray result = performQuery("query -x " + pkgName);
-  return result;
-}
+  if (result.isEmpty())
+  {
+    result = performQuery("query -Rx " + pkgName);
+  }
 
-/*
- * Retrieves the remote dependencies pkg list
- */
-QByteArray UnixCommand::getRemoteDependenciesList(const QString &pkgName)
-{
-  QByteArray result = performQuery("query -Rx " + pkgName);
   return result;
 }
 
@@ -306,14 +302,16 @@ QByteArray UnixCommand::getPackageList(const QString &pkgName)
  */
 QByteArray UnixCommand::getPackageInformation(const QString &pkgName, bool foreignPackage = false)
 {
+  Q_UNUSED(foreignPackage)
   QString args;
 
-  if(foreignPackage)
+  if(isPackageInstalled(pkgName))
   {
+    args = "query " + pkgName;
   }
   else
   {
-    args = "query " + pkgName;
+    args = "query -R " + pkgName;
   }
 
   //if (pkgName.isEmpty() == false) // enables get for all ("")
@@ -667,7 +665,7 @@ void UnixCommand::execCommand(const QString &pCommand)
   env.insert("LC_MESSAGES", "C");
   p.setProcessEnvironment(env);
 
-  p.start(WMHelper::getSUCommand() + "\"" + pCommand + "\"");
+  p.start(WMHelper::getSUCommand() + pCommand);
   p.waitForFinished(-1);
   p.close();
 }
@@ -775,7 +773,7 @@ void UnixCommand::executeCommand(const QString &pCommand, Language lang)
     }
     else
     {
-      command = WMHelper::getSUCommand() + "\"" + pCommand + "\"";
+      command = WMHelper::getSUCommand() + pCommand;
     }
   }
 
@@ -920,11 +918,11 @@ bool UnixCommand::isAppRunning(const QString &appName, bool justOneInstance)
  */
 bool UnixCommand::isPackageInstalled(const QString &pkgName)
 {
-  QProcess pacman;
-  QString command = "xbps-query -S " + pkgName;
-  pacman.start(command);
-  pacman.waitForFinished();
-  return (pacman.exitCode() == 0);
+  QProcess xbps;
+  QString command = "/usr/bin/xbps-query -S " + pkgName;
+  xbps.start(command);
+  xbps.waitForFinished();
+  return (xbps.exitCode() == 0);
 }
 
 /*

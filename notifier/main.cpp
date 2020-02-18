@@ -28,13 +28,11 @@
 #include <QtGui>
 #include <QDebug>
 
-#define NO_GTK_STYLE
-
 int main(int argc, char *argv[])
 {  
   bool debugInfo = false;
-
   ArgumentList *argList = new ArgumentList(argc, argv);
+
   if (argList->getSwitch("-d"))
   {
     //If user chooses to switch debug info on...
@@ -42,9 +40,10 @@ int main(int argc, char *argv[])
   }
 
   if (debugInfo)
+  {
     qDebug() << QString("OctoXBPS Notifier - " + StrConstants::getApplicationVersion() +
                   " (" + StrConstants::getQtVersion() + ")");
-
+  }
   if (UnixCommand::isAppRunning("octoxbps-notifier"))
   {
     qDebug() << "Aborting notifier as another instance is already running!";
@@ -57,26 +56,7 @@ int main(int argc, char *argv[])
     return (-2);
   }
 
-  /*if (!QFile::exists(ctn_DBUS_PACMANHELPER_SERVICE))
-  {
-    qDebug() << "Aborting notifier as 'pacmanhelper' DBus service could not be found! [" << ctn_DBUS_PACMANHELPER_SERVICE << "]";
-    return (-3);
-  }*/
-
   QApplication a(argc, argv);
-
-#if QT_VERSION < 0x050000
-  #ifndef NO_GTK_STYLE
-  QApplication::setGraphicsSystem(QLatin1String("raster"));
-
-  if(!WMHelper::isKDERunning() && (!WMHelper::isLXQTRunning()) && (!WMHelper::isRazorQtRunning()))
-  {
-    qApp->setStyle(new QGtkStyle());
-  }
-  else
-    qApp->setStyle(new QCleanlooksStyle);
-  #endif
-#endif
 
   /*QTranslator appTranslator;
   appTranslator.load(":/resources/translations/octoxbps_" +

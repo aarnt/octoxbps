@@ -19,9 +19,8 @@
 */
 
 #include "mainwindow.h"
-#include "setupdialog.h"
+#include "optionsdialog.h"
 #include "outputdialog.h"
-//#include "../pacmanhelper/pacmanhelperclient.h"
 #include "../../src/strconstants.h"
 #include "../../src/uihelper.h"
 #include "../../src/package.h"
@@ -33,6 +32,7 @@
 #include <QMenu>
 #include <QProcess>
 #include <QMessageBox>
+#include <QScreen>
 #include <QDebug>
 
 #ifdef KSTATUS
@@ -52,7 +52,7 @@ MainWindow::MainWindow(QWidget *parent) :
   m_transactionDialog = nullptr;
 
   m_debugInfo = false;
-  m_setupDialog = nullptr;
+  m_optionsDialog = nullptr;
   m_pacmanDatabaseSystemWatcher =
             new QFileSystemWatcher(QStringList() << ctn_XBPS_DATABASE_DIR, this);
 
@@ -104,12 +104,12 @@ void MainWindow::initSystemTrayIcon()
   connect(m_actionAbout, SIGNAL(triggered()), this, SLOT(aboutOctoXBPSNotifier()));
 
   m_actionOctoXBPS = new QAction(this);
-  m_actionOctoXBPS->setText("OctoXBPS...");
+  m_actionOctoXBPS->setText("OctoXBPS ...");
   connect(m_actionOctoXBPS, SIGNAL(triggered()), this, SLOT(startOctoXBPS()));
 
-  m_actionSetInterval = new QAction(this);
-  m_actionSetInterval->setText(StrConstants::getSetInterval());
-  connect(m_actionSetInterval, SIGNAL(triggered()), this, SLOT(showConfigDialog()));
+  m_actionOptions = new QAction(this);
+  m_actionOptions->setText(StrConstants::getOptions());
+  connect(m_actionOptions, SIGNAL(triggered()), this, SLOT(showOptionsDialog()));
 
   m_actionSyncDatabase = new QAction(this);
   m_actionSyncDatabase->setIconVisibleInMenu(true);
@@ -128,9 +128,9 @@ void MainWindow::initSystemTrayIcon()
   if (UnixCommand::hasTheExecutable("octoxbps"))
     m_systemTrayIconMenu->addAction(m_actionOctoXBPS);
 
-  m_systemTrayIconMenu->addAction(m_actionSetInterval);
   m_systemTrayIconMenu->addAction(m_actionSyncDatabase);
   m_systemTrayIconMenu->addAction(m_actionSystemUpgrade);
+  m_systemTrayIconMenu->addAction(m_actionOptions);
   m_systemTrayIconMenu->addSeparator();
   m_systemTrayIconMenu->addAction(m_actionAbout);
   m_systemTrayIconMenu->addAction(m_actionExit);
@@ -239,7 +239,10 @@ void MainWindow::pacmanHelperTimerTimeout()
  */
 void MainWindow::runOctoXBPSSysUpgrade()
 {
-  runOctoXBPS(ectn_SYSUPGRADE_EXEC_OPT);
+  if (UnixCommand::isAppRunning("octoxbps", true))
+    runOctoXBPS(ectn_SYSUPGRADE_EXEC_OPT);
+  else
+    doSystemUpgrade();
 }
 
 /*
@@ -249,6 +252,14 @@ void MainWindow::aboutOctoXBPSNotifier()
 {
   m_actionAbout->setEnabled(false);
 
+  //First we create a fake window to act as about dialog's parent
+  //Otherwise the dialog appears at a random screen point!
+  QMainWindow *fake = new QMainWindow();
+  fake->setWindowIcon(m_icon);
+  fake->setVisible(false);
+  QScreen *sc = QGuiApplication::primaryScreen();
+  fake->setGeometry(sc->geometry());
+
   QString aboutText = "<b>OctoXBPS Notifier - " +
       StrConstants::getApplicationVersion() + "</b>" + " (" + StrConstants::getQtVersion() + ")<br>";
 
@@ -256,10 +267,11 @@ void MainWindow::aboutOctoXBPSNotifier()
   aboutText += "&copy; Alexandre Albuquerque Arnt<br><br>";
   aboutText += "<b>" + UnixCommand::getXBPSVersion() + "</b><br>";
   aboutText += "<a href=\"https://github.com/voidlinux/xbps/\">https://github.com/voidlinux/xbps</a><br>";
-  aboutText += "&copy; Juan Romero Pardines";
+  aboutText += "&copy; Juan Romero Pardines & Void Linux team";
 
-  QMessageBox::about(this, StrConstants::getHelpAbout(), aboutText);
+  QMessageBox::about(fake, StrConstants::getHelpAbout(), aboutText);
 
+  delete fake;
   m_actionAbout->setEnabled(true);
 }
 
@@ -367,7 +379,7 @@ void MainWindow::doSystemUpgrade()
     if (!_isSUAvailable()) return;
 
     QStringList lastCommandList;
-    lastCommandList.append("xbps-install -u;");
+    lastCommandList.append("/usr/bin/xbps-install -u;");
     lastCommandList.append("echo -e;");
     lastCommandList.append("read -n1 -p \"" + StrConstants::getPressAnyKey() + "\"");
 
@@ -424,7 +436,7 @@ void MainWindow::toggleEnableInterface(bool state)
 {
   m_actionOctoXBPS->setEnabled(state);
   m_actionSyncDatabase->setEnabled(state);
-  m_actionSetInterval->setEnabled(state);
+  m_actionOptions->setEnabled(state);
   m_actionExit->setEnabled(state);
 }
 
@@ -581,7 +593,7 @@ void MainWindow::startPkexec()
 {
   QProcess *xbps = new QProcess();
   connect(xbps, SIGNAL(finished(int)), this, SLOT(finishedPkexec(int)));
-  xbps->start("pkexec xbps-install -Syy");
+  xbps->start("pkexec /usr/bin/xbps-install -Sy");
 }
 
 /*
@@ -721,9 +733,9 @@ void MainWindow::execSystemTrayActivated(QSystemTrayIcon::ActivationReason ar)
   }
   case QSystemTrayIcon::Trigger:
   {
-    if (UnixCommand::isAppRunning("octoxbps", true))
+    if (m_outdatedStringList->count() > 0)
     {
-      hideOctoXBPS();
+      doSystemUpgrade();
     }
 
     break;
@@ -737,16 +749,9 @@ void MainWindow::execSystemTrayActivated(QSystemTrayIcon::ActivationReason ar)
  */
 void MainWindow::execSystemTrayKF5()
 {
-  static bool hidingOctoXBPS = true;
-
-  if (UnixCommand::isAppRunning("octoxbps", true))
+  if (m_outdatedStringList->count() > 0)
   {
-    if (!hidingOctoXBPS)
-      runOctoXBPS(ectn_NORMAL_EXEC_OPT);
-    else
-      hideOctoXBPS();
-
-    hidingOctoXBPS = !hidingOctoXBPS;
+    doSystemUpgrade();
   }
 }
 
@@ -807,35 +812,26 @@ void MainWindow::runOctoXBPS(ExecOpt execOptions)
 
   if (execOptions == ectn_SYSUPGRADE_EXEC_OPT && m_outdatedStringList->count() > 0)
   {
-    doSystemUpgrade();
+    QProcess::startDetached("octoxbps -sysupgrade");
+    //doSystemUpgrade();
   }
   else if (execOptions == ectn_NORMAL_EXEC_OPT)
   {
-    if (!WMHelper::isKDERunning() && (!WMHelper::isRazorQtRunning()) && (!WMHelper::isLXQTRunning()))
-    {
-      QProcess::startDetached("octoxbps -style gtk");
-    }
-    else
-    {
-      QProcess::startDetached("octoxbps");
-    }
+    QProcess::startDetached("octoxbps");
   }
 }
 
 /*
  * Calls the QDialog to set notifier interval
  */
-void MainWindow::showConfigDialog()
+void MainWindow::showOptionsDialog()
 {
-  if (m_setupDialog == nullptr)
+  if (m_optionsDialog == nullptr)
   {
-    m_setupDialog = new SetupDialog(this);
-#if QT_VERSION >= 0x050000
-    utils::positionWindowAtScreenCenter(m_setupDialog);
-#endif
-    m_setupDialog->exec();
-
-    delete m_setupDialog;
-    m_setupDialog = nullptr;
+    m_optionsDialog = new OptionsDialog(this);
+    utils::positionWindowAtScreenCenter(m_optionsDialog);
+    m_optionsDialog->exec();
+    delete m_optionsDialog;
+    m_optionsDialog = nullptr;
   }
 }

@@ -484,16 +484,16 @@ void PackageModel::sort()
     m_columnSortedlistOfPackages = m_listOfPackages;
     return;
   case ctn_PACKAGE_ICON_COLUMN:
-    qSort(m_columnSortedlistOfPackages.begin(), m_columnSortedlistOfPackages.end(), TSort0());
+    std::sort(m_columnSortedlistOfPackages.begin(), m_columnSortedlistOfPackages.end(), TSort0());
     return;
   case ctn_PACKAGE_VERSION_COLUMN:
-    qSort(m_columnSortedlistOfPackages.begin(), m_columnSortedlistOfPackages.end(), TSort2());
+    std::sort(m_columnSortedlistOfPackages.begin(), m_columnSortedlistOfPackages.end(), TSort2());
     return;
   /*case ctn_PACKAGE_ORIGIN_COLUMN:
     qSort(m_columnSortedlistOfPackages.begin(), m_columnSortedlistOfPackages.end(), TSort3());
     return;*/
   case ctn_PACKAGE_SIZE_COLUMN:
-    qSort(m_columnSortedlistOfPackages.begin(), m_columnSortedlistOfPackages.end(), TSort4());
+    std::sort(m_columnSortedlistOfPackages.begin(), m_columnSortedlistOfPackages.end(), TSort4());
     return;
   default:
     return;

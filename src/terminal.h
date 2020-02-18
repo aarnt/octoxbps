@@ -34,7 +34,6 @@ class Terminal : public QObject
 private:
   QString m_selectedTerminal;
   QProcess *m_process;
-  utils::ProcessWrapper *m_processWrapper;
 
 public:
   Terminal(QObject *parent, const QString& selectedTerminal);
@@ -44,7 +43,6 @@ public:
   void openRootTerminal();
   void runCommandInTerminal(const QStringList& commandList);
   void runCommandInTerminalAsNormalUser(const QStringList& commandList);
-
   static QStringList getListOfAvailableTerminals();
 
 signals:

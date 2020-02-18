@@ -114,21 +114,20 @@ void MainWindow::show()
     initTabTransaction();
     initTabHelpUsage();
     initTabNews();
-    initLineEditFilterPackages();
     initPackageTreeView();
     initActions();
     loadSettings();
+    initLineEditFilterPackages();
     loadPanelSettings();
     initStatusBar();
     initToolButtonPacman();
-    //initToolButtonAUR();
     initAppIcon();
     initMenuBar();
     initToolBar();
     initTabWidgetPropertiesIndex();
     refreshDistroNews(false);
 
-    if (Package::hasPkgNGDatabase())
+    if (Package::hasXBPSDatabase())
     {
       refreshGroupsWidget();
     }
@@ -138,7 +137,7 @@ void MainWindow::show()
     m_listOfVisitedPackages.clear();
     m_indOfVisitedPackage = 0;
 
-    if (Package::hasPkgNGDatabase())
+    if (Package::hasXBPSDatabase())
     {
       metaBuildPackageList();
     }
@@ -193,7 +192,7 @@ void MainWindow::showAnchorDescription(const QUrl &link)
 
     QFuture<QString> f;
     disconnect(&g_fwToolTipInfo, SIGNAL(finished()), this, SLOT(execToolTip()));
-    f = QtConcurrent::run(showPackageInfo, pkgName);
+    f = QtConcurrent::run(showPackageInformation, pkgName);
     g_fwToolTipInfo.setFuture(f);
     connect(&g_fwToolTipInfo, SIGNAL(finished()), this, SLOT(execToolTip()));
   }
@@ -461,6 +460,10 @@ const PackageRepository::PackageData* MainWindow::getFirstPackageFromRepo(const 
 void MainWindow::setCallSystemUpgrade()
 {
   m_callSystemUpgrade = true;
+  if (m_initializationCompleted && m_commandExecuting == ectn_NONE)
+  {
+    doPreSystemUpgrade();
+  }
 }
 
 /*
@@ -565,13 +568,6 @@ void MainWindow::tvPackagesSearchColumnChanged(QAction *actionSelected)
  */
 void MainWindow::changePackageListModel(ViewOptions viewOptions, QString selectedRepo)
 {  
-  /*
-  if (m_actionSwitchToAURTool->isChecked())
-    m_packageModel->applyFilter(viewOptions, "", StrConstants::getForeignToolGroup());
-  else
-    m_packageModel->applyFilter(viewOptions, selectedRepo, isAllCategoriesSelected() ? "" : getSelectedCategory());
-  */
-
   m_packageModel->applyFilter(viewOptions, selectedRepo, isAllCategoriesSelected() ? "" : getSelectedCategory());
 
   if (m_leFilterPackage->text() != "") reapplyPackageFilter();
@@ -602,11 +598,17 @@ void MainWindow::execContextMenuPackages(QPoint point)
   if (selectionModel != NULL && selectionModel->selectedRows().count() > 0)
   {
     QMenu* menu = new QMenu(this);
+
     QModelIndexList selectedRows = selectionModel->selectedRows();
     if (selectedRows.count() == 1) // enable entry "browse installed files" ?
     {
       QModelIndex item = selectedRows.at(0);
       const PackageRepository::PackageData*const package = m_packageModel->getData(item);
+      if (package)
+      {
+        menu->addAction(m_actionPackageInfo);
+      }
+
       if (package && package->installed()) {
         menu->addAction(ui->actionFindFileInPackage);
         menu->addSeparator();
@@ -629,7 +631,6 @@ void MainWindow::execContextMenuPackages(QPoint point)
 
     if (allInstallable) // implicitly foreign packages == 0
     {
-      //if (!isAllCategoriesSelected() && !isAURGroupSelected()) menu->addAction(ui->actionInstallGroup);
       menu->addAction(ui->actionInstall);
 
       if (!isAllCategoriesSelected() && !isRemoteSearchSelected()) //&& numberOfSelPkgs > 1)
@@ -643,13 +644,10 @@ void MainWindow::execContextMenuPackages(QPoint point)
         }
       }
     }
-    /*else if (allInstallable == false && numberOfAUR == numberOfSelPkgs)
-    {
-      menu->addAction(ui->actionInstallAUR); // installs directly
-    }*/
 
     if (allRemovable)
     {
+      menu->removeAction(ui->actionInstall);
       menu->addAction(ui->actionRemove);
 
       if (!isAllCategoriesSelected() && !isRemoteSearchSelected())
@@ -672,6 +670,14 @@ void MainWindow::execContextMenuPackages(QPoint point)
       menu->exec(pt2);
     }
   }
+}
+
+/*
+ * Brings Info tab to the user
+ */
+void MainWindow::showPackageInfo()
+{
+  refreshTabInfo(false, true);
 }
 
 /*
@@ -744,7 +750,7 @@ void MainWindow::collapseItem(QTreeView* tv, QStandardItemModel* sim, QModelInde
     {
       QCoreApplication::processEvents();
       tv->collapse(mi);
-      QModelIndex mi2 = mi.child(i, 0);
+      QModelIndex mi2 = sim->index(i, 0, mi);
       collapseItem(tv, sim, mi2);
     }
   }
@@ -757,7 +763,7 @@ void MainWindow::expandItem(QTreeView* tv, QStandardItemModel* sim, QModelIndex*
   for (int i=0; i<sim->rowCount(*mi); i++){
     if (sim->hasChildren(*mi)){
       tv->expand(*mi);
-      QModelIndex mi2 = mi->child(i, 0);
+      QModelIndex mi2 = sim->index(i, 0, *mi);
       expandItem(tv, sim, &mi2);
     }
   }
@@ -1244,21 +1250,9 @@ void MainWindow::openDirectory(){
 }
 
 /*
- * Helper method which opens a root terminal
- */
-void MainWindow::openRootTerminal()
-{
-  //If there are no means to run the actions, we must warn!
-  if (!isSUAvailable()) return;
-
-  m_unixCommand = new UnixCommand(this);
-  m_unixCommand->openRootTerminal();
-}
-
-/*
  * Open a file chooser dialog for the user to select local packages to install (pacman -U)
  */
-void MainWindow::installLocalPackage()
+/*void MainWindow::installLocalPackage()
 {
   if (!isSUAvailable()) return;
 
@@ -1270,7 +1264,7 @@ void MainWindow::installLocalPackage()
 
   if (m_packagesToInstallList.count() > 0)
     doInstallLocalPackages();
-}
+}*/
 
 /*
  * Brings the user to the tab Files and position cursor inside searchBar
@@ -1346,6 +1340,27 @@ void MainWindow::tvPackagesSelectionChanged(const QItemSelection&, const QItemSe
 
   m_lblTotalCounters->setText(text);
   m_lblSelCounter->setText(newMessage);
+}
+
+/*
+ * Enables/disables INSTANT SEARCH feature
+ */
+void MainWindow::toggleInstantSearch()
+{
+  if (ui->actionUseInstantSearch->isChecked())
+  {
+    SettingsManager::setInstantSearchSelected(true);
+    disconnect(m_leFilterPackage, SIGNAL(textChanged(QString)), this, SLOT(lightPackageFilter()));
+    disconnect(m_leFilterPackage, SIGNAL(textChanged(QString)), this, SLOT(reapplyPackageFilter()));
+    connect(m_leFilterPackage, SIGNAL(textChanged(QString)), this, SLOT(reapplyPackageFilter()));
+  }
+  else
+  {
+    SettingsManager::setInstantSearchSelected(false);
+    disconnect(m_leFilterPackage, SIGNAL(textChanged(QString)), this, SLOT(lightPackageFilter()));
+    disconnect(m_leFilterPackage, SIGNAL(textChanged(QString)), this, SLOT(reapplyPackageFilter()));
+    connect(m_leFilterPackage, SIGNAL(textChanged(QString)), this, SLOT(lightPackageFilter()));
+  }
 }
 
 /*

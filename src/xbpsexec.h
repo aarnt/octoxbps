@@ -57,16 +57,16 @@ public:
   void runLastestCommandInTerminal();
   void removeTemporaryFile();
 
-  static bool isDatabaseLocked();
-  static void removeDatabaseLock();
+  //static bool isDatabaseLocked();
+  //static void removeDatabaseLock();
 
   //XBPS
   void doCleanCache();
   void doInstall(const QString &listOfPackages);
   void doInstallInTerminal(const QString &listOfPackages);
 
-  void doInstallLocal(const QString &listOfPackages);
-  void doInstallLocalInTerminal(const QString &listOfPackages);
+  //void doInstallLocal(const QString &listOfPackages);
+  //void doInstallLocalInTerminal(const QString &listOfPackages);
 
   void doRemove(const QString &listOfPackages);
   void doRemoveInTerminal(const QString &listOfPackages);

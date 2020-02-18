@@ -135,6 +135,7 @@ void MainWindow::insertRemovePackageIntoTransaction(const QString &pkgName)
   QStandardItem * siPackageToRemove = new QStandardItem(IconHelper::getIconRemoveItem(), pkgName);
   QStandardItemModel *sim = qobject_cast<QStandardItemModel *>(siRemoveParent->model());
   QList<QStandardItem *> foundItems = sim->findItems(pkgName, Qt::MatchRecursive | Qt::MatchExactly);
+
   int slash = pkgName.indexOf("/");
   QString pkg = pkgName.mid(slash+1);
   siPackageToRemove->setText(pkg);
@@ -664,7 +665,7 @@ void MainWindow::doSyncDatabase()
     m_xbpsExec->setDebugMode(true);
 
   QObject::connect(m_xbpsExec, SIGNAL( finished ( int, QProcess::ExitStatus )),
-                   this, SLOT( pacmanProcessFinished(int, QProcess::ExitStatus) ));
+                   this, SLOT( xbpsProcessFinished(int, QProcess::ExitStatus) ));
 
   QObject::connect(m_xbpsExec, SIGNAL(percentage(int)), this, SLOT(incrementPercentage(int)));
   QObject::connect(m_xbpsExec, SIGNAL(textToPrintExt(QString)), this, SLOT(outputText(QString)));
@@ -687,7 +688,7 @@ void MainWindow::prepareSystemUpgrade()
     m_xbpsExec->setDebugMode(true);
 
   QObject::connect(m_xbpsExec, SIGNAL( finished ( int, QProcess::ExitStatus )),
-                   this, SLOT( pacmanProcessFinished(int, QProcess::ExitStatus) ));
+                   this, SLOT( xbpsProcessFinished(int, QProcess::ExitStatus) ));
 
   QObject::connect(m_xbpsExec, SIGNAL(percentage(int)), this, SLOT(incrementPercentage(int)));
   QObject::connect(m_xbpsExec, SIGNAL(textToPrintExt(QString)), this, SLOT(outputText(QString)));
@@ -926,7 +927,7 @@ void MainWindow::doRemoveAndInstall()
       m_xbpsExec->setDebugMode(true);
 
     QObject::connect(m_xbpsExec, SIGNAL( finished ( int, QProcess::ExitStatus )),
-                     this, SLOT( pacmanProcessFinished(int, QProcess::ExitStatus) ));
+                     this, SLOT( xbpsProcessFinished(int, QProcess::ExitStatus) ));
 
     QObject::connect(m_xbpsExec, SIGNAL(percentage(int)), this, SLOT(incrementPercentage(int)));
     QObject::connect(m_xbpsExec, SIGNAL(textToPrintExt(QString)), this, SLOT(outputText(QString)));
@@ -1006,7 +1007,7 @@ void MainWindow::doRemove()
       m_xbpsExec->setDebugMode(true);
 
     QObject::connect(m_xbpsExec, SIGNAL( finished ( int, QProcess::ExitStatus )),
-                     this, SLOT( pacmanProcessFinished(int, QProcess::ExitStatus) ));
+                     this, SLOT( xbpsProcessFinished(int, QProcess::ExitStatus) ));
     QObject::connect(m_xbpsExec, SIGNAL(percentage(int)), this, SLOT(incrementPercentage(int)));
     QObject::connect(m_xbpsExec, SIGNAL(textToPrintExt(QString)), this, SLOT(outputText(QString)));
 
@@ -1098,7 +1099,7 @@ void MainWindow::doInstall()
       m_xbpsExec->setDebugMode(true);
 
     QObject::connect(m_xbpsExec, SIGNAL( finished ( int, QProcess::ExitStatus )),
-                     this, SLOT( pacmanProcessFinished(int, QProcess::ExitStatus) ));
+                     this, SLOT( xbpsProcessFinished(int, QProcess::ExitStatus) ));
 
     QObject::connect(m_xbpsExec, SIGNAL(percentage(int)), this, SLOT(incrementPercentage(int)));
     QObject::connect(m_xbpsExec, SIGNAL(textToPrintExt(QString)), this, SLOT(outputText(QString)));
@@ -1155,7 +1156,7 @@ bool MainWindow::doRemovePacmanLockFile()
 /*
  * Installs ALL the packages manually selected by the user with "pacman -U (INCLUDING DEPENDENCIES)" !
  */
-void MainWindow::doInstallLocalPackages()
+/*void MainWindow::doInstallLocalPackages()
 {
   QString listOfTargets;
   QString list;
@@ -1229,7 +1230,7 @@ void MainWindow::doInstallLocalPackages()
       m_unixCommand->runCommandInTerminal(m_lastCommandList);
     }
   }
-}
+}*/
 
 /*
  * Clears the local package cache using "pacman -Sc"
@@ -1251,7 +1252,7 @@ void MainWindow::doCleanCache()
       m_xbpsExec->setDebugMode(true);
 
     QObject::connect(m_xbpsExec, SIGNAL( finished ( int, QProcess::ExitStatus )),
-                     this, SLOT( pacmanProcessFinished(int, QProcess::ExitStatus) ));
+                     this, SLOT( xbpsProcessFinished(int, QProcess::ExitStatus) ));
     QObject::connect(m_xbpsExec, SIGNAL(percentage(int)), this, SLOT(incrementPercentage(int)));
     QObject::connect(m_xbpsExec, SIGNAL(textToPrintExt(QString)), this, SLOT(outputText(QString)));
 
@@ -1404,7 +1405,7 @@ void MainWindow::cancelTransaction()
  * This SLOT is called when Pacman's process has finished execution
  *
  */
-void MainWindow::pacmanProcessFinished(int exitCode, QProcess::ExitStatus exitStatus)
+void MainWindow::xbpsProcessFinished(int exitCode, QProcess::ExitStatus exitStatus)
 {
   m_progressWidget->close();
   ui->twProperties->setTabText(ctn_TABINDEX_OUTPUT, StrConstants::getTabOutputName());
@@ -1529,18 +1530,7 @@ void MainWindow::writeToTabOutput(const QString &msg, TreatURLLinks treatURLLink
   if (text)
   {
     ensureTabVisible(ctn_TABINDEX_OUTPUT);
-    positionTextEditCursorAtEnd();
-
-    if(treatURLLinks == ectn_TREAT_URL_LINK)
-    {
-      text->insertHtml(Package::makeURLClickable(msg));
-    }
-    else
-    {
-      text->insertHtml(msg);
-    }
-
-    text->ensureCursorVisible();
+    utils::writeToTextBrowser(text, msg, treatURLLinks);
   }
 }
 

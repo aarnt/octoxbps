@@ -349,7 +349,7 @@ TransactionInfo Package::getTargetUpgradeList(const QString &pkgName)
   int pos;
   QString strSum;
   double number;
-  double sum;
+  double sum=0;
 
   foreach(QString infoTuple, infoTuples)
   {
@@ -385,14 +385,6 @@ TransactionInfo Package::getTargetUpgradeList(const QString &pkgName)
   res.sizeToDownload = strSum;
   res.packages->sort();
   return res;
-}
-
-/*
- * Retrieves "filename-size" of the given package name
- */
-QString Package::getRemoteFilenameSize(const QString &pkgName)
-{
-  return UnixCommand::getFieldFromRemotePackage("filename-size", pkgName);
 }
 
 /*
@@ -600,7 +592,15 @@ QString Package::extractFieldFromInfo(const QString &field, const QString &pkgIn
   int fieldEnd, fieldEnd2;
   QString aux;
 
-  if (fieldPos > 0)
+  if (field == "architecture")
+  {
+    fieldPos = pkgInfo.indexOf(":", fieldPos+1);
+    fieldPos+=2;
+    aux = pkgInfo.mid(fieldPos);
+    fieldEnd = aux.indexOf('\n');
+    aux = aux.left(fieldEnd).trimmed();
+  }
+  else if (fieldPos > 0)
   {
     if(field == "Options")
     {
@@ -771,17 +771,23 @@ QString Package::getMaintainer(const QString &pkgInfo)
  */
 QString Package::getArch(const QString &pkgInfo)
 {
-  return extractFieldFromInfo("Architecture", pkgInfo);
+  return extractFieldFromInfo("architecture", pkgInfo);
 }
 
 /*
  * Retrieves "Build Date" field of the given package information string represented by pkgInfo
  */
-QString Package::getInstalledOn(const QString &pkgInfo)
+QString Package::getBuildDate(const QString &pkgInfo)
 {
   return extractFieldFromInfo("build-date", pkgInfo);
-  //qDebug() << aux;
-  //return QDateTime::fromString(aux); //"ddd MMM d hh:mm:ss yyyy");
+}
+
+/*
+ * Retrieves "Install Date" field of the given package information string represented by pkgInfo
+ */
+QString Package::getInstallDate(const QString &pkgInfo)
+{
+  return extractFieldFromInfo("install-date", pkgInfo);
 }
 
 /*
@@ -789,20 +795,8 @@ QString Package::getInstalledOn(const QString &pkgInfo)
  */
 double Package::getDownloadSize(const QString &pkgInfo)
 {
-  QString aux = extractFieldFromInfo("filename-size", pkgInfo);
-  bool isMega = (aux.indexOf("MiB", Qt::CaseInsensitive) != -1);
-  aux = aux.section(QRegularExpression("\\s"), 0, 0);
-
-  bool ok;
-  double res = aux.toDouble(&ok);
-
-  if (ok)
-  {
-    if (isMega) res *= 1024;
-    return res;
-  }
-  else
-    return 0;
+  Q_UNUSED(pkgInfo)
+  return 0;
 }
 
 /*
@@ -819,19 +813,8 @@ QString Package::getDownloadSizeAsString(const QString &pkgInfo)
  */
 double Package::getInstalledSize(const QString &pkgInfo)
 {
-  QString aux = extractFieldFromInfo("installed_size", pkgInfo);
-  bool isMega = (aux.indexOf("MiB", Qt::CaseInsensitive) != -1);
-  aux = aux.section(QRegularExpression("\\s"), 0, 0);
-  bool ok;
-  double res = aux.toDouble(&ok);
-
-  if (ok)
-  {
-    if (isMega) res *= 1024;
-    return res;
-  }
-  else
-    return 0;
+  Q_UNUSED(pkgInfo)
+  return 0;
 }
 
 /*
@@ -850,22 +833,6 @@ QString Package::getOptions(const QString &pkgInfo)
 {
   QString aux = extractFieldFromInfo("Options", pkgInfo);
   return aux;
-}
-
-/*
- * Retrieves "maintainer" field from a remote pkg search
- */
-QString Package::getRemoteMaintainer(const QString &pkgName)
-{
-  return UnixCommand::getFieldFromRemotePackage("maintainer", pkgName);
-}
-
-/*
- * Retrieves "homepage" field from a remote pkg search
- */
-QString Package::getRemoteHomepage(const QString &pkgName)
-{
-  return UnixCommand::getFieldFromRemotePackage("homepage", pkgName);
 }
 
 /**
@@ -1041,11 +1008,12 @@ PackageInfoData Package::getInformation(const QString &pkgName, bool foreignPack
   res.group = getGroup(pkgInfo);
   res.maintainer = getMaintainer(pkgInfo);
   res.arch = getArch(pkgInfo);
-  res.installedOn = getInstalledOn(pkgInfo);
+  res.buildDate = getBuildDate(pkgInfo);
+  res.installDate = getInstallDate(pkgInfo);
   res.description = getDescription(pkgInfo);
   res.comment = getComment(pkgInfo);
-  res.downloadSize = getDownloadSize(pkgInfo);
-  res.installedSize = getInstalledSize(pkgInfo);  
+  res.downloadSize = 0; //getDownloadSize(pkgInfo);
+  res.installedSize = 0; //getInstalledSize(pkgInfo);
   res.downloadSizeAsString = getDownloadSizeAsString(pkgInfo);
   res.installedSizeAsString = getInstalledSizeAsString(pkgInfo);
   res.options = getOptions(pkgInfo);
@@ -1110,16 +1078,6 @@ QString Package::formatDependencies(const QString &dependenciesList, PackageAnch
 QString Package::getDependencies(const QString &pkgName, PackageAnchor pkgAnchorState)
 {
   QString aux = UnixCommand::getDependenciesList(pkgName);
-
-  return formatDependencies(aux, pkgAnchorState);
-}
-
-/*
- * Retrieves the dependencies list of packages for the given remote pkgName
- */
-QString Package::getRemoteDependencies(const QString &pkgName, PackageAnchor pkgAnchorState)
-{
-  QString aux = UnixCommand::getRemoteDependenciesList(pkgName);
 
   return formatDependencies(aux, pkgAnchorState);
 }
@@ -1253,7 +1211,7 @@ QString Package::extractPkgNameFromAnchor(const QString &pkgName)
 /*
  * Checks if this system has the core.db
  */
-bool Package::hasPkgNGDatabase()
+bool Package::hasXBPSDatabase()
 {
   static bool done = false;
   static bool answer = false;
@@ -1284,6 +1242,6 @@ bool Package::hasPkgNGDatabase()
  */
 bool Package::isForbidden(const QString pkgName)
 {
-  QStringList forbiddenPkgs = { "libxbps", "xbps", "xbps-triggers" };
+  QStringList forbiddenPkgs = { "base-files", "base-system", "libxbps", "xbps", "xbps-triggers" };
   return forbiddenPkgs.contains(pkgName);
 }

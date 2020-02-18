@@ -35,14 +35,10 @@
 Terminal::Terminal(QObject *parent, const QString &selectedTerminal) : QObject(parent)
 {
   m_process = new QProcess(parent);
-  m_processWrapper = new utils::ProcessWrapper(parent);
 
   //Make the needed signal propagations...
   connect(m_process, SIGNAL(started()), this, SIGNAL(started()));
   connect(m_process, SIGNAL(finished(int,QProcess::ExitStatus)), this, SIGNAL(finished(int,QProcess::ExitStatus)));
-  connect(m_processWrapper, SIGNAL(startedTerminal()), this, SIGNAL(startedTerminal()));
-  connect(m_processWrapper, SIGNAL(finishedTerminal(int,QProcess::ExitStatus)),
-          this, SIGNAL(finishedTerminal(int,QProcess::ExitStatus)));
 
   QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
   env.insert("LANG", "C");
@@ -56,7 +52,7 @@ Terminal::~Terminal()
   m_process->close();
 
   delete m_process;
-  delete m_processWrapper;
+  //delete m_processWrapper;
 }
 
 /*
@@ -605,7 +601,7 @@ void Terminal::runCommandInTerminalAsNormalUser(const QStringList &commandList)
     }
   }
 
-  m_processWrapper->executeCommand(cmd);
+  //m_processWrapper->executeCommand(cmd);
 }
 
 /*

@@ -415,7 +415,7 @@ void MainWindow::metaBuildPackageList()
   ui->tvPackages->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
   //if (ui->twGroups->topLevelItemCount() == 0 || isAllCategoriesSelected())
-  if (m_actionSwitchToRemoteSearch->isChecked())
+  /*if (m_actionSwitchToRemoteSearch->isChecked())
   {
     ui->actionSearchByFile->setEnabled(false);
     disconnect(m_leFilterPackage, SIGNAL(textChanged(QString)), this, SLOT(reapplyPackageFilter()));
@@ -442,14 +442,17 @@ void MainWindow::metaBuildPackageList()
       m_leFilterPackage->setFocus();
     }
   }
-  else
+  else*/
   {
     ui->actionSearchByFile->setEnabled(true);
     ui->actionSearchByName->setChecked(true);
 
     //toggleSystemActions(false);
     disconnect(m_leFilterPackage, SIGNAL(textChanged(QString)), this, SLOT(reapplyPackageFilter()));
-    connect(m_leFilterPackage, SIGNAL(textChanged(QString)), this, SLOT(reapplyPackageFilter()));
+
+    if (ui->actionUseInstantSearch->isChecked())
+      connect(m_leFilterPackage, SIGNAL(textChanged(QString)), this, SLOT(reapplyPackageFilter()));
+
     //reapplyPackageFilter();
     disconnect(&g_fwPacman, SIGNAL(finished()), this, SLOT(preBuildPackageList()));
 
@@ -832,7 +835,7 @@ void MainWindow::buildPackageList()
     {
       //First, let us throw away that 'wainting cursor'...
       QApplication::restoreOverrideCursor();
-      doSystemUpgrade();
+      doPreSystemUpgrade();
     }
     else if (m_callSystemUpgradeNoConfirm)
     {
@@ -840,12 +843,12 @@ void MainWindow::buildPackageList()
       QApplication::restoreOverrideCursor();
       doSystemUpgrade(ectn_NOCONFIRM_OPT);
     }
-    else if (m_packagesToInstallList.count() > 0)
+    /*else if (m_packagesToInstallList.count() > 0)
     {
       //First, let us throw away that 'wainting cursor'...
       QApplication::restoreOverrideCursor();
       doInstallLocalPackages();
-    }
+    }*/
   }
 
   ui->tvPackages->setColumnWidth(PackageModel::ctn_PACKAGE_SIZE_COLUMN, 10);
@@ -1430,4 +1433,39 @@ void MainWindow::selectedRepositoryMenu(QAction *actionRepoSelected)
     m_selectedRepository = actionRepoSelected->text();
 
   changePackageListModel(m_selectedViewOption, m_selectedRepository);
+}
+
+/*
+ * This SLOT is called every time we press a key at FilterLineEdit, but ONLY when INSTANT SEARCH is disabled
+ */
+void MainWindow::lightPackageFilter()
+{
+  /*if (isAURGroupSelected())
+  {
+    if (m_leFilterPackage->text() == "")
+    {
+      if (UnixCommand::getLinuxDistro() != ectn_KAOS)
+      {
+        m_packageModel->applyFilter("ççç");
+        m_leFilterPackage->initStyleSheet();
+        refreshStatusBar();
+      }
+      else
+      {
+        m_packageModel->applyFilter("");
+        reapplyPackageFilter();
+        refreshStatusBar();
+      }
+    }
+  }
+  else if (!isAURGroupSelected())*/
+  {
+    if (m_leFilterPackage->text() == "")
+    {
+      CPUIntensiveComputing cic;
+      m_packageModel->applyFilter("");
+      reapplyPackageFilter();
+      refreshStatusBar();
+    }
+  }
 }

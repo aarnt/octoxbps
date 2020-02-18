@@ -38,7 +38,11 @@ int main(int argc, char *argv[])
 
   if (app.isRunning())
   {    
-    if (argList->getSwitch("-close"))
+    if (argList->getSwitch("-sysupgrade"))
+    {
+      app.sendMessage("SYSUPGRADE");
+    }
+    else if (argList->getSwitch("-close"))
     {
       app.sendMessage("CLOSE");
     }
@@ -52,6 +56,11 @@ int main(int argc, char *argv[])
     return 0;
   }
 
+  if(!QFile::exists(ctn_OCTOXBPS_SUDO))
+  {
+    QMessageBox::critical( 0, StrConstants::getApplicationName(), StrConstants::getErrorBinaryXNotFound(ctn_OCTOXBPS_SUDO));
+    return 1;
+  }
   if(!UnixCommand::hasTheExecutable("xbps-query"))
   {
     QMessageBox::critical( 0, StrConstants::getApplicationName(), StrConstants::getErrorBinaryXNotFound("xbps-query"));
@@ -83,7 +92,8 @@ int main(int argc, char *argv[])
     return(0);
   }
 
-  if (UnixCommand::isRootRunning() && !WMHelper::isKDERunning()){
+  if (UnixCommand::isRootRunning())
+  {
     QMessageBox::critical( 0, StrConstants::getApplicationName(), StrConstants::getErrorRunningWithRoot());
     return ( -2 );
   }
@@ -92,11 +102,11 @@ int main(int argc, char *argv[])
   app.setActivationWindow(&w);
   app.setQuitOnLastWindowClosed(false);
 
-  if (argList->getSwitch("-sysupgrade-noconfirm"))
+  /*if (argList->getSwitch("-sysupgrade-noconfirm"))
   {
     w.setCallSystemUpgradeNoConfirm();
-  }
-  else if (argList->getSwitch("-sysupgrade"))
+  }*/
+  if (argList->getSwitch("-sysupgrade"))
   {
     w.setCallSystemUpgrade();
   }

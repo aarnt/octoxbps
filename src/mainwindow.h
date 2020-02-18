@@ -169,22 +169,20 @@ private:
   QProgressBar *m_progressWidget;
 
   QToolButton *m_toolButtonPacman;
-  //QToolButton *m_toolButtonAUR;
   QMenu *m_menuToolButtonPacman;
-  //QMenu *m_menuToolButtonAUR;
 
   //This is a means for measuring the program's speed at some tasks
   QTime *m_time;
 
   QAction *m_dummyAction;
   QAction *m_actionInstallPacmanUpdates;
-  //QAction *m_actionInstallAURUpdates;
   QAction *m_actionShowGroups;
   QAction *m_actionMirrorCheck;
   QAction *m_actionMenuRepository;
   QAction *m_actionRepositoryAll;  
   QAction *m_actionCopyFullPath;
   QAction *m_actionSysInfo;
+  QAction *m_actionPackageInfo;
 
   //Toggles use of Remote package search
   QActionGroup *m_actionGroupSearch;
@@ -210,8 +208,6 @@ private:
   QStringList m_listOfVisitedPackages;
   int m_indOfVisitedPackage;
 
-  int selectTerminal(const int initialTerminalIndex);
-
   void loadSettings();
   void loadPanelSettings();
   void saveSettings(SaveSettingsReason saveSettingsReason);
@@ -234,7 +230,6 @@ private:
   bool isPackageInstalled(const QString &pkgName);
   bool isPackageTreeViewVisible();
   void initPackageTreeView();
-  void resizePackageView();
   void changeTabWidgetPropertiesIndex(const int newIndex);
   void initTabWidgetPropertiesIndex();
   void initTabInfo();
@@ -316,11 +311,12 @@ private slots:
   void editFile();
   void openTerminal();
   void openDirectory();
-  void openRootTerminal();
-  void installLocalPackage();
+  //void installLocalPackage();
   void findFileInPackage();
   void incrementPercentage(int);
   void outputText(const QString&);
+
+  void showPackageInfo();
 
   void tvPackagesSearchColumnChanged(QAction*);
   void tvPackagesSelectionChanged(const QItemSelection&, const QItemSelection&);
@@ -345,6 +341,8 @@ private slots:
   void preBuildUnrequiredPackageList();
   void preBuildPackageList();
   void preBuildPackagesFromGroupList();
+  void toggleInstantSearch();
+  void lightPackageFilter();
 
   void headerViewPackageListSortIndicatorClicked(int col, Qt::SortOrder order);
   void changePackageListModel(ViewOptions viewOptions, QString selectedRepo);
@@ -373,10 +371,6 @@ private slots:
   void doInstall();
   void doCleanCache();
   void doSyncDatabase();
-  //void doAURUpgrade();
-  //void doInstallAURPackage();
-  //void doRemoveAURPackage();
-
   void disableTransactionActions();
   void enableTransactionActions();
   void toggleTransactionActions(const bool value);
@@ -393,7 +387,7 @@ private slots:
   void resetTransaction();
 
   //void actionsProcessStarted();
-  void pacmanProcessFinished(int exitCode, QProcess::ExitStatus);
+  void xbpsProcessFinished(int exitCode, QProcess::ExitStatus);
   //void actionsProcessReadOutput();
   //void actionsProcessReadOutputErrorMirrorCheck();
   //void actionsProcessReadOutputMirrorCheck();

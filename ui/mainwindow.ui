@@ -46,7 +46,7 @@
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <widget class="QTreeView" name="tvPackages">
+       <widget class="PackageTreeView" name="tvPackages">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
           <horstretch>0</horstretch>
@@ -73,6 +73,9 @@
         </property>
         <property name="indentation">
          <number>20</number>
+        </property>
+        <property name="uniformRowHeights">
+         <bool>true</bool>
         </property>
        </widget>
        <widget class="QTreeWidget" name="twGroups">
@@ -109,6 +112,16 @@
         <attribute name="title">
          <string>Info</string>
         </attribute>
+        <widget class="QTreeView" name="treeView">
+         <property name="geometry">
+          <rect>
+           <x>130</x>
+           <y>100</y>
+           <width>256</width>
+           <height>192</height>
+          </rect>
+         </property>
+        </widget>
        </widget>
        <widget class="QWidget" name="tbFiles">
         <attribute name="title">
@@ -136,7 +149,7 @@
      <x>0</x>
      <y>0</y>
      <width>552</width>
-     <height>22</height>
+     <height>20</height>
     </rect>
    </property>
    <property name="contextMenuPolicy">
@@ -144,7 +157,7 @@
    </property>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
-     <string>He&amp;lp</string>
+     <string>&amp;Help</string>
     </property>
     <addaction name="actionHelpUsage"/>
     <addaction name="separator"/>
@@ -152,7 +165,7 @@
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
-     <string>V&amp;iew</string>
+     <string>&amp;View</string>
     </property>
     <addaction name="actionViewAllPackages"/>
     <addaction name="actionViewInstalledPackages"/>
@@ -161,14 +174,14 @@
    </widget>
    <widget class="QMenu" name="menuTransaction">
     <property name="title">
-     <string>&amp;Transaction</string>
+     <string>&amp;Actions</string>
     </property>
     <addaction name="actionCommit"/>
     <addaction name="actionCancel"/>
    </widget>
    <widget class="QMenu" name="menuFile">
     <property name="title">
-     <string>File</string>
+     <string>&amp;File</string>
     </property>
     <addaction name="actionGetNews"/>
     <addaction name="actionSyncPackages"/>
@@ -182,12 +195,13 @@
    </widget>
    <widget class="QMenu" name="menuSearch">
     <property name="title">
-     <string>Se&amp;arch</string>
+     <string>&amp;Search</string>
     </property>
     <addaction name="actionSearchByName"/>
     <addaction name="actionSearchByDescription"/>
     <addaction name="separator"/>
     <addaction name="actionSearchByFile"/>
+    <addaction name="actionUseInstantSearch"/>
    </widget>
    <widget class="QMenu" name="menuTools">
     <property name="title">
@@ -247,7 +261,7 @@
      <normaloff>:/resources/images/commit.png</normaloff>:/resources/images/commit.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;Commit</string>
+    <string>&amp;Apply</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+M</string>
@@ -259,7 +273,7 @@
      <normaloff>:/resources/images/rollback.png</normaloff>:/resources/images/rollback.png</iconset>
    </property>
    <property name="text">
-    <string>Ca&amp;ncel</string>
+    <string>&amp;Cancel</string>
    </property>
    <property name="toolTip">
     <string>Cancel</string>
@@ -298,7 +312,7 @@
      <normaloff>:/resources/images/fast_forward.png</normaloff>:/resources/images/fast_forward.png</iconset>
    </property>
    <property name="text">
-    <string>Install updates</string>
+    <string>&amp;Install updates</string>
    </property>
    <property name="toolTip">
     <string>Install updates</string>
@@ -457,7 +471,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>&amp;By name</string>
+    <string>By &amp;name</string>
    </property>
   </action>
   <action name="actionFindFileInPackage">
@@ -549,11 +563,29 @@
   </action>
   <action name="actionCleanXBPSCache">
    <property name="text">
-    <string>Clean XBPS cache</string>
+    <string>&amp;Clean XBPS cache</string>
+   </property>
+  </action>
+  <action name="actionUseInstantSearch">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Use instant search</string>
    </property>
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>PackageTreeView</class>
+   <extends>QTreeView</extends>
+   <header>src/packagetreeview.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>tvPackages</tabstop>
   <tabstop>twProperties</tabstop>

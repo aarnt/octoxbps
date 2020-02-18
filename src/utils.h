@@ -34,32 +34,6 @@ class SearchBar;
 
 namespace utils{
 
-class ProcessWrapper : public QObject
-{
-  Q_OBJECT
-
-private:
-  int m_pidTerminal;
-  int m_pidSH;
-  int m_pidAUR;
-  QProcess *m_process;
-  QTimer *m_timer;
-  QTimer *m_timerSingleShot;
-
-public:
-  explicit ProcessWrapper(QObject *parent = 0);
-  void executeCommand(QString command);
-
-signals:
-  void startedTerminal();
-  void finishedTerminal(int, QProcess::ExitStatus);
-  
-private slots:
-  void onSingleShot();
-  void onTimer();
-  void onProcessStarted();
-};
-
 QString showFullPathOfItem( const QModelIndex &index );
 QList<QModelIndex> * findFileInTreeView( const QString& name, const QStandardItemModel *sim);
 QString retrieveDistroNews(bool searchForLatestNews);

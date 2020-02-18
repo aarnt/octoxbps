@@ -20,7 +20,7 @@
 
 /*
  * This SettingsManager class holds the getters and setters needed to deal with the database
- * in which all OctoPkg configuration is saved and retrieved (~/.config/octoxbps/)
+ * in which all OctoXBPS configuration is saved and retrieved (~/.config/octoxbps/)
  */
 
 #include "settingsmanager.h"
@@ -53,17 +53,6 @@ SettingsManager* SettingsManager::instance(){
 
   return m_pinstance;
 }
-
-//CacheCleaner related --------------------------------------------------------------
-int SettingsManager::getKeepNumInstalledPackages() {
-  return instance()->getSYSsettings()->value(ctn_KEEP_NUM_INSTALLED, 3).toInt();
-}
-
-int SettingsManager::getKeepNumUninstalledPackages() {
-  return instance()->getSYSsettings()->value(ctn_KEEP_NUM_UNINSTALLED, 1).toInt();
-}
-//CacheCleaner related --------------------------------------------------------------
-
 
 //Notifier related ------------------------------------------------------------------
 
@@ -147,7 +136,7 @@ void SettingsManager::setLastSyncDbTime(QDateTime newValue)
 //Notifier related ------------------------------------------------------------------
 
 
-//OctoPkg related --------------------------------------------------------------------
+//OctoXBPS related --------------------------------------------------------------------
 int SettingsManager::getCurrentTabIndex(){
   return instance()->getSYSsettings()->value(
         ctn_KEY_CURRENT_TAB_INDEX, 0).toInt();
@@ -227,6 +216,12 @@ QByteArray SettingsManager::getSplitterHorizontalState(){
   return (instance()->getSYSsettings()->value( ctn_KEY_SPLITTER_HORIZONTAL_STATE, 0).toByteArray());
 }
 
+bool SettingsManager::isInstantSearchSelected()
+{
+  SettingsManager p_instance;
+  return (p_instance.getSYSsettings()->value(ctn_KEY_INSTANT_SEARCH, 1)).toBool();
+}
+
 void SettingsManager::setCurrentTabIndex(int newValue){
   instance()->getSYSsettings()->setValue( ctn_KEY_CURRENT_TAB_INDEX, newValue);
   instance()->getSYSsettings()->sync();
@@ -301,6 +296,12 @@ void SettingsManager::setPackageNameColumnWidth(int newValue)
 void SettingsManager::setPackageVersionColumnWidth(int newValue)
 {
   instance()->getSYSsettings()->setValue(ctn_KEY_PACKAGE_VERSION_COLUMN_WIDTH, newValue);
+  instance()->getSYSsettings()->sync();
+}
+
+void SettingsManager::setInstantSearchSelected(bool newValue)
+{
+  instance()->getSYSsettings()->setValue(ctn_KEY_INSTANT_SEARCH, newValue);
   instance()->getSYSsettings()->sync();
 }
 

@@ -39,175 +39,7 @@
 #include <QRegularExpression>
 #include <QDebug>
 #include <QTextBrowser>
-
-#if QT_VERSION >= 0x050000
 #include <QScreen>
-#endif
-
-/*
- * The needed constructor
- */
-utils::ProcessWrapper::ProcessWrapper(QObject *parent) :
-  QObject(parent)
-{
-  m_process = new QProcess(parent);
-  QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-  //env.insert("LANG", "C");
-  //env.insert("LC_MESSAGES", "C");
-
-  env.remove("LANG");
-  env.remove("LC_MESSAGES");
-  env.insert("LANG", QLocale::system().name() + ".UTF-8");
-  env.insert("LC_MESSAGES", QLocale::system().name() + ".UTF-8");
-
-  m_process->setProcessEnvironment(env);
-
-  m_timerSingleShot = new QTimer(parent);
-  m_timerSingleShot->setSingleShot(true);
-  m_timer = new QTimer(parent);
-  m_timer->setInterval(1000);
-
-  connect(m_timerSingleShot, SIGNAL(timeout()), this, SLOT(onSingleShot()));
-  connect(m_timer, SIGNAL(timeout()), this, SLOT(onTimer()));
-  connect(m_process, SIGNAL(started()), SLOT(onProcessStarted()));
-}
-
-/*
- * The method that is exposed to the world
- */
-void utils::ProcessWrapper::executeCommand(QString command)
-{
-  m_process->start(command);
-}
-
-/*
- * Only when m_process has started...
- */
-void utils::ProcessWrapper::onProcessStarted()
-{  
-  m_pidTerminal = m_process->pid();
-  //qDebug() << "First PID: " << m_pidTerminal;
-  m_timerSingleShot->start(2000);
-  emit startedTerminal();
-}
-
-/*
- * We need this to search for the SH process pid (which spaws AUR tool)
- */
-void utils::ProcessWrapper::onSingleShot()
-{
-/*  QProcess proc;
-  QProcess pAux;
-  QString saux;
-
-  proc.start("ps -o pid -C sh");
-  proc.waitForFinished(-1);
-  QString out = proc.readAll();
-  proc.close();
-
-  QStringList list = out.split("\n", QString::SkipEmptyParts);
-
-  if (list.count() == 1)
-  {
-    proc.start("ps -o pid -C bash");
-    proc.waitForFinished(-1);
-    out = proc.readAll();
-    proc.close();
-
-    list = out.split("\n", QString::SkipEmptyParts);
-  }
-
-  QStringList slist;
-
-  for (int c=1; c<list.count(); c++)
-  {
-    int candidatePid = list.at(c).trimmed().toInt();
-
-    if (candidatePid < m_pidTerminal) continue;
-
-    QString cmd = QString("ps -O cmd --ppid %1").arg(candidatePid);
-    proc.start(cmd);
-    proc.waitForFinished(-1);
-    QString out = proc.readAll();
-
-    if (UnixCommand::getBSDFlavour() == ectn_KAOS)
-    {
-      if (out.contains("kcp", Qt::CaseInsensitive))
-      {
-        pAux.start("ps -o pid -C kcp");
-        pAux.waitForFinished(-1);
-        saux = pAux.readAll();
-        slist = saux.split("\n", QString::SkipEmptyParts);
-
-        for (int d=1; d<slist.count(); d++)
-        {
-          int candidatePid2 = slist.at(d).trimmed().toInt();
-
-          if (candidatePid < candidatePid2)
-          {
-            m_pidSH = candidatePid;
-            m_pidAUR = candidatePid2;
-            m_timer->start();
-
-            return;
-          }
-        }
-      }
-    }
-    else
-    {
-      if (out.contains(StrConstants::getForeignRepositoryToolName(), Qt::CaseInsensitive))
-      {
-        pAux.start("ps -o pid -C " + StrConstants::getForeignRepositoryToolName());
-        pAux.waitForFinished(-1);
-        saux = pAux.readAll();
-        slist = saux.split("\n", QString::SkipEmptyParts);
-
-        for (int d=1; d<slist.count(); d++)
-        {
-          int candidatePid2 = slist.at(d).trimmed().toInt();
-
-          if (candidatePid < candidatePid2)
-          {
-            m_pidSH = candidatePid;
-            m_pidAUR = candidatePid2;
-            m_timer->start();
-
-            return;
-          }
-        }
-      }
-    }
-  }
-
-  emit finishedTerminal(0, QProcess::NormalExit);
-*/
-}
-
-/*
- * Whenever the internal timer ticks, let's check if our process has finished
- */
-void utils::ProcessWrapper::onTimer()
-{
-  QProcess proc;
-  QString cmd = QString("ps -p %1 %2").arg(m_pidSH).arg(m_pidAUR);
-
-  //qDebug() << "PIDS: " << cmd << "\n";
-
-  proc.start(cmd);
-  proc.waitForFinished(-1);
-
-  //If any of the processes have finished...
-  QString out = proc.readAll();
-
-  //qDebug() << "Output: " << out << "\n";
-
-  if (!out.contains(".qt_temp_", Qt::CaseInsensitive))
-  {
-    emit finishedTerminal(0, QProcess::NormalExit);
-    m_timer->stop();
-  }
-}
 
 /*
  * Returns the full path of a tree view item (normaly a file in a directory tree)
@@ -278,7 +110,7 @@ QList<QModelIndex> * utils::findFileInTreeView( const QString& name, const QStan
  */
 QString utils::retrieveDistroNews(bool searchForLatestNews)
 {
-  const QString ctn_VOID_RSS_URL = "https://www.voidlinux.eu/atom.xml";
+  const QString ctn_VOID_RSS_URL = "https://voidlinux.org/atom.xml";
 
   LinuxDistro distro = UnixCommand::getLinuxDistro();
   QString res;
@@ -469,7 +301,7 @@ QString utils::parseDistroNews()
     n = n.nextSibling();
   }
 
-  html += "</ul>";
+  html += "</ul><br>";
 
   return html;
 }
@@ -647,7 +479,6 @@ void utils::searchBarClosedInTextBrowser(QTextBrowser *tb, SearchBar *sb)
     tb->setFocus();
 }
 
-#if QT_VERSION >= 0x050000
 void utils::positionWindowAtScreenCenter(QWidget *w)
 {
   QRect screen;
@@ -664,4 +495,3 @@ void utils::positionWindowAtScreenCenter(QWidget *w)
   int centerY = (screen.height() - w->height()) / 2;
   w->move(QPoint(centerX, centerY));
 }
-#endif

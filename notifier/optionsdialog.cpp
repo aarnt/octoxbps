@@ -20,18 +20,18 @@
 
 #include "../../src/settingsmanager.h"
 #include "../../src/strconstants.h"
-#include "setupdialog.h"
-#include "ui_setupdialog.h"
+#include "optionsdialog.h"
+#include "ui_optionsdialog.h"
 
-SetupDialog::SetupDialog(QWidget *parent) :
+OptionsDialog::OptionsDialog(QWidget *parent) :
   QDialog(parent),
-  ui(new Ui::SetupDialog)
+  ui(new Ui::OptionsDialog)
 {
   ui->setupUi(this);
   init();
 }
 
-SetupDialog::~SetupDialog()
+OptionsDialog::~OptionsDialog()
 {
   delete ui;
 }
@@ -39,12 +39,12 @@ SetupDialog::~SetupDialog()
 /*
  * Here we read the values from ~/.config/octopi.conf...
  */
-void SetupDialog::init()
+void OptionsDialog::init()
 {
   connect(ui->buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
   connect(ui->buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 
-  setWindowTitle(StrConstants::getNotifierSetupDialogTitle());
+  setWindowTitle(StrConstants::getNotifierOptionsDialogTitle());
   ui->groupBox->setTitle(StrConstants::getNotiferSetupDialogGroupBoxTitle());
   ui->rbOnceADay->setText(StrConstants::getOnceADay());
   ui->rbOnceADayAt->setText(StrConstants::getOnceADayAt());
@@ -101,7 +101,7 @@ void SetupDialog::init()
 /*
  * Every time user clicks on OK button, we save his choice.
  */
-void SetupDialog::accept()
+void OptionsDialog::accept()
 {
   saveChanges();
   QDialog::accept();
@@ -110,7 +110,7 @@ void SetupDialog::accept()
 /*
  * Here we save the changes back into ~/.config/octopi.conf...
  */
-void SetupDialog::saveChanges()
+void OptionsDialog::saveChanges()
 {
   if (ui->rbOnceADay->isChecked())
   {
@@ -131,7 +131,7 @@ void SetupDialog::saveChanges()
 /*
  * Whenever user selects the first radio button, we have to disable some widgets
  */
-void SetupDialog::selectOnceADay()
+void OptionsDialog::selectOnceADay()
 {
   ui->rbOnceADay->setChecked(true);
   ui->spinOnceADayAt->setEnabled(false);
@@ -143,7 +143,7 @@ void SetupDialog::selectOnceADay()
 /*
  * Whenever user selects the second radio button, we have to disable some widgets
  */
-void SetupDialog::selectOnceADayAt()
+void OptionsDialog::selectOnceADayAt()
 {
   ui->rbOnceADayAt->setChecked(true);
   ui->spinOnceADayAt->setEnabled(true);
@@ -155,7 +155,7 @@ void SetupDialog::selectOnceADayAt()
 /*
  * Whenever user selects the third radio button, we have to disable some widgets
  */
-void SetupDialog::selectOnceEvery()
+void OptionsDialog::selectOnceEvery()
 {
   ui->rbOnceEvery->setChecked(true);
   ui->spinOnceADayAt->setEnabled(false);

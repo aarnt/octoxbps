@@ -25,6 +25,7 @@
 #include <QDebug>
 #include <QHash>
 #include <QRegularExpression>
+#include <QLocale>
 
 /*
  * The OctopiTabInfo class provides functionality for the Tab "Info"
@@ -53,8 +54,9 @@ QString OctopiTabInfo::formatTabInfo(const PackageRepository::PackageData& packa
   QString downloadSize = StrConstants::getDownloadSize();
   QString installedSize = StrConstants::getInstalledSize();
   QString maintainer = StrConstants::getMaintainer();
-  //QString architecture = StrConstants::getArchitecture();
-  QString installedOn = StrConstants::getInstalledOn();
+  QString architecture = StrConstants::getArchitecture();
+  QString buildDate = StrConstants::getBuildDate();
+  QString installDate = StrConstants::getInstallDate();
   QString options = StrConstants::getOptions();
   QString dependencies = StrConstants::getDependencies();
   //Let's put package description in UTF-8 format  
@@ -76,17 +78,10 @@ QString OctopiTabInfo::formatTabInfo(const PackageRepository::PackageData& packa
   html += "<table border=\"0\">";
   html += "<tr><th width=\"20%\"></th><th width=\"80%\"></th></tr>";
 
-  if (package.installed())
-  {
-    if (package.repository.isEmpty() && pid.url != "<a href=\"http://\"></a>UNKNOWN")
-      html += "<tr><td>" + url + "</td><td style=\"font-size:14px;\">" + pid.url + "</td></tr>";
-    else if (!package.repository.isEmpty())
-      html += "<tr><td>" + url + "</td><td style=\"font-size:14px;\">" + Package::makeURLClickable(package.www) + "</td></tr>";
-  }
-  else
-  {
-    html += "<tr><td>" + url + "</td><td style=\"font-size:14px;\">" + Package::makeURLClickable(Package::getRemoteHomepage(package.name)) + "</td></tr>";
-  }
+  if (package.repository.isEmpty() && pid.url != "<a href=\"http://\"></a>UNKNOWN")
+    html += "<tr><td>" + url + "</td><td style=\"font-size:14px;\">" + pid.url + "</td></tr>";
+  else if (!package.repository.isEmpty())
+    html += "<tr><td>" + url + "</td><td style=\"font-size:14px;\">" + Package::makeURLClickable(package.www) + "</td></tr>";
 
   if (package.outdated())
   {
@@ -109,64 +104,52 @@ QString OctopiTabInfo::formatTabInfo(const PackageRepository::PackageData& packa
     html += "<tr><td>" + version + "</td><td>" + package.version + "</td></tr>";
   }
 
+  if (!pid.arch.isEmpty())
+    html += "<tr><td>" + architecture + "</td><td>" + pid.arch + "</td></tr>";
+
   //This is needed as packager names could be encoded in different charsets, resulting in an error
   QString packagerName;
-
-  if (package.installed())
-  {
-    packagerName = pid.maintainer;
-  }
-  else
-  {
-    packagerName = Package::getRemoteMaintainer(package.name);
-  }
-
+  packagerName = pid.maintainer;
   packagerName = packagerName.replace("<", "&lt;");
   packagerName = packagerName.replace(">", "&gt;");
 
   if(! pid.license.isEmpty())
     html += "<tr><td>" + licenses + "</td><td>" + pid.license + "</td></tr>";
 
-  if(! pid.installedOn.isEmpty())
-    html += "<tr><td>" + installedOn + "</td><td>" + pid.installedOn;
+  QString dateTimeFormat = QLocale().dateTimeFormat();
+  QDateTime auxDate;
+  auxDate.setTimeSpec(Qt::UTC);
+  QString auxBuild = pid.buildDate;
+  int lastSpace = auxBuild.lastIndexOf(" ");
+  auxBuild = auxBuild.remove(lastSpace, auxBuild.length()-(lastSpace));
+  auxDate = QDateTime::fromString(auxBuild, Qt::ISODate);
 
-  //Show this info only if there's something to show
-  /*if (package.repository.isEmpty())
+  if(! pid.buildDate.isEmpty())
+    html += "<tr><td>" + buildDate + "</td><td>" + auxDate.toString(dateTimeFormat);
+
+  if (package.installed())
   {
-    if(! pid.group.contains("None"))
-      html += "<tr><td>" + groups + "</td><td>" + pid.group + "</td></tr>";
+    QDateTime inst;
+    inst.setTimeSpec(Qt::UTC);
+    QString auxInst = pid.installDate;
+    int lastSpace = auxInst.lastIndexOf(" ");
+    auxInst = auxInst.remove(lastSpace, auxInst.length()-(lastSpace));
+    inst = QDateTime::fromString(auxInst, Qt::ISODate);
+    html += "<tr><td>" + installDate + "</td><td>" + inst.toString(dateTimeFormat);
   }
-  else
-  {
-    if(! package.categories.isEmpty())
-      html += "<tr><td>" + groups + "</td><td>" + package.categories + "</td></tr>";
-  }*/
 
-  if(package.downloadSize != 0)
-    html += "<tr><td>" + downloadSize + "</td><td>" + Package::kbytesToSize(package.downloadSize) + "</td></tr>";
+  if(!pid.downloadSizeAsString.isEmpty())
+    html += "<tr><td>" + downloadSize + "</td><td>" + (pid.downloadSizeAsString) + "</td></tr>";
 
-  if (!package.installed())
-    html += "<tr><td>" + downloadSize + "</td><td>" + Package::getRemoteFilenameSize(package.name) + "</td></tr>";
-
-  if(! pid.installedSizeAsString.isEmpty() && pid.installedSizeAsString != "0.00B")
+  if(!pid.installedSizeAsString.isEmpty())
     html += "<tr><td>" + installedSize + "</td><td>" + pid.installedSizeAsString + "</td></tr>";
 
   if (!packagerName.isEmpty())
     html += "<tr><td>" + maintainer + "</td><td>" + packagerName + "</td></tr>";
 
-  /*if (!pid.arch.isEmpty())
-    html += "<tr><td>" + architecture + "</td><td>" + pid.arch + "</td></tr>";*/
-
   QString dependenciesList = Package::getDependencies(package.name);
   if ( !dependenciesList.isEmpty())
   {
-    html += "<br><tr><td>" + dependencies + "</td><td>" + dependenciesList + "</td></tr>";
-    if (! pid.options.isEmpty()) html += "<br>";
-  }
-  //We have to get dependencies list for remote pkg
-  else
-  {
-    dependenciesList = Package::getRemoteDependencies(package.name);
     html += "<br><tr><td>" + dependencies + "</td><td>" + dependenciesList + "</td></tr>";
     if (! pid.options.isEmpty()) html += "<br>";
   }
@@ -178,7 +161,7 @@ QString OctopiTabInfo::formatTabInfo(const PackageRepository::PackageData& packa
     html += "<tr><td>" + options + "</td><td>" + pid.options + "</td></tr>";
   }
 
-  html += "</table>"; 
+  html += "</table><br>";
 
   return html;
 }

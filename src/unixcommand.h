@@ -89,7 +89,6 @@ public:
   static QByteArray getOutdatedAURPackageList();
   static QByteArray getForeignPackageList();
   static QByteArray getDependenciesList(const QString &pkgName);
-  static QByteArray getRemoteDependenciesList(const QString &pkgName);
   static QByteArray getPackageList(const QString &pkgName = "");
   static QByteArray getPackageInformation(const QString &pkgName, bool foreignPackage);
   static QByteArray getAURPackageVersionInformation();

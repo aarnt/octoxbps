@@ -146,7 +146,8 @@ struct PackageInfoData{
   QString arch;
   QString description;
   QString comment;
-  QString installedOn;
+  QString buildDate;
+  QString installDate;
   double downloadSize;
   double installedSize;
   QString downloadSizeAsString;
@@ -192,7 +193,6 @@ class Package{
     static QString getName(const QString &pkgInfo);
     static QString getVersion(const QString &pkgInfo);
     static QString getVersionByName(const QString &pkgName);
-
     static QString getRepository(const QString &pkgInfo);
     static QString getURL(const QString &pkgInfo);
     static QString getLicense(const QString &pkgInfo);
@@ -209,15 +209,13 @@ class Package{
     static QString getArch(const QString &pkgInfo);
     static QString getDescription(const QString &pkgInfo);
     static QString getComment(const QString &pkgInfo);
-    static QString getInstalledOn(const QString &pkgInfo);
+    static QString getBuildDate(const QString &pkgInfo);
+    static QString getInstallDate(const QString &pkgInfo);
     static double getDownloadSize(const QString &pkgInfo);
     static QString getDownloadSizeAsString(const QString &pkgInfo);
     static double getInstalledSize(const QString &pkgInfo);
     static QString getInstalledSizeAsString(const QString &pkgInfo);
     static QString getOptions(const QString &pkgInfo); 
-    static QString getRemoteMaintainer(const QString &pkgName);
-    static QString getRemoteHomepage(const QString &pkgName);
-    static QString getRemoteFilenameSize(const QString &pkgName);
     static QString kbytesToSize(float Bytes );
     static double strToKBytes(QString size);
     static double strToKBytes2(QString size);
@@ -226,7 +224,7 @@ class Package{
     static QString parseSearchString( QString searchStr, bool exactMatch = false );
     static QString extractPkgNameFromAnchor(const QString &pkgName);
 
-    static bool hasPkgNGDatabase();
+    static bool hasXBPSDatabase();
     static bool isForbidden(const QString pkgName);
 };
 

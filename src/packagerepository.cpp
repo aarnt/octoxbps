@@ -75,7 +75,7 @@ void PackageRepository::setData(const QList<PackageListData>*const listOfPackage
     m_listOfPackages.push_back(new PackageData(*it, unrequiredPackages.contains(it->name) == false));
   }
 
-  qSort(m_listOfPackages.begin(), m_listOfPackages.end(), TSort());
+  std::sort(m_listOfPackages.begin(), m_listOfPackages.end(), TSort());
   std::for_each(m_dependingModels.begin(), m_dependingModels.end(), EndResetModel());
 }
 
@@ -105,8 +105,8 @@ void PackageRepository::setAURData(const QList<PackageListData>*const listOfFore
       m_listOfAURPackages.push_back(pkg);
     }   
 
-    qSort(m_listOfPackages.begin(), m_listOfPackages.end(), TSort());
-    qSort(m_listOfAURPackages.begin(), m_listOfAURPackages.end(), TSort());
+    std::sort(m_listOfPackages.begin(), m_listOfPackages.end(), TSort());
+    std::sort(m_listOfAURPackages.begin(), m_listOfAURPackages.end(), TSort());
     std::for_each(m_dependingModels.begin(), m_dependingModels.end(), EndResetModel());
 }
 

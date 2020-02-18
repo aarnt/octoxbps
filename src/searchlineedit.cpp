@@ -18,45 +18,44 @@
 #include <QRegularExpressionValidator>
 #include <QCompleter>
 #include <QStringListModel>
-#include <QDebug>
+#include <QKeyEvent>
 
 SearchLineEdit::SearchLineEdit(QWidget *parent, bool hasSLocate) :
   QLineEdit(parent){
 
   m_hasLocate = hasSLocate;
-
   m_completerModel = new QStringListModel(this);
   m_completer = new QCompleter(m_completerModel, this);
   m_completer->setCaseSensitivity(Qt::CaseInsensitive);
   m_completer->setCompletionMode(QCompleter::PopupCompletion);
   m_completer->setCompletionColumn(0);
   m_completer->setMaxVisibleItems(10);
+  m_validatorType = ectn_DEFAULT_VALIDATOR;
+
   setCompleter(m_completer);
 
   // Create the search button and set its icon, cursor, and stylesheet
   this->m_SearchButton = new QToolButton(this);
 
   // Increase button size a bit for kde
-  if (WMHelper::isKDERunning())
-    this->m_SearchButton->setFixedSize(20, 20);
-  else
+  if (WMHelper::isKDERunning()) //&& UnixCommand::getLinuxDistro() == ectn_CHAKRA)
     this->m_SearchButton->setFixedSize(18, 18);
+  else
+    this->m_SearchButton->setFixedSize(16, 16);
 
   this->m_SearchButton->setCursor(Qt::ArrowCursor);
   this->m_SearchButton->setStyleSheet(this->buttonStyleSheetForCurrentState());
 
   m_defaultValidator = new QRegularExpressionValidator(QRegularExpression("[a-zA-Z0-9_\\-\\$\\^\\*\\+\\(\\)\\[\\]\\.\\s\\\\]+"), this);
-  m_aurValidator = new QRegularExpressionValidator(QRegularExpression("[a-zA-Z0-9_\\-\\s]+"), this);
+  m_aurValidator = new QRegularExpressionValidator(QRegularExpression("[a-zA-Z0-9_\\-\\+\\s\\\\]+"), this);
   m_fileValidator = new QRegularExpressionValidator(QRegularExpression("[a-zA-Z0-9_\\-\\/\\.\\*]+"), this);
-
   setValidator(m_defaultValidator);
 
   // Update the search button when the text changes
   QObject::connect(this, SIGNAL(textChanged(QString)), SLOT(updateSearchButton(QString)));
 
   // Some stylesheet and size corrections for the text box
-  //this->setPlaceholderText(StrConstants::getFind());
-
+  this->setPlaceholderText(StrConstants::getFind());
   this->setStyleSheet(this->styleSheetForCurrentState());
 }
 
@@ -72,11 +71,15 @@ void SearchLineEdit::setRefreshValidator(ValidatorType validatorType)
   else if (validatorType == ectn_DEFAULT_VALIDATOR)
     setValidator(m_defaultValidator);
 
+  if (m_validatorType == validatorType) return;
+
   //If the current string is not valid anymore, let's erase it!
   int pos = 0;
   QString search = text();
   if (this->validator()->validate(search, pos) == QValidator::Invalid)
     setText("");
+
+  m_validatorType = validatorType;
 }
 
 /*
@@ -97,8 +100,20 @@ void SearchLineEdit::refreshCompleterData()
 
 void SearchLineEdit::resizeEvent(QResizeEvent *event)
 {
-  Q_UNUSED(event);
+  Q_UNUSED(event)
   this->m_SearchButton->move(5, (this->rect().height() - this->m_SearchButton->height()) / 2);
+}
+
+void SearchLineEdit::keyPressEvent(QKeyEvent *event)
+{
+  if(event->key() == Qt::Key_U && event->modifiers() == Qt::ControlModifier)
+  {
+    event->ignore();
+  }
+  else
+  {
+    return QLineEdit::keyPressEvent(event);
+  }
 }
 
 void SearchLineEdit::updateSearchButton(const QString &text)
@@ -116,29 +131,37 @@ void SearchLineEdit::updateSearchButton(const QString &text)
 }
 
 QString SearchLineEdit::styleSheetForCurrentState()
-{
-  int frameWidth = 1;
+{ 
   QString style;
   style += "QLineEdit {";
 
-  if (this->text().isEmpty())
+  //if (UnixCommand::getLinuxDistro() != ectn_CHAKRA)
   {
-    style += "font-family: 'MS Sans Serif';";
+    style += "font-family: 'Sans Serif';";
     style += "font-style: italic;";
   }
-  else
+  /*else
   {
     QFont font(QApplication::font());
     font.setItalic(true);
     setFont(font);
-  }
+  }*/
 
-  style += "padding-left: 20px;";
-  style += QString("padding-right: %1px;").arg(this->m_SearchButton->sizeHint().width() + frameWidth + 1);
-  style += "border-width: 3px;";
-  style += "border-image: url(:/resources/images/esf-border.png) 3 3 3 3 stretch;";
-  style += "background-color: rgba(255, 255, 255, 255);"; //204);";
-  style += "color: black;}";
+  if (!WMHelper::isKDERunning()) //UnixCommand::getLinuxDistro() != ectn_CHAKRA)
+  {
+    int frameWidth = 1;
+    style += "padding-left: 20px;";
+    style += QString("padding-right: %1px;").arg(this->m_SearchButton->sizeHint().width() + frameWidth + 1);
+    style += "border-width: 3px;}";
+    //style += "border-image: url(:/resources/images/esf-border.png) 3 3 3 3 stretch;}";
+    //style += "background-color: rgba(255, 255, 255, 255);"; //204);";
+    //style += "color: black;}";
+  }
+  else
+  {
+    style += "padding-left: 20px;}";
+    //setPalette(QApplication::palette());
+  }
 
   return style;
 }
@@ -147,58 +170,75 @@ void SearchLineEdit::setFoundStyle(){
   QString style;
   style += "QLineEdit {";
 
-  style += "font-family: 'MS Sans Serif';";
-  style += "font-style: italic;";
-  style += "padding-left: 20px;";
-  style += QString("padding-right: %1px;").arg(this->m_SearchButton->sizeHint().width() + 2);
-  style += "border-width: 3px;";
-  style += "border-image: url(:/resources/images/esf-border.png) 3 3 3 3 stretch;";
-  style += "color: black; ";
-  style += "background-color: rgb(255, 255, 200);";
-  style += "border-color: rgb(206, 204, 197);}";
-  setStyleSheet(style);
-
-  /*else
+  if (!WMHelper::isKDERunning()) //(UnixCommand::getLinuxDistro() != ectn_CHAKRA)
+  {
+    style += "font-family: 'Sans Serif';";
+    style += "font-style: italic;";
+    style += "padding-left: 20px;";
+    style += QString("padding-right: %1px;").arg(this->m_SearchButton->sizeHint().width() + 2);
+    style += "border-width: 3px;}";
+    //style += "border-image: url(:/resources/images/esf-border.png) 3 3 3 3 stretch;";
+    //style += "color: black; ";
+    //style += "background-color: rgb(255, 255, 255);";
+    //style += "border-color: rgb(206, 204, 197);}";
+    setStyleSheet(style);
+  }
+  else
   // setPalette() must be called after setStyleSheet()
   {
     style += "padding-left: 20px;}";
     setStyleSheet(style);
 
-    QPalette palette(QApplication::palette());
+    /*QPalette palette(QApplication::palette());
     palette.setColor(QPalette::Base, QColor(255, 255, 200));
     palette.setColor(QPalette::Text, Qt::darkGray); // give more contrast to text
-    setPalette(palette);
-  }*/
+    setPalette(palette);*/
+  }
 }
 
 void SearchLineEdit::setNotFoundStyle(){
   QString style;
   style += "QLineEdit {";
-  style += "font-family: 'MS Sans Serif';";
-  style += "font-style: italic;";
-  style += "padding-left: 20px;";
-  style += QString("padding-right: %1px;").arg(this->m_SearchButton->sizeHint().width() + 2);
-  style += "border-width: 3px;";
-  style += "border-image: url(:/resources/images/esf-border.png) 3 3 3 3 stretch;";
-  style += "color: white; ";
-  style += "background-color: lightgray;"; //rgb(255, 108, 108); //palette(mid);"; //rgb(207, 135, 142);";
-  style += "border-color: rgb(206, 204, 197);}";
-  setStyleSheet(style);
+
+  if (!WMHelper::isKDERunning()) //(UnixCommand::getLinuxDistro() != ectn_CHAKRA)
+  {
+    style += "font-family: 'Sans Serif';";
+    style += "font-style: italic;";
+    style += "padding-left: 20px;";
+    style += QString("padding-right: %1px;").arg(this->m_SearchButton->sizeHint().width() + 2);
+    style += "border-width: 3px;";
+    //style += "border-image: url(:/resources/images/esf-border.png) 3 3 3 3 stretch;";
+    //style += "color: white; ";
+    //style += "background-color: lightgray;"; //rgb(255, 108, 108); //palette(mid);"; //rgb(207, 135, 142);";
+    style += "border-color: rgb(206, 204, 197);}";
+    setStyleSheet(style);
+  }
+  // setPalette() must be called after setStyleSheet()
+  else
+  {
+    style += "padding-left: 20px;}";
+    setStyleSheet(style);
+
+    /*QPalette palette(QApplication::palette());
+    palette.setColor(QPalette::Base, Qt::lightGray);
+    palette.setColor(QPalette::Text, Qt::white);
+    setPalette(palette);*/
+  }
 }
 
 QString SearchLineEdit::buttonStyleSheetForCurrentState() const
 {
   // When using KDE avoid stylesheet customization
-  if (WMHelper::isKDERunning()) {
+  if (WMHelper::isKDERunning()){ //&& UnixCommand::getLinuxDistro() != ectn_KAOS) {
     this->text().isEmpty() ? this->m_SearchButton->setIcon(IconHelper::getIconSearch())
                            : this->m_SearchButton->setIcon(IconHelper::getIconClear());
+    this->m_SearchButton->setAutoRaise(true);
 
     if (!this->text().isEmpty())
       this->m_SearchButton->setToolTip(StrConstants::getClear());
     else
       this->m_SearchButton->setToolTip("");
 
-    this->m_SearchButton->setAutoRaise(true);
     return QString();
   }
 
@@ -210,7 +250,7 @@ QString SearchLineEdit::buttonStyleSheetForCurrentState() const
 
   if (!this->text().isEmpty())
   {
-    style += "QToolButton:pressed { background-image: url(:/resources/images/esf-clear-active.png); }";
+    style += "QToolButton:pressed { background-image: url(:/resources/images/esf-clear.png); }";
     this->m_SearchButton->setToolTip(StrConstants::getClear());
   }
   else this->m_SearchButton->setToolTip("");

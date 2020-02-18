@@ -1,6 +1,6 @@
 /*
-* This file is part of Octopi, an open-source GUI for pacman.
-* Copyright (C) 2013 Alexandre Albuquerque Arnt
+* This file is part of OctoXBPS, an open-source GUI for pacman.
+* Copyright (C) 2020 Alexandre Albuquerque Arnt
 *
 * This program is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -18,35 +18,24 @@
 *
 */
 
-#ifndef CONFIGDIALOG_H
-#define CONFIGDIALOG_H
+#ifndef PACKAGETREEVIEW_H
+#define PACKAGETREEVIEW_H
 
-#include <QDialog>
+#include <QObject>
+#include <QTreeView>
 
-namespace Ui {
-class SetupDialog;
-}
-
-class SetupDialog : public QDialog
+class PackageTreeView : public QTreeView
 {
   Q_OBJECT
 
 public:
-  explicit SetupDialog(QWidget *parent = 0);
-  ~SetupDialog();
-
-public slots:
-  virtual void accept();
-
-private:
-  Ui::SetupDialog *ui;
+  explicit PackageTreeView(QWidget *parent = nullptr);
   void init();
-  void saveChanges();
+  void resizePackageView();
 
-private slots:
-  void selectOnceADay();
-  void selectOnceADayAt();
-  void selectOnceEvery();
+protected:
+  virtual void mouseReleaseEvent(QMouseEvent *event);
+
 };
 
-#endif // CONFIGDIALOG_H
+#endif // PACKAGETREEVIEW_H

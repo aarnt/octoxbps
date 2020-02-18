@@ -284,31 +284,7 @@ QString WMHelper::getLXQTSUCommand(){
  * The generic SU get method. It retrieves the SU you have installed in your system!
  */
 QString WMHelper::getSUCommand(){
-  QString result(ctn_NO_SU_COMMAND);
-
-  if (isXFCERunning() && (UnixCommand::hasTheExecutable(ctn_GKSU_2))){
-    result = getGKSUCommand();
-  }
-  else if (isKDERunning()){        
-    result = getKDESUCommand();
-  }
-  else if (isTDERunning() && UnixCommand::hasTheExecutable(ctn_TDESU)){
-    result = getTDESUCommand();
-  }
-  else if (UnixCommand::hasTheExecutable(ctn_GKSU_2)){
-    result = getGKSUCommand();
-  }
-  else if (UnixCommand::hasTheExecutable(ctn_KDESU)){
-    result = getKDESUCommand();
-  }
-  else if (UnixCommand::hasTheExecutable(ctn_TDESU)){
-    result = getTDESUCommand();
-  } 
-  else if (UnixCommand::hasTheExecutable(ctn_LXQTSU)){
-    result = getLXQTSUCommand();
-  }
-
-  return result;
+  return ctn_OCTOXBPS_SUDO + " -d ";
 }
 
 /*

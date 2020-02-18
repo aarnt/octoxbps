@@ -359,10 +359,6 @@ void QtSingleApplication::activateWindow(const QString &message)
         {
           mw->doSystemUpgrade();
         }
-        else
-        {
-          mw->doSystemUpgrade(ectn_NOCONFIRM_OPT);
-        }
       }
     }
   }
@@ -378,7 +374,7 @@ void QtSingleApplication::activateWindow(const QString &message)
       }
     }
   }
-  else if (actWin && message.contains("pkg.tar.xz")) {
+  /*else if (actWin && message.contains("pkg.tar.xz")) {
     actWin->setWindowState(actWin->windowState() & ~Qt::WindowMinimized);
     actWin->raise();
     if (actWin->isHidden())
@@ -399,7 +395,7 @@ void QtSingleApplication::activateWindow(const QString &message)
         mw->doInstallLocalPackages();
       }
     }
-  }
+  }*/
 
 #else
 

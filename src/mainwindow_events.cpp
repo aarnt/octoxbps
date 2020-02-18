@@ -31,7 +31,6 @@
 #include "searchbar.h"
 #include "globals.h"
 #include "terminal.h"
-#include "terminalselectordialog.h"
 
 #include <QCloseEvent>
 #include <QMessageBox>
@@ -108,7 +107,7 @@ void MainWindow::keyPressEvent(QKeyEvent* ke)
   if (ke->key() == Qt::Key_Return || ke->key() == Qt::Key_Enter)
   {
     //We are searching for AUR foreign packages...
-    if (isRemoteSearchSelected() && m_leFilterPackage->hasFocus() && m_cic == NULL)
+    /*if (isRemoteSearchSelected() && m_leFilterPackage->hasFocus() && m_cic == NULL)
     {
       if (m_leFilterPackage->text().size() < 2)
       {
@@ -124,8 +123,13 @@ void MainWindow::keyPressEvent(QKeyEvent* ke)
       f = QtConcurrent::run(searchRemotePackages, m_leFilterPackage->text());
       g_fwRemote.setFuture(f);
       connect(&g_fwRemote, SIGNAL(finished()), this, SLOT(preBuildRemotePackageList()));
-    }
+    }*/
     //We are searching for packages that own some file typed by user...
+    if (!isSearchByFileSelected() && m_leFilterPackage->hasFocus() && !ui->actionUseInstantSearch->isChecked())
+    {
+      reapplyPackageFilter();
+    }
+
     else if (isSearchByFileSelected() && m_leFilterPackage->hasFocus() && m_cic == NULL)
     {
       //ui->twGroups->setEnabled(false);
@@ -192,10 +196,10 @@ void MainWindow::keyPressEvent(QKeyEvent* ke)
   {
     openTerminal();
   }
-  /*else if(ke->key() == Qt::Key_F5)
+  else if(ke->key() == Qt::Key_F5)
   {
     metaBuildPackageList();
-  }*/
+  }
   else if(ke->key() == Qt::Key_F6)
   {
     openDirectory();
@@ -204,7 +208,7 @@ void MainWindow::keyPressEvent(QKeyEvent* ke)
   {
     maximizePackagesTreeView(false);
   }
-  else if (ke->key() == Qt::Key_F12)
+  else if (ke->key() == Qt::Key_F11)
   {
     maximizePropertiesTabWidget(false);
   }
@@ -273,53 +277,12 @@ void MainWindow::keyPressEvent(QKeyEvent* ke)
       doRemovePacmanLockFile(); //If we are not executing any command, let's remove Pacman's lock file
     }
   } 
-  else if(ke->key() == Qt::Key_T && ke->modifiers() == (Qt::ShiftModifier|Qt::ControlModifier)
-          && m_initializationCompleted)
-  {   
-    if (m_commandExecuting != ectn_NONE) return;
-
-    QStringList terminals = Terminal::getListOfAvailableTerminals();
-
-    if (terminals.count() > 2)
-    {
-      int index = terminals.indexOf(SettingsManager::getTerminal());
-      int newIndex = selectTerminal(index);
-
-      if (index != newIndex)
-      {
-        SettingsManager::setTerminal(terminals.at(newIndex));
-      }
-    }
-  }
-
   /*else if(ke->key() == Qt::Key_Z && ke->modifiers() == (Qt::ShiftModifier|Qt::ControlModifier))
   {
     parseXBPSProcessOutput("Updating configuration file `/etc/skel/.bashrc");
   }*/
 
   else ke->ignore();
-}
-
-/*
- * Calls TerminalSelectorDialog to let user chooses which terminal to use with OctoPkg
- */
-int MainWindow::selectTerminal(const int initialTerminalIndex)
-{
-  int result = initialTerminalIndex;
-  std::unique_ptr<TerminalSelectorDialog> d(
-        new TerminalSelectorDialog(this, Terminal::getListOfAvailableTerminals()));
-  d->setInitialTerminalIndex(initialTerminalIndex);
-
-  if (d->exec() == QDialog::Accepted)
-  {
-    result = d->selectedTerminalIndex();
-  }
-  else
-  {
-    result = initialTerminalIndex;
-  }
-
-  return result;
 }
 
 /*

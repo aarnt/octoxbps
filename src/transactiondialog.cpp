@@ -25,6 +25,7 @@
 #include <QMessageBox>
 #include <QPushButton>
 #include <QDialog>
+#include <QRegularExpression>
 
 /*
  * This is the dialog used to show the transaction summary
@@ -35,7 +36,6 @@ TransactionDialog::TransactionDialog(QWidget* parent) :
   ui(new Ui::TransactionDialog)
 {
   ui->setupUi(this);
-
   ui->actionRunInTerminal->setIcon(IconHelper::getIconTerminal());
 
   m_runInTerminalButton =
@@ -54,10 +54,7 @@ TransactionDialog::TransactionDialog(QWidget* parent) :
   setWindowFlags(Qt::MSWindowsFixedSizeDialogHint | Qt::Dialog |
                  Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint);
 
-  if (WMHelper::getSUCommand().contains(ctn_LXQTSU))
-  {
-    removeRunInTerminalButton();
-  }
+  removeRunInTerminalButton();
 }
 
 void TransactionDialog::setText(const QString text)

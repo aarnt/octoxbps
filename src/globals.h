@@ -49,7 +49,7 @@ extern QFutureWatcher<QString> g_fwDistroNews;
 extern QFutureWatcher<QString> g_fwPackageOwnsFile;
 extern QFutureWatcher<TransactionInfo> g_fwTargetUpgradeList;
 
-QString showPackageInfo(QString pkgName);
+QString showPackageInformation(QString pkgName);
 TransactionInfo getTargetUpgradeList(const QString &pkgName);
 QList<PackageListData> * searchPkgPackages();
 QSet<QString> * searchUnrequiredPacmanPackages();

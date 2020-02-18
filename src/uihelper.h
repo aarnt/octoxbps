@@ -84,16 +84,16 @@ public:
 
   static QIcon getIconRemoveItem() {
     if (WMHelper::isKDERunning())
-      return QIcon::fromTheme("list-remove", QIcon(":/resources/images/remove_item.png"));
+      return QIcon::fromTheme("list-remove", QIcon(":/resources/images/toremove.png"));
     else
-      return QIcon(":/resources/images/remove_item.png");
+      return QIcon(":/resources/images/toremove.png");
   }
 
   static QIcon getIconInstallItem() {
     if (WMHelper::isKDERunning())
-      return QIcon::fromTheme("list-add", QIcon(":/resources/images/install_item.png"));
+      return QIcon::fromTheme("list-add", QIcon(":/resources/images/toinstall.png"));
     else
-      return QIcon(":/resources/images/install_item.png");
+      return QIcon(":/resources/images/toinstall.png");
   }
 
   static QIcon getIconExit(){

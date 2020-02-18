@@ -28,7 +28,6 @@
 
 class SettingsManager
 {
-
   private:
 
     static SettingsManager *m_pinstance;
@@ -69,11 +68,8 @@ class SettingsManager
     static QByteArray getWindowSize();
     static QByteArray getTransactionWindowSize();
     static QByteArray getSplitterHorizontalState();
+    static bool isInstantSearchSelected();
     static bool isValidTerminalSelected();
-
-    //CacheCleaner related
-    static int getKeepNumInstalledPackages();
-    static int getKeepNumUninstalledPackages();
 
     static void setCurrentTabIndex(int newValue);
     static void setPanelOrganizing(int newValue);
@@ -95,6 +91,7 @@ class SettingsManager
     static void setPackageIconColumnWidth(int newValue);
     static void setPackageNameColumnWidth(int newValue);
     static void setPackageVersionColumnWidth(int newValue);
+    static void setInstantSearchSelected(bool newValue);
 };
 
 #endif // SETTINGSMANAGER_H

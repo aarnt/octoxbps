@@ -3,3 +3,4 @@ bin/**
 build/**
 qrc_resources.cpp
 octoxbps.pro.user
+ui_*.h
