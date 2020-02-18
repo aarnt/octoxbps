@@ -1,5 +1,5 @@
 /*
-* This file is part of OctoXBPS, an open-source GUI for pacman.
+* This file is part of OctoXBPS, an open-source GUI for xbps.
 * Copyright (C) 2015 Alexandre Albuquerque Arnt
 *
 * This program is free software; you can redistribute it and/or modify
@@ -232,7 +232,7 @@ void XBPSExec::parseXBPSProcessOutput(QString output)
     target = msg.left(colon);
 
     if(!m_textPrinted.contains(target))
-      prepareTextToPrint("<b><font color=\"#FF8040\">" + target + "</font></b>");
+      prepareTextToPrint("<b><font color=\"#B4AB58\">" + target + "</font></b>");
   }
   else if (msg.contains("Updating") &&
             (!msg.contains(QRegularExpression("B/s")) && (!msg.contains(QRegularExpression("configuration file")))))
@@ -438,7 +438,7 @@ void XBPSExec::prepareTextToPrint(QString str, TreatString ts, TreatURLLinks tl)
              (!newStr.contains(QRegularExpression("(is|are) up-to-date"))) &&
              (!newStr.contains(QRegularExpression("\\s"))))
     {
-      newStr = "<b><font color=\"#FF8040\">" + newStr + "</font></b>"; //IT'S A PKGNAME!
+      newStr = "<b><font color=\"#B4AB58\">" + newStr + "</font></b>"; //IT'S A PKGNAME!
     }
     /*else if (newMsg.contains(":") &&
                (!newMsg.contains(QRegularExpression("\\):"))) &&
