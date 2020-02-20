@@ -161,6 +161,7 @@
     </property>
     <addaction name="actionHelpUsage"/>
     <addaction name="separator"/>
+    <addaction name="actionDonate"/>
     <addaction name="actionHelpAbout"/>
    </widget>
    <widget class="QMenu" name="menuView">
@@ -575,6 +576,11 @@
    </property>
    <property name="text">
     <string>&amp;Use instant search</string>
+   </property>
+  </action>
+  <action name="actionDonate">
+   <property name="text">
+    <string>&amp;Donate</string>
    </property>
   </action>
  </widget>

@@ -31,6 +31,7 @@
 #include <QString>
 #include <QTextBrowser>
 #include <QMessageBox>
+#include <QDesktopServices>
 
 /*
  * Initialize the Help tab with basic information about using OctoPkg
@@ -181,6 +182,15 @@ void MainWindow::initTabHelpUsage()
 void MainWindow::onHelpUsage()
 {
   changeTabWidgetPropertiesIndex(ctn_TABINDEX_HELPUSAGE);
+}
+
+/*
+ * Slot to open author's Paypal donation page
+ */
+void MainWindow::onHelpDonate()
+{
+  const QString url="http://sourceforge.net/donate/index.php?group_id=186459";
+  QDesktopServices::openUrl(QUrl(url));
 }
 
 /*

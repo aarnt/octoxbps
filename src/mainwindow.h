@@ -411,6 +411,7 @@ private slots:
   void postRefreshDistroNews();
 
   void onHelpUsage();
+  void onHelpDonate();
   void onHelpAbout();
   void onPressDelete();
 
@@ -432,7 +433,6 @@ private slots:
   void outputTextBrowserAnchorClicked(const QUrl & link);
   void execToolTip();
   void doPreSystemUpgrade();
-
   void testSpecialDependencies();
 
 public slots:

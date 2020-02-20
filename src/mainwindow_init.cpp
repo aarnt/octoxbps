@@ -200,16 +200,9 @@ void MainWindow::initPackageGroups()
   ui->twGroups->setHeaderLabel(StrConstants::getCategories());
   ui->twGroups->header()->setSortIndicatorShown(false);
 
-  #if QT_VERSION < 0x050000
-    ui->twGroups->header()->setClickable(false);
-    ui->twGroups->header()->setMovable(false);
-    ui->twGroups->header()->setResizeMode(QHeaderView::Fixed);
-  #else
-    ui->twGroups->header()->setSectionsClickable(false);
-    ui->twGroups->header()->setSectionsMovable(false);
-    ui->twGroups->header()->setSectionResizeMode(QHeaderView::Fixed);
-  #endif
-
+  ui->twGroups->header()->setSectionsClickable(false);
+  ui->twGroups->header()->setSectionsMovable(false);
+  ui->twGroups->header()->setSectionResizeMode(QHeaderView::Fixed);
   ui->twGroups->setFrameShape(QFrame::NoFrame);
   ui->twGroups->setFrameShadow(QFrame::Plain);
   ui->twGroups->setStyleSheet(StrConstants::getTreeViewCSS());
@@ -691,6 +684,7 @@ void MainWindow::initActions()
   connect(ui->actionGetNews, SIGNAL(triggered()), this, SLOT(refreshDistroNews()));
   connect(ui->twProperties, SIGNAL(currentChanged(int)), this, SLOT(changedTabIndex()));
   connect(ui->actionHelpUsage, SIGNAL(triggered()), this, SLOT(onHelpUsage()));
+  connect(ui->actionDonate, SIGNAL(triggered(bool)), this, SLOT(onHelpDonate()));
   connect(ui->actionHelpAbout, SIGNAL(triggered()), this, SLOT(onHelpAbout()));
   connect(m_actionPackageInfo, SIGNAL(triggered()), this, SLOT(showPackageInfo()));
 
