@@ -689,7 +689,6 @@ void MainWindow::prepareSystemUpgrade()
 
   QObject::connect(m_xbpsExec, SIGNAL( finished ( int, QProcess::ExitStatus )),
                    this, SLOT( xbpsProcessFinished(int, QProcess::ExitStatus) ));
-
   QObject::connect(m_xbpsExec, SIGNAL(percentage(int)), this, SLOT(incrementPercentage(int)));
   QObject::connect(m_xbpsExec, SIGNAL(textToPrintExt(QString)), this, SLOT(outputText(QString)));
 
@@ -783,65 +782,54 @@ void MainWindow::doSystemUpgrade(SystemUpgradeOptions systemUpgradeOptions)
   }
 
   QString list;
-
+  bool upgradeXBPS=false;
   foreach(QString target, *targets)
   {
+    if (target == "xbps") upgradeXBPS=true;
     list = list + target + "\n";
   }
 
-  //User already confirmed all updates in the notifier window!
-  if (systemUpgradeOptions == ectn_NOCONFIRM_OPT)
+  //Let's build the system upgrade transaction dialog...
+  QString ds = ti.sizeToDownload;
+
+  TransactionDialog question(this);
+
+  if(targets->count()==1)
+    question.setText(StrConstants::getRetrievePackage() +
+                     "\n\n" + StrConstants::getTotalDownloadSize().arg(ds).remove(" KB"));
+  else
+    question.setText(StrConstants::getRetrievePackages(targets->count()) +
+                     "\n\n" + StrConstants::getTotalDownloadSize().arg(ds).remove(" KB"));
+
+  question.setWindowTitle(StrConstants::getConfirmation());
+  question.setInformativeText(StrConstants::getConfirmationQuestion());
+  question.setDetailedText(list);
+
+  m_systemUpgradeDialog = true;
+  int result = question.exec();
+
+  if(result == QDialogButtonBox::Yes || result == QDialogButtonBox::AcceptRole)
   {
     prepareSystemUpgrade();
 
-    m_commandExecuting = ectn_SYSTEM_UPGRADE;
-    m_xbpsExec->doSystemUpgrade();
-    m_commandQueued = ectn_NONE;
+    if (result == QDialogButtonBox::Yes)
+    {
+      m_commandExecuting = ectn_SYSTEM_UPGRADE;
+      m_xbpsExec->doSystemUpgrade(upgradeXBPS);
+      m_commandQueued = ectn_NONE;
+    }
+    else if (result == QDialogButtonBox::AcceptRole)
+    {
+      m_commandExecuting = ectn_RUN_SYSTEM_UPGRADE_IN_TERMINAL;
+      m_xbpsExec->doSystemUpgradeInTerminal();
+      m_commandQueued = ectn_NONE;
+    }
   }
-  else
+  else if (result == QDialogButtonBox::No)
   {
-    //Let's build the system upgrade transaction dialog...
-    QString ds = ti.sizeToDownload;
-
-    TransactionDialog question(this);
-
-    if(targets->count()==1)
-      question.setText(StrConstants::getRetrievePackage() +
-                       "\n\n" + StrConstants::getTotalDownloadSize().arg(ds).remove(" KB"));
-    else
-      question.setText(StrConstants::getRetrievePackages(targets->count()) +
-                       "\n\n" + StrConstants::getTotalDownloadSize().arg(ds).remove(" KB"));
-
-    question.setWindowTitle(StrConstants::getConfirmation());
-    question.setInformativeText(StrConstants::getConfirmationQuestion());
-    question.setDetailedText(list);
-
-    m_systemUpgradeDialog = true;
-    int result = question.exec();
-
-    if(result == QDialogButtonBox::Yes || result == QDialogButtonBox::AcceptRole)
-    {
-      prepareSystemUpgrade();
-
-      if (result == QDialogButtonBox::Yes)
-      {
-        m_commandExecuting = ectn_SYSTEM_UPGRADE;
-        m_xbpsExec->doSystemUpgrade();
-        m_commandQueued = ectn_NONE;
-      }
-      else if (result == QDialogButtonBox::AcceptRole)
-      {
-        m_commandExecuting = ectn_RUN_SYSTEM_UPGRADE_IN_TERMINAL;
-        m_xbpsExec->doSystemUpgradeInTerminal();
-        m_commandQueued = ectn_NONE;
-      }
-    }
-    else if (result == QDialogButtonBox::No)
-    {
-      m_systemUpgradeDialog = false;
-      enableTransactionActions();
-      toggleSystemActions(true);
-    }
+    m_systemUpgradeDialog = false;
+    enableTransactionActions();
+    toggleSystemActions(true);
   }
 }
 

@@ -74,7 +74,7 @@ public:
   void doRemoveAndInstall(const QString &listOfPackagestoRemove, const QString &listOfPackagestoInstall);
   void doRemoveAndInstallInTerminal(const QString &listOfPackagestoRemove, const QString &listOfPackagestoInstall);
 
-  void doSystemUpgrade();
+  void doSystemUpgrade(bool upgradeXBPS);
   void doSystemUpgradeInTerminal();
   void doSyncDatabase();
 

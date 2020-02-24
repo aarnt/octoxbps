@@ -716,13 +716,20 @@ void XBPSExec::doRemoveAndInstallInTerminal(const QString &listOfPackagestoRemov
 
 /*
  * Calls pacman to upgrade the entire system and returns output to UI
+ *
+ * param upgradeXBPS = true upgrades XBPS pkg manager first!
  */
-void XBPSExec::doSystemUpgrade()
+void XBPSExec::doSystemUpgrade(bool upgradeXBPS)
 {
-  QString command = "/usr/bin/xbps-install -u -y";
+  QString command="/usr/bin/xbps-install -u -y";
+  if (upgradeXBPS) command = "/usr/bin/xbps-install -u -y xbps";
 
   m_lastCommandList.clear();
-  m_lastCommandList.append("/usr/bin/xbps-install -u;");
+  if(upgradeXBPS)
+    m_lastCommandList.append("/usr/bin/xbps-install -u xbps;");
+  else
+    m_lastCommandList.append("/usr/bin/xbps-install -u;");
+
   m_lastCommandList.append("echo -e;");
   m_lastCommandList.append("read -n 1 -p \"" + StrConstants::getPressAnyKey() + "\"");
 
@@ -749,16 +756,7 @@ void XBPSExec::doSystemUpgradeInTerminal()
  */
 void XBPSExec::doSyncDatabase()
 {
-  QString command;
-
-  if (UnixCommand::isRootRunning())
-    command = "/usr/bin/xbps-install -Sy";
-  else
-    command = "/usr/bin/xbps-install -Syy";
-
-  /*if (UnixCommand::hasTheExecutable("pkgfile") && !UnixCommand::isRootRunning())
-    command += "; pkgfile -u";*/
-
+  QString command = "/usr/bin/xbps-install -Syy";
   m_commandExecuting = ectn_SYNC_DATABASE;
   m_unixCommand->executeCommand(command);
 }
