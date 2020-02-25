@@ -21,10 +21,10 @@
 #include "mainwindow.h"
 #include "optionsdialog.h"
 #include "outputdialog.h"
-#include "../../src/strconstants.h"
-#include "../../src/uihelper.h"
-#include "../../src/package.h"
-#include "../../src/transactiondialog.h"
+#include "../src/strconstants.h"
+#include "../src/uihelper.h"
+#include "../src/package.h"
+#include "../src/transactiondialog.h"
 
 #include <QTimer>
 #include <QSystemTrayIcon>
@@ -330,9 +330,10 @@ void MainWindow::doSystemUpgrade()
   }
 
   QString list;
-
+  bool upgradeXBPS=false;
   foreach(QString target, *targets)
   {
+    if (target == "xbps") upgradeXBPS=true;
     list = list + target + "\n";
   }
 
@@ -363,7 +364,7 @@ void MainWindow::doSystemUpgrade()
     m_actionSystemUpgrade->setEnabled(false);
 
     OutputDialog *dlg = new OutputDialog(this);
-
+    dlg->setUpgradeXBPS(upgradeXBPS);
     if (m_debugInfo)
       dlg->setDebugMode(true);
 

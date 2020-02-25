@@ -19,10 +19,10 @@
 */
 
 #include "outputdialog.h"
-#include "../../src/xbpsexec.h"
-#include "../../src/searchbar.h"
-#include "../../src/uihelper.h"
-#include "../../src/strconstants.h"
+#include "../src/xbpsexec.h"
+#include "../src/searchbar.h"
+#include "../src/uihelper.h"
+#include "../src/strconstants.h"
 
 #include <QTextBrowser>
 #include <QVBoxLayout>
@@ -42,14 +42,23 @@ OutputDialog::OutputDialog(QWidget *parent): QDialog(parent)
   init();
   m_upgradeRunning = false;
   m_debugInfo = false;
+  m_upgradeXBPS = false;
 }
 
 /*
- * Sets if pacmanExec will be called in debugMode or not
+ * Sets if xbpsExec will be called in debugMode or not
  */
 void OutputDialog::setDebugMode(bool newValue)
 {
   m_debugInfo = newValue;
+}
+
+/*
+ * Sets if xbpsExec will upgrade XBPS package first
+ */
+void OutputDialog::setUpgradeXBPS(bool newValue)
+{
+  m_upgradeXBPS = newValue;
 }
 
 /*
@@ -81,7 +90,6 @@ void OutputDialog::init()
   m_mainLayout->setSpacing(0);
   m_mainLayout->setSizeConstraint(QLayout::SetMinimumSize);
   m_mainLayout->setContentsMargins(2, 2, 2, 2);
-
   m_progressBar->setMinimum(0);
   m_progressBar->setMaximum(100);
   m_progressBar->setValue(0);
@@ -90,25 +98,23 @@ void OutputDialog::init()
 }
 
 /*
- * Calls PacmanExec to begin system upgrade
+ * Calls xbpsExec to begin system upgrade
  */
 void OutputDialog::doSystemUpgrade()
 {
-  m_pacmanExec = new XBPSExec();
+  m_xbpsExec = new XBPSExec();
 
   if (m_debugInfo)
-    m_pacmanExec->setDebugMode(true);
+    m_xbpsExec->setDebugMode(true);
 
-  QObject::connect(m_pacmanExec, SIGNAL( finished ( int, QProcess::ExitStatus )),
+  QObject::connect(m_xbpsExec, SIGNAL( finished ( int, QProcess::ExitStatus )),
                    this, SLOT( pacmanProcessFinished(int, QProcess::ExitStatus) ));
 
-  QObject::connect(m_pacmanExec, SIGNAL(percentage(int)), this, SLOT(onPencertange(int)));
-  QObject::connect(m_pacmanExec, SIGNAL(textToPrintExt(QString)), this, SLOT(onWriteOutput(QString)));
+  QObject::connect(m_xbpsExec, SIGNAL(percentage(int)), this, SLOT(onPencertange(int)));
+  QObject::connect(m_xbpsExec, SIGNAL(textToPrintExt(QString)), this, SLOT(onWriteOutput(QString)));
 
   m_upgradeRunning = true;
-  m_pacmanExec->doSystemUpgrade();
-
-  //m_pacmanExec->doInstall("octopi");  //TEST CODE!
+  m_xbpsExec->doSystemUpgrade(m_upgradeXBPS);
 }
 
 /*
@@ -135,7 +141,7 @@ void OutputDialog::reject()
 }
 
 /*
- * Slot called whenever PacmanExec emits a new percentage change
+ * Slot called whenever xbpsExec emits a new percentage change
  */
 void OutputDialog::onPencertange(int percentage)
 {
@@ -163,7 +169,7 @@ void OutputDialog::writeToTabOutput(const QString &msg, TreatURLLinks treatURLLi
 }
 
 /*
- * Slot called whenever PacmanExec emits a new output
+ * Slot called whenever xbpsExec emits a new output
  */
 void OutputDialog::onWriteOutput(const QString &output)
 {
@@ -181,7 +187,7 @@ bool OutputDialog::textInTabOutput(const QString& findText)
 }
 
 /*
- * Slot called whenever PacmanExec finishes its job
+ * Slot called whenever xbpsExec finishes its job
  */
 void OutputDialog::pacmanProcessFinished(int exitCode, QProcess::ExitStatus exitStatus)
 {
@@ -204,12 +210,12 @@ void OutputDialog::pacmanProcessFinished(int exitCode, QProcess::ExitStatus exit
 
     if (res == QMessageBox::Yes)
     {
-      m_pacmanExec->runLastestCommandInTerminal();
+      m_xbpsExec->runLastestCommandInTerminal();
       return;
     }
   }
 
-  delete m_pacmanExec;
+  delete m_xbpsExec;
   m_upgradeRunning = false;
 }
 

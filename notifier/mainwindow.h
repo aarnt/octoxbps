@@ -21,8 +21,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "../../src/unixcommand.h"
-#include "../../src/xbpsexec.h"
+#include "../src/unixcommand.h"
+#include "../src/xbpsexec.h"
 
 #include <QDialog>
 #include <QProcess>

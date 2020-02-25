@@ -18,8 +18,8 @@
 *
 */
 
-#include "../../src/settingsmanager.h"
-#include "../../src/strconstants.h"
+#include "../src/settingsmanager.h"
+#include "../src/strconstants.h"
 #include "optionsdialog.h"
 #include "ui_optionsdialog.h"
 

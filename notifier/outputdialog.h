@@ -21,7 +21,7 @@
 #ifndef OUTPUTDIALOG_H
 #define OUTPUTDIALOG_H
 
-#include "../../src/constants.h"
+#include "../src/constants.h"
 
 #include <QDialog>
 #include <QProcess>
@@ -44,10 +44,11 @@ private:
   QTextBrowser *m_textBrowser;
   QProgressBar *m_progressBar;
   QVBoxLayout *m_mainLayout;
-  XBPSExec *m_pacmanExec;
+  XBPSExec *m_xbpsExec;
   SearchBar *m_searchBar;
   bool m_upgradeRunning;
   bool m_debugInfo;
+  bool m_upgradeXBPS;
 
   void init();
 
@@ -74,6 +75,7 @@ protected:
 public:
   explicit OutputDialog(QWidget *parent = 0);
   void setDebugMode(bool newValue);
+  void setUpgradeXBPS(bool newValue);
 
 public slots:
   void show();
