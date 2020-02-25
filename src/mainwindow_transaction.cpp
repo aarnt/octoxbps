@@ -1317,6 +1317,7 @@ void MainWindow::toggleTransactionActions(const bool value)
   ui->actionGetNews->setEnabled(value);
   ui->actionOpenRootTerminal->setEnabled(value);
   ui->actionHelpUsage->setEnabled(value);
+  ui->actionDonate->setEnabled(value);
   ui->actionHelpAbout->setEnabled(value);
   ui->actionExit->setEnabled(value);
 
