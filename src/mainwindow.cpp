@@ -31,6 +31,8 @@
 #include "globals.h"
 #include <iostream>
 
+#include <QDropEvent>
+#include <QMimeData>
 #include <QStandardItemModel>
 #include <QString>
 #include <QTextBrowser>
@@ -77,7 +79,8 @@ MainWindow::MainWindow(QWidget *parent) :
   retrieveUnrequiredPackageList();
 
   ui->setupUi(this);
-  switchToViewAllPackages();  
+  setAcceptDrops(true);
+  switchToViewAllPackages();
 }
 
 /*
@@ -90,6 +93,51 @@ MainWindow::~MainWindow()
   //Let's garbage collect transaction files...
   m_unixCommand->removeTemporaryFiles();
   delete ui;
+}
+
+/*
+ * Whenever a user drops a package from any outside source, we try to install it
+ */
+void MainWindow::dropEvent(QDropEvent *ev)
+{
+  m_packagesToInstallList.clear();
+  QList<QUrl> urls = ev->mimeData()->urls();
+
+  foreach(QUrl url, urls)
+  {
+    QString str = url.fileName();
+    QFileInfo f(str);
+    if (f.completeSuffix().contains(".xbps"))
+    {
+      m_packagesToInstallList.append(url.toLocalFile());
+    }
+  }
+
+  if (m_packagesToInstallList.count() > 0)
+    doInstallLocalPackages();
+}
+
+/*
+ * Whenever an outside package enters OctoXBPS mainwindow space, we check to see if it's really a package
+ */
+void MainWindow::dragEnterEvent(QDragEnterEvent *ev)
+{
+  bool success = false;
+  QList<QUrl> urls = ev->mimeData()->urls();
+
+  foreach(QUrl url, urls)
+  {
+    QString str = url.fileName();
+    QFileInfo f(str);
+    if (f.completeSuffix().contains(QRegularExpression(".xbps$")))
+    {
+      success=true;
+      break;
+    }
+  }
+
+  if (success) ev->accept();
+  else ev->ignore();
 }
 
 /*
@@ -1259,7 +1307,7 @@ void MainWindow::openDirectory(){
 /*
  * Open a file chooser dialog for the user to select local packages to install (pacman -U)
  */
-/*void MainWindow::installLocalPackage()
+void MainWindow::installLocalPackage()
 {
   if (!isSUAvailable()) return;
 
@@ -1267,11 +1315,11 @@ void MainWindow::openDirectory(){
       QFileDialog::getOpenFileNames(this,
                                     StrConstants::getFileChooserTitle(),
                                     QDir::homePath(),
-                                    StrConstants::getPackages() + " (*.pkg.tar*)");
+                                    StrConstants::getPackages() + " (*.xbps*)");
 
   if (m_packagesToInstallList.count() > 0)
     doInstallLocalPackages();
-}*/
+}
 
 /*
  * Brings the user to the tab Files and position cursor inside searchBar

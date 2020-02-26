@@ -1144,7 +1144,7 @@ bool MainWindow::doRemovePacmanLockFile()
 /*
  * Installs ALL the packages manually selected by the user with "pacman -U (INCLUDING DEPENDENCIES)" !
  */
-/*void MainWindow::doInstallLocalPackages()
+void MainWindow::doInstallLocalPackages()
 {
   QString listOfTargets;
   QString list;
@@ -1160,9 +1160,15 @@ bool MainWindow::doRemovePacmanLockFile()
 
   foreach(QString pkgToInstall, m_packagesToInstallList)
   {
+    fi.setFile(pkgToInstall);
+    pkgToInstall = fi.fileName();
+    pkgToInstall = pkgToInstall.remove(".xbps");
+    int i = pkgToInstall.lastIndexOf(".");
+    pkgToInstall = pkgToInstall.mid(0, i);
     listOfTargets += pkgToInstall + " ";
   }
 
+  QString targetPath = fi.path();
   TransactionDialog question(this);
   question.setWindowTitle(StrConstants::getConfirmation());
   question.setInformativeText(StrConstants::getConfirmationQuestion());
@@ -1170,13 +1176,13 @@ bool MainWindow::doRemovePacmanLockFile()
 
   if(m_packagesToInstallList.count()==1)
   {
-    if (m_packagesToInstallList.at(0).indexOf("HoldPkg was found in") != -1)
+    /*if (m_packagesToInstallList.at(0).indexOf("HoldPkg was found in") != -1)
     {
       QMessageBox::warning(
             this, StrConstants::getAttention(), StrConstants::getWarnHoldPkgFound(), QMessageBox::Ok);
       return;
-    }
-    else question.setText(StrConstants::getRetrievePackage());
+    }*/
+    question.setText(StrConstants::getRetrievePackage());
   }
   else
     question.setText(StrConstants::getRetrievePackages(m_packagesToInstallList.count()));
@@ -1185,40 +1191,31 @@ bool MainWindow::doRemovePacmanLockFile()
 
   if(result == QDialogButtonBox::Yes || result == QDialogButtonBox::AcceptRole)
   {
-    if (!doRemovePacmanLockFile()) return;
-
-    QString command;
-    command = "pacman -U --force --noconfirm " + listOfTargets;
-
-    m_lastCommandList.clear();
-    m_lastCommandList.append("pacman -U --force " + listOfTargets + ";");
-    m_lastCommandList.append("echo -e;");
-    m_lastCommandList.append("read -n1 -p \"" + StrConstants::getPressAnyKey() + "\"");
-
-    m_commandExecuting = ectn_INSTALL;
+    disableTransactionButtons();
     disableTransactionActions();
-    m_unixCommand = new UnixCommand(this);
+    clearTabOutput();
 
-    QObject::connect(m_unixCommand, SIGNAL( started() ), this, SLOT( actionsProcessStarted()));
-    QObject::connect(m_unixCommand, SIGNAL( readyReadStandardOutput()),
-                     this, SLOT( actionsProcessReadOutput() ));
-    QObject::connect(m_unixCommand, SIGNAL( finished ( int, QProcess::ExitStatus )),
-                     this, SLOT( pacmanProcessFinished(int, QProcess::ExitStatus) ));
-    QObject::connect(m_unixCommand, SIGNAL( readyReadStandardError() ),
-                     this, SLOT( actionsProcessRaisedError() ));
+    m_xbpsExec = new XBPSExec();
+    if (m_debugInfo)
+      m_xbpsExec->setDebugMode(true);
+
+    QObject::connect(m_xbpsExec, SIGNAL( finished ( int, QProcess::ExitStatus )),
+                     this, SLOT( xbpsProcessFinished(int, QProcess::ExitStatus) ));
+    QObject::connect(m_xbpsExec, SIGNAL(percentage(int)), this, SLOT(incrementPercentage(int)));
+    QObject::connect(m_xbpsExec, SIGNAL(textToPrintExt(QString)), this, SLOT(outputText(QString)));
 
     if (result == QDialogButtonBox::Yes)
     {
       m_commandExecuting = ectn_INSTALL;
-      m_unixCommand->executeCommand(command);
+      m_xbpsExec->doInstallLocal(targetPath, listOfTargets);
     }
-    else if (result == QDialogButtonBox::AcceptRole)
+    /*else if (result == QDialogButtonBox::AcceptRole)
     {
       m_commandExecuting = ectn_RUN_IN_TERMINAL;
       m_unixCommand->runCommandInTerminal(m_lastCommandList);
-    }
+    }*/
   }
-}*/
+}
 
 /*
  * Clears the local package cache using "pacman -Sc"

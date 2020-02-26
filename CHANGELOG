@@ -7,6 +7,9 @@
   Added new sudo tool called "octoxbps-sudo". It's based on "lxqt-sudo" code 
 	(without LXQt libs) and its use is mandatory in OctoXBPS.
   Added new icons to UI.
+  Added new menu option "File/Install local package" to install any package available
+	on your local repositories.
+  Added drag and drop support to drop local ".xbps" packages for installation.
   Added new menu option "Search/Use instant search" to toggle automatic filtering 
 	search results on package list.
   Added new context menu option "Info" on pkg list.

@@ -47,7 +47,6 @@ void PackageTreeView::init()
   setEditTriggers(QAbstractItemView::NoEditTriggers);
   setVerticalScrollMode(QAbstractItemView::ScrollPerItem);
   setAllColumnsShowFocus( true );
-  //setModel(m_packageModel.get());
   setSortingEnabled( true );
   setIndentation( 0 );
   header()->setSortIndicatorShown(true);

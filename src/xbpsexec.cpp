@@ -394,7 +394,7 @@ void XBPSExec::prepareTextToPrint(QString str, TreatString ts, TreatURLLinks tl)
   }
   else
   {
-    if(newStr.contains(QRegularExpression("removed")) ||
+    if(/*newStr.contains(QRegularExpression("removed")) ||*/
        newStr.contains(QRegularExpression("removing ")) ||
        newStr.contains(QRegularExpression("could not ")) ||
        newStr.contains(QRegularExpression("error")) ||
@@ -406,10 +406,10 @@ void XBPSExec::prepareTextToPrint(QString str, TreatString ts, TreatURLLinks tl)
     {
       newStr = "<b><font color=\"#E55451\">" + newStr + "&nbsp;</font></b>"; //RED
     }
-    else if(newStr.contains(QRegularExpression("reinstalled")) ||
+    else if(/*newStr.contains(QRegularExpression("reinstalled")) ||
             newStr.contains(QRegularExpression("installed")) ||
             newStr.contains(QRegularExpression("upgraded")) ||
-            newStr.contains(QRegularExpression("updated")) ||
+            newStr.contains(QRegularExpression("updated")) ||*/
             newStr.contains(QRegularExpression("Verifying")) ||
             newStr.contains(QRegularExpression("Building")) ||
             newStr.contains(QRegularExpression("Checking")) ||
@@ -624,18 +624,18 @@ void XBPSExec::doInstallInTerminal(const QString &listOfPackages)
 /*
  * Calls pacman to install given LOCAL packages and returns output to UI
  */
-/*void XBPSExec::doInstallLocal(const QString &listOfPackages)
+void XBPSExec::doInstallLocal(const QString &targetPath, const QString &listOfPackages)
 {
-  QString command = "pacman -U --force --noconfirm " + listOfPackages;
+  QString command = "xbps-install -S -y --repository " + targetPath + " " + listOfPackages;
 
   m_lastCommandList.clear();
-  m_lastCommandList.append("pacman -U --force " + listOfPackages + ";");
+  m_lastCommandList.append("xbps-install -S --repository " + targetPath + " " + listOfPackages + ";");
   m_lastCommandList.append("echo -e;");
   m_lastCommandList.append("read -n 1 -p \"" + StrConstants::getPressAnyKey() + "\"");
 
   m_commandExecuting = ectn_INSTALL;
   m_unixCommand->executeCommand(command);
-}*/
+}
 
 /*
  * Calls pacman to install given LOCAL packages inside a terminal

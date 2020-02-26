@@ -50,6 +50,7 @@ class QActionGroup;
 class QTreeWidgetItem;
 class QTime;
 class XBPSExec;
+class QDropEvent;
 
 #include "src/model/packagemodel.h"
 #include "src/packagerepository.h"
@@ -85,6 +86,8 @@ protected:
   void closeEvent(QCloseEvent *event);
   void keyPressEvent(QKeyEvent* ke);
   void keyReleaseEvent(QKeyEvent* ke);
+  void dropEvent(QDropEvent *ev);
+  void dragEnterEvent(QDragEnterEvent *ev);
 
 private:
   Ui::MainWindow *ui;
@@ -311,7 +314,7 @@ private slots:
   void editFile();
   void openTerminal();
   void openDirectory();
-  //void installLocalPackage();
+  void installLocalPackage();
   void findFileInPackage();
   void incrementPercentage(int);
   void outputText(const QString&);
@@ -386,12 +389,7 @@ private slots:
 
   void resetTransaction();
 
-  //void actionsProcessStarted();
   void xbpsProcessFinished(int exitCode, QProcess::ExitStatus);
-  //void actionsProcessReadOutput();
-  //void actionsProcessReadOutputErrorMirrorCheck();
-  //void actionsProcessReadOutputMirrorCheck();
-  //void actionsProcessRaisedError();
 
   void insertIntoRemovePackage();
   void insertIntoInstallPackage();

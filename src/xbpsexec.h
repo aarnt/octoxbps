@@ -65,7 +65,7 @@ public:
   void doInstall(const QString &listOfPackages);
   void doInstallInTerminal(const QString &listOfPackages);
 
-  //void doInstallLocal(const QString &listOfPackages);
+  void doInstallLocal(const QString &targetPath, const QString &listOfPackages);
   //void doInstallLocalInTerminal(const QString &listOfPackages);
 
   void doRemove(const QString &listOfPackages);
