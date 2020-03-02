@@ -77,7 +77,6 @@ MainWindow::MainWindow(QWidget *parent) :
   //m_time->start();
 
   retrieveUnrequiredPackageList();
-
   ui->setupUi(this);
   setAcceptDrops(true);
   switchToViewAllPackages();
@@ -676,9 +675,8 @@ void MainWindow::execContextMenuPackages(QPoint point)
       if (package->installed() == false || forbidden)
       {
         allRemovable = false;
-        break;
       }
-      else if (package->installed())
+      else if (package->installed() || package->outdated())
       {
         allInstallable = false;
       }
