@@ -417,7 +417,7 @@ void MainWindow::outputOutdatedPackageList()
           getOutdatedPkgNewVersion(pkg) + "</td></tr>";
     }
 
-    writeToTabOutput(html);
+    writeToTabOutput(html+"<br>");
 
     QTextBrowser *text =
         ui->twProperties->widget(ctn_TABINDEX_OUTPUT)->findChild<QTextBrowser*>("textBrowser");
