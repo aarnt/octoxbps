@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
 
   a.installTranslator(&appTranslator);*/
   a.setQuitOnLastWindowClosed(false);
-
+  setenv("TERM", "xterm-256color", 1);
   MainWindow w;
   QResource::registerResource("./resources.qrc");
 

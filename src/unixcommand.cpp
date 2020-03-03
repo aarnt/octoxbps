@@ -40,6 +40,53 @@
 QFile *UnixCommand::m_temporaryFile = 0;
 
 /*
+ * UnixCommand's constructor: the relevant environment english setting and the connectors
+ */
+UnixCommand::UnixCommand(QObject *parent): QObject()
+{
+  m_process = new QProcess(parent);
+  m_terminal = new Terminal(parent, SettingsManager::getTerminal());
+
+  QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+  env.insert("LANG", "C");
+  env.insert("LC_MESSAGES", "C");
+  m_process->setProcessEnvironment(env);
+
+  QObject::connect(m_process, SIGNAL( started() ), this,
+                   SIGNAL( started() ));
+  QObject::connect(this, SIGNAL( started() ), this,
+                   SLOT( processReadyReadStandardOutput() ));
+
+  QObject::connect(m_process, SIGNAL( readyReadStandardOutput() ), this,
+                   SIGNAL( readyReadStandardOutput() ));
+  QObject::connect(this, SIGNAL( readyReadStandardOutput() ), this,
+                   SLOT( processReadyReadStandardOutput() ));
+
+  QObject::connect(m_process, SIGNAL( finished ( int, QProcess::ExitStatus )), this,
+                   SIGNAL( finished ( int, QProcess::ExitStatus )) );
+  QObject::connect(this, SIGNAL( finished ( int, QProcess::ExitStatus )), this,
+                   SLOT( processReadyReadStandardOutput() ));
+
+  QObject::connect(m_process, SIGNAL( readyReadStandardError() ), this,
+                   SIGNAL( readyReadStandardError() ));
+  QObject::connect(this, SIGNAL( readyReadStandardError() ), this,
+                   SLOT( processReadyReadStandardError() ));
+
+  //Terminal signals
+  QObject::connect(m_terminal, SIGNAL( started()), this,
+                   SIGNAL( started()));
+  QObject::connect(m_terminal, SIGNAL( finished ( int, QProcess::ExitStatus )), this,
+                   SIGNAL( finished ( int, QProcess::ExitStatus )) );
+  QObject::connect(m_terminal, SIGNAL(commandToExecInQTermWidget(QString)), this,
+                   SIGNAL(commandToExecInQTermWidget(QString)));
+
+  /*QObject::connect(m_terminal, SIGNAL( startedTerminal()), this,
+                   SIGNAL( startedTerminal()));
+  QObject::connect(m_terminal, SIGNAL( finishedTerminal(int,QProcess::ExitStatus)), this,
+                   SIGNAL( finishedTerminal(int,QProcess::ExitStatus)));*/
+}
+
+/*
  * Executes given command and returns the StandardError Output.
  */
 QString UnixCommand::runCommand(const QString& commandToRun)
@@ -696,6 +743,22 @@ void UnixCommand::openRootTerminal(){
 }
 
 /*
+ * Returns the SHELL environment variable, if not set defaults to bash.
+ */
+QString UnixCommand::getShell()
+{
+  QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+  QString shell = env.value("SHELL", "/bin/bash");
+
+  QFileInfo fi(shell);
+
+  if (fi.fileName() == "fish")
+    return "bash";
+  else
+    return fi.fileName();
+}
+
+/*
  * Executes given commandToRun inside a terminal, so the user can interact
  */
 void UnixCommand::runCommandInTerminal(const QStringList& commandList){
@@ -797,51 +860,6 @@ QString UnixCommand::readAllStandardError()
 QString UnixCommand::errorString()
 {
   return m_errorString;
-}
-
-/*
- * UnixCommand's constructor: the relevant environment english setting and the connectors
- */
-UnixCommand::UnixCommand(QObject *parent): QObject()
-{
-  m_process = new QProcess(parent);
-  m_terminal = new Terminal(parent, SettingsManager::getTerminal());
-
-  QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-  env.insert("LANG", "C");
-  env.insert("LC_MESSAGES", "C");
-  m_process->setProcessEnvironment(env);
-
-  QObject::connect(m_process, SIGNAL( started() ), this,
-                   SIGNAL( started() ));
-  QObject::connect(this, SIGNAL( started() ), this,
-                   SLOT( processReadyReadStandardOutput() ));
-
-  QObject::connect(m_process, SIGNAL( readyReadStandardOutput() ), this,
-                   SIGNAL( readyReadStandardOutput() ));
-  QObject::connect(this, SIGNAL( readyReadStandardOutput() ), this,
-                   SLOT( processReadyReadStandardOutput() ));
-
-  QObject::connect(m_process, SIGNAL( finished ( int, QProcess::ExitStatus )), this,
-                   SIGNAL( finished ( int, QProcess::ExitStatus )) );
-  QObject::connect(this, SIGNAL( finished ( int, QProcess::ExitStatus )), this,
-                   SLOT( processReadyReadStandardOutput() ));
-
-  QObject::connect(m_process, SIGNAL( readyReadStandardError() ), this,
-                   SIGNAL( readyReadStandardError() ));
-  QObject::connect(this, SIGNAL( readyReadStandardError() ), this,
-                   SLOT( processReadyReadStandardError() ));
-
-  //Terminal signals
-  QObject::connect(m_terminal, SIGNAL( started()), this,
-                   SIGNAL( started()));
-  QObject::connect(m_terminal, SIGNAL( finished ( int, QProcess::ExitStatus )), this,
-                   SIGNAL( finished ( int, QProcess::ExitStatus )) );
-
-  QObject::connect(m_terminal, SIGNAL( startedTerminal()), this,
-                   SIGNAL( startedTerminal()));
-  QObject::connect(m_terminal, SIGNAL( finishedTerminal(int,QProcess::ExitStatus)), this,
-                   SIGNAL( finishedTerminal(int,QProcess::ExitStatus)));
 }
 
 /*

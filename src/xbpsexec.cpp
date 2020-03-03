@@ -27,11 +27,11 @@
 #include <QDebug>
 
 /*
- * This class decouples pacman commands executing and parser code from Octopi's interface
+ * This class decouples xbps commands executing and parser code from OctoXBPS's interface
  */
 
 /*
- * Let's create the needed unixcommand object that will ultimately execute Pacman commands
+ * Let's create the needed unixcommand object that will ultimately execute xbps commands
  */
 XBPSExec::XBPSExec(QObject *parent) : QObject(parent)
 {
@@ -44,16 +44,14 @@ XBPSExec::XBPSExec(QObject *parent) : QObject(parent)
   QObject::connect(m_unixCommand, SIGNAL( finished ( int, QProcess::ExitStatus )),
                    this, SLOT( onFinished(int, QProcess::ExitStatus)));
 
-  QObject::connect(m_unixCommand, SIGNAL( startedTerminal()), this, SLOT( onStarted()));
-
-  QObject::connect(m_unixCommand, SIGNAL( finishedTerminal( int, QProcess::ExitStatus )),
-                   this, SLOT( onFinished(int, QProcess::ExitStatus)));
-
   QObject::connect(m_unixCommand, SIGNAL( readyReadStandardOutput()),
                    this, SLOT( onReadOutput()));
 
   QObject::connect(m_unixCommand, SIGNAL( readyReadStandardError() ),
                    this, SLOT( onReadOutputError()));
+
+  QObject::connect(m_unixCommand, SIGNAL(commandToExecInQTermWidget(QString)),
+                   this, SIGNAL(commandToExecInQTermWidget(QString)));
 }
 
 /*
@@ -81,26 +79,7 @@ void XBPSExec::removeTemporaryFile()
 }
 
 /*
- * Searches for the presence of the db.lock file
- */
-/*bool XBPSExec::isDatabaseLocked()
-{
-  QString lockFilePath("/var/lib/pacman/db.lck");
-  QFile lockFile(lockFilePath);
-
-  return (lockFile.exists());
-}*/
-
-/*
- * Removes Pacman DB lock file
- */
-/*void XBPSExec::removeDatabaseLock()
-{
-  UnixCommand::execCommand("rm /var/lib/pacman/db.lck");
-}*/
-
-/*
- * Searches the given output for a series of verbs that a Pacman transaction may produce
+ * Searches the given output for a series of verbs that a xbps transaction may produce
  */
 bool XBPSExec::searchForKeyVerbs(QString output)
 {
@@ -178,7 +157,7 @@ bool XBPSExec::splitOutputStrings(QString output)
 }
 
 /*
- * Processes the output of the 'pacman process' so we can update percentages and messages at real time
+ * Processes the output of the 'xbps process' so we can update percentages and messages at real time
  */
 void XBPSExec::parseXBPSProcessOutput(QString output)
 {
@@ -191,7 +170,6 @@ void XBPSExec::parseXBPSProcessOutput(QString output)
   QString progressRun;
   QString progressEnd;
   QString target;
-
   msg.remove(QRegularExpression(".+\\[Y/n\\].+"));
 
   //Let's remove color codes from strings...
@@ -240,12 +218,17 @@ void XBPSExec::parseXBPSProcessOutput(QString output)
     int p = msg.indexOf("'");
     if (p == -1) return; //Guard!
 
-    target = msg.left(p).remove("Updating `").trimmed();
+    if (msg.left(p).contains("Updating repository `"))
+      target = msg.left(p).remove("Updating repository `").trimmed();
+    else if (msg.left(p).contains("Updating `"))           //Legacy code xbps < 0.59
+      target = msg.left(p).remove("Updating `").trimmed(); //Legacy code xbps < 0.59
+
     target.remove("[*] ");
+    target.remove("'");
 
     if(!m_textPrinted.contains(target))
     {
-      prepareTextToPrint("Updating " + target); //, ectn_DONT_TREAT_URL_LINK);
+      prepareTextToPrint("Updating repository " + target); //, ectn_DONT_TREAT_URL_LINK);
     }
 
     return;
@@ -347,7 +330,7 @@ void XBPSExec::parseXBPSProcessOutput(QString output)
 }
 
 /*
- * Prepares a string parsed from pacman output to be printed by the UI
+ * Prepares a string parsed from xbps output to be printed by the UI
  */
 void XBPSExec::prepareTextToPrint(QString str, TreatString ts, TreatURLLinks tl)
 {
@@ -467,7 +450,7 @@ void XBPSExec::prepareTextToPrint(QString str, TreatString ts, TreatURLLinks tl)
 }
 
 /*
- * Whenever QProcess starts the pacman command...
+ * Whenever QProcess starts the xbps command...
  */
 void XBPSExec::onStarted()
 {
@@ -570,7 +553,7 @@ void XBPSExec::onReadOutputError()
 }
 
 /*
- * Whenever QProcess finishes the pacman command...
+ * Whenever QProcess finishes the xbps command...
  */
 void XBPSExec::onFinished(int exitCode, QProcess::ExitStatus es)
 {
@@ -592,7 +575,7 @@ void XBPSExec::doCleanCache()
 }
 
 /*
- * Calls pacman to install given packages and returns output to UI
+ * Calls xbps to install given packages and returns output to UI
  */
 void XBPSExec::doInstall(const QString &listOfPackages)
 {
@@ -608,7 +591,7 @@ void XBPSExec::doInstall(const QString &listOfPackages)
 }
 
 /*
- * Calls pacman to install given packages inside a terminal
+ * Calls xbps to install given packages inside a terminal
  */
 void XBPSExec::doInstallInTerminal(const QString &listOfPackages)
 {
@@ -622,7 +605,7 @@ void XBPSExec::doInstallInTerminal(const QString &listOfPackages)
 }
 
 /*
- * Calls pacman to install given LOCAL packages and returns output to UI
+ * Calls xbps to install given LOCAL packages and returns output to UI
  */
 void XBPSExec::doInstallLocal(const QString &targetPath, const QString &listOfPackages)
 {
@@ -638,21 +621,23 @@ void XBPSExec::doInstallLocal(const QString &targetPath, const QString &listOfPa
 }
 
 /*
- * Calls pacman to install given LOCAL packages inside a terminal
+ * Calls xbps to install given LOCAL packages inside a terminal
  */
-/*void XBPSExec::doInstallLocalInTerminal(const QString &listOfPackages)
+void XBPSExec::doInstallLocalInTerminal(const QString &targetPath, const QString &listOfPackages)
 {
+  QString command = "xbps-install -S -y --repository " + targetPath + " " + listOfPackages;
+
   m_lastCommandList.clear();
-  m_lastCommandList.append("pacman -U --force " + listOfPackages + ";");
+  m_lastCommandList.append("xbps-install -S --repository " + targetPath + " " + listOfPackages + ";");
   m_lastCommandList.append("echo -e;");
   m_lastCommandList.append("read -n 1 -p \"" + StrConstants::getPressAnyKey() + "\"");
 
   m_commandExecuting = ectn_RUN_IN_TERMINAL;
   m_unixCommand->runCommandInTerminal(m_lastCommandList);
-}*/
+}
 
 /*
- * Calls pacman to remove given packages and returns output to UI
+ * Calls xbps to remove given packages and returns output to UI
  */
 void XBPSExec::doRemove(const QString &listOfPackages)
 {
@@ -668,7 +653,7 @@ void XBPSExec::doRemove(const QString &listOfPackages)
 }
 
 /*
- * Calls pacman to remove given packages inside a terminal
+ * Calls xbps to remove given packages inside a terminal
  */
 void XBPSExec::doRemoveInTerminal(const QString &listOfPackages)
 {
@@ -682,7 +667,7 @@ void XBPSExec::doRemoveInTerminal(const QString &listOfPackages)
 }
 
 /*
- * Calls pacman to remove and install given packages and returns output to UI
+ * Calls xbps to remove and install given packages and returns output to UI
  */
 void XBPSExec::doRemoveAndInstall(const QString &listOfPackagestoRemove, const QString &listOfPackagestoInstall)
 {
@@ -700,7 +685,7 @@ void XBPSExec::doRemoveAndInstall(const QString &listOfPackagestoRemove, const Q
 }
 
 /*
- * Calls pacman to remove and install given packages inside a terminal
+ * Calls xbps to remove and install given packages inside a terminal
  */
 void XBPSExec::doRemoveAndInstallInTerminal(const QString &listOfPackagestoRemove, const QString &listOfPackagestoInstall)
 {
@@ -715,7 +700,7 @@ void XBPSExec::doRemoveAndInstallInTerminal(const QString &listOfPackagestoRemov
 }
 
 /*
- * Calls pacman to upgrade the entire system and returns output to UI
+ * Calls xbps to upgrade the entire system and returns output to UI
  *
  * param upgradeXBPS = true upgrades XBPS pkg manager first!
  */
@@ -738,12 +723,17 @@ void XBPSExec::doSystemUpgrade(bool upgradeXBPS)
 }
 
 /*
- * Calls pacman to upgrade the entire system inside a terminal
+ * Calls xbps to upgrade the entire system inside a terminal
  */
-void XBPSExec::doSystemUpgradeInTerminal()
+void XBPSExec::doSystemUpgradeInTerminal(bool upgradeXBPS)
 {
   m_lastCommandList.clear();
-  m_lastCommandList.append("/usr/bin/xbps-install -u;");
+
+  if(upgradeXBPS)
+    m_lastCommandList.append("/usr/bin/xbps-install -u xbps;");
+  else
+    m_lastCommandList.append("/usr/bin/xbps-install -u;");
+
   m_lastCommandList.append("echo -e;");
   m_lastCommandList.append("read -n 1 -p \"" + StrConstants::getPressAnyKey() + "\"");
 
@@ -752,7 +742,7 @@ void XBPSExec::doSystemUpgradeInTerminal()
 }
 
 /*
- * Calls pacman to sync databases and returns output to UI
+ * Calls xbps to sync databases and returns output to UI
  */
 void XBPSExec::doSyncDatabase()
 {

@@ -192,6 +192,10 @@ void MainWindow::keyPressEvent(QKeyEvent* ke)
   {
     changeTabWidgetPropertiesIndex(ctn_TABINDEX_HELPUSAGE);
   }
+  else if(ke->key() == Qt::Key_7 && ke->modifiers() == Qt::AltModifier)
+  {
+    changeTabWidgetPropertiesIndex(ctn_TABINDEX_TERMINAL);
+  }
   else if(ke->key() == Qt::Key_F4)
   {
     openTerminal();

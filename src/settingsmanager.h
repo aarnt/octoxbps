@@ -57,6 +57,7 @@ class SettingsManager
     static int getPackageIconColumnWidth();
     static int getPackageNameColumnWidth();
     static int getPackageVersionColumnWidth();
+    static int getConsoleFontSize();
 
     //Notifier related
     static int getSyncDbHour();
@@ -67,6 +68,7 @@ class SettingsManager
     static bool getShowGroupsPanel();
     static QByteArray getWindowSize();
     static QByteArray getTransactionWindowSize();
+    static QByteArray getOutputDialogWindowSize();
     static QByteArray getSplitterHorizontalState();
     static bool isInstantSearchSelected();
     static bool isValidTerminalSelected();
@@ -78,6 +80,7 @@ class SettingsManager
     static void setShowGroupsPanel(int newValue);
     static void setWindowSize(QByteArray newValue);
     static void setTransactionWindowSize(QByteArray newValue);
+    static void setOutputDialogWindowSize(QByteArray newValue);
     static void setSplitterHorizontalState(QByteArray newValue);
 
     static void setSyncDbHour(int newValue);
@@ -92,6 +95,7 @@ class SettingsManager
     static void setPackageNameColumnWidth(int newValue);
     static void setPackageVersionColumnWidth(int newValue);
     static void setInstantSearchSelected(bool newValue);
+    static void setConsoleFontSize(int newValue);
 };
 
 #endif // SETTINGSMANAGER_H

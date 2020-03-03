@@ -82,6 +82,7 @@ public:
   static QString getTabTransactionName();
   static QString getTabOutputName();
   static QString getTabNewsName();
+  static QString getTabTerminal();
   static QString getContentsOf();
   static QString getFind();
   static QString getClear();
@@ -146,10 +147,16 @@ public:
   static QString getYoullNeedSuFrontend();
   static QString getErrorBinaryXNotFound(const QString &binName);
   static QString getErrorRunningWithRoot();
+  static QString getThereIsARunningTransaction();
   static QString getThereIsAPendingTransaction();
   static QString getDoYouReallyWantToQuit();
   static QString getExecutingCommand();
   static QString getRunInTerminal();
+  static QString getZoomIn();
+  static QString getZoomOut();
+  static QString getMaximize();
+  static QString getCopy();
+  static QString getPaste();
   static QString getNeedsAppRestart();
   static QString getWarnNeedsAppRestart();
   static QString getFileChooserTitle();
@@ -174,6 +181,7 @@ public:
   static QString getOnceEvery();
   static QString getOnceEveryDesc();
   static QString getSetInterval();
+  static QString getUpgrading();
 
   //Style Sheets ---------------------------------
 

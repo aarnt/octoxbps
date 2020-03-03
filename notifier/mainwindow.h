@@ -53,9 +53,7 @@ public:
 
 private slots:
 
-  void pacmanHelperTimerTimeout();
-  void afterPacmanHelperSyncDatabase();
-
+  void notifierTimerTimeout();
   void finishedPkexec(int);
   void execSystemTrayActivated(QSystemTrayIcon::ActivationReason);
   void execSystemTrayKF5();
@@ -66,10 +64,10 @@ private slots:
   void runOctoXBPSSysUpgrade();
 
   inline void startOctoXBPS() {
-    if (m_numberOfOutdatedPackages == 0)
+    //if (m_numberOfOutdatedPackages == 0)
       runOctoXBPS(ectn_NORMAL_EXEC_OPT);
-    else
-      runOctoXBPS(ectn_SYSUPGRADE_EXEC_OPT);
+    //else
+    //  runOctoXBPS(ectn_SYSUPGRADE_EXEC_OPT);
   }
 
   void aboutOctoXBPSNotifier();
@@ -85,7 +83,7 @@ private:
   TransactionDialog *m_transactionDialog;
   OptionsDialog *m_optionsDialog;
   int m_numberOfOutdatedPackages;
-  int m_numberOfOutdatedAURPackages;
+  //int m_numberOfOutdatedAURPackages;
   bool m_systemUpgradeDialog;
   CommandExecuting m_commandExecuting;
   UnixCommand *m_unixCommand;
@@ -99,7 +97,7 @@ private:
 
   QIcon m_icon;
   QMap<QString, OutdatedPackageInfo> *m_outdatedStringList;
-  QTimer *m_pacmanHelperTimer;
+  QTimer *m_notifierTimer;
   bool m_debugInfo;
 
 #ifdef KSTATUS
@@ -109,12 +107,12 @@ private:
 #endif
 
   QMenu *m_systemTrayIconMenu;
-  QFileSystemWatcher *m_pacmanDatabaseSystemWatcher;
+  QFileSystemWatcher *m_xbpsDatabaseSystemWatcher;
 
   bool _isSUAvailable();
   void initSystemTrayIcon();
   void sendNotification(const QString &msg);
-
+  void setUpgradingTooltip();
   void startPkexec();
 };
 

@@ -13,12 +13,14 @@ DESTDIR += ../bin
 OBJECTS_DIR += build
 MOC_DIR += build
 UI_DIR += build
+LIBS += -lqtermwidget5
 
 SOURCES += main.cpp \
     mainwindow.cpp \
     optionsdialog.cpp \
     outputdialog.cpp \
     ../src/terminal.cpp \
+    ../src/termwidget.cpp \
     ../src/unixcommand.cpp \
     ../src/strconstants.cpp \
     ../src/package.cpp \
@@ -37,6 +39,7 @@ HEADERS  += \
     outputdialog.h \
     ../src/uihelper.h \
     ../src/terminal.h \
+    ../src/termwidget.h \
     ../src/unixcommand.h \
     ../src/wmhelper.h \
     ../src/strconstants.h \

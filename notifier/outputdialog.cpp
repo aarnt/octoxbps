@@ -23,6 +23,7 @@
 #include "../src/searchbar.h"
 #include "../src/uihelper.h"
 #include "../src/strconstants.h"
+#include "../src/termwidget.h"
 
 #include <QTextBrowser>
 #include <QVBoxLayout>
@@ -39,7 +40,6 @@
  */
 OutputDialog::OutputDialog(QWidget *parent): QDialog(parent)
 {
-  init();
   m_upgradeRunning = false;
   m_debugInfo = false;
   m_upgradeXBPS = false;
@@ -62,9 +62,17 @@ void OutputDialog::setUpgradeXBPS(bool newValue)
 }
 
 /*
- * Let's build the main widgets...
+ * Controls if this dialog was called for updates in GUI or in the embedded qtermwidget
  */
-void OutputDialog::init()
+void OutputDialog::setViewAsTextBrowser(bool value)
+{
+  m_viewAsTextBrowser = value;
+}
+
+/*
+ * Let's init for graphical updates...
+ */
+void OutputDialog::initAsTextBrowser()
 {
   this->resize(650, 500);
 
@@ -74,7 +82,6 @@ void OutputDialog::init()
   m_mainLayout = new QVBoxLayout(this);
   m_textBrowser = new QTextBrowser(this);
   m_progressBar = new QProgressBar(this);
-
   m_textBrowser->setGeometry(QRect(0, 0, 650, 500));
   m_textBrowser->setFrameShape(QFrame::NoFrame);
 
@@ -98,6 +105,71 @@ void OutputDialog::init()
 }
 
 /*
+ * Let's init for manual updates in a qtermwidget...
+ */
+void OutputDialog::initAsTermWidget()
+{
+  this->resize(650, 500);
+  setWindowTitle(QCoreApplication::translate("MainWindow", "System upgrade"));
+  setWindowIcon(IconHelper::getIconSystemUpgrade());
+
+  m_mainLayout = new QVBoxLayout(this);
+  m_console = new TermWidget(this);
+  m_mainLayout->addWidget(m_console);
+
+  m_mainLayout->setSpacing(0);
+  m_mainLayout->setSizeConstraint(QLayout::SetMinimumSize);
+  m_mainLayout->setContentsMargins(2, 2, 2, 2);
+  m_console->setFocus();
+  m_console->toggleShowSearchBar();
+  m_console->installEventFilter(this);
+}
+
+/*
+ * When there is a command to exec in the terminal
+ */
+void OutputDialog::onExecCommandInTabTerminal(QString command)
+{
+  disconnect(m_console, SIGNAL(onPressAnyKeyToContinue()), this, SLOT(onPressAnyKeyToContinue()));
+  disconnect(m_console, SIGNAL(onCancelControlKey()), this, SLOT(onCancelControlKey()));
+  disconnect(m_console, SIGNAL(onKeyQuit()), this, SLOT(reject()));
+  connect(m_console, SIGNAL(onPressAnyKeyToContinue()), this, SLOT(onPressAnyKeyToContinue()));
+  connect(m_console, SIGNAL(onCancelControlKey()), this, SLOT(onCancelControlKey()));
+  connect(m_console, SIGNAL(onKeyQuit()), this, SLOT(reject()));
+  m_console->execute(command);
+  m_console->setFocus();
+}
+
+/*
+ * Whenever the terminal transaction has finished, we can update the UI
+ */
+void OutputDialog::onPressAnyKeyToContinue()
+{
+  m_console->setFocus();
+
+  if (!m_upgradeRunning) return;
+  if (m_xbpsExec == nullptr)
+    delete m_xbpsExec;
+
+  m_upgradeRunning = false;
+}
+
+/*
+ * Whenever a user strikes Ctrl+C, Ctrl+D or Ctrl+Z in the terminal
+ */
+void OutputDialog::onCancelControlKey()
+{
+  if (m_upgradeRunning)
+  {
+    if (m_xbpsExec == nullptr)
+      delete m_xbpsExec;
+
+    m_xbpsExec = nullptr;
+    m_upgradeRunning = false;
+  }
+}
+
+/*
  * Calls xbpsExec to begin system upgrade
  */
 void OutputDialog::doSystemUpgrade()
@@ -118,15 +190,34 @@ void OutputDialog::doSystemUpgrade()
 }
 
 /*
+ * Calls xbpsExec to begin system upgrade inside a terminal
+ */
+void OutputDialog::doSystemUpgradeInTerminal()
+{
+  m_xbpsExec = new XBPSExec();
+
+  QObject::connect(m_xbpsExec, SIGNAL(commandToExecInQTermWidget(QString)), this,
+                   SLOT(onExecCommandInTabTerminal(QString)));
+
+  m_upgradeRunning = true;
+  m_xbpsExec->doSystemUpgradeInTerminal(m_upgradeXBPS);
+}
+
+/*
  * Centers the dialog in the screen
  */
 void OutputDialog::show()
 {
-#if QT_VERSION >= 0x050000
-  utils::positionWindowAtScreenCenter(this);
-#endif
+  //If we are asking for a graphical system upgrade...
+  if (m_viewAsTextBrowser)
+    initAsTextBrowser();
+  else
+    initAsTermWidget();
+
+  //Let's restore the dialog size saved...
+  restoreGeometry(SettingsManager::getOutputDialogWindowSize());
+
   QDialog::show();
-  doSystemUpgrade();
 }
 
 /*
@@ -136,6 +227,9 @@ void OutputDialog::reject()
 {
   if (!m_upgradeRunning)
   {
+    //Let's save the dialog size value before closing it.
+    QByteArray windowSize=saveGeometry();
+    SettingsManager::setOutputDialogWindowSize(windowSize);
     QDialog::reject();
   }
 }
@@ -282,4 +376,48 @@ void OutputDialog::keyPressEvent(QKeyEvent *ke)
     reject();
   }
   else ke->accept();
+}
+
+/*
+ * Filters keypressevents from Console
+ */
+bool OutputDialog::eventFilter(QObject *, QEvent *event)
+{
+  if(event->type() == QKeyEvent::KeyRelease)
+  {
+    QKeyEvent *ke = static_cast<QKeyEvent*>(event);
+    if (ke->key() == Qt::Key_Escape)
+    {
+      if (m_upgradeRunning)
+      {
+        int res = QMessageBox::question(this, StrConstants::getConfirmation(),
+                                        StrConstants::getThereIsARunningTransaction() + "\n" +
+                                        StrConstants::getDoYouReallyWantToQuit(),
+                                        QMessageBox::Yes | QMessageBox::No,
+                                        QMessageBox::No);
+        if (res == QMessageBox::Yes)
+        {
+          m_upgradeRunning = false;
+          reject();
+          return true;
+        }
+        else
+        {
+          ke->ignore();
+          return true;
+        }
+      }
+      else
+      {
+        reject();
+        return true;
+      }
+    }
+    else if(ke->key() == Qt::Key_F && ke->modifiers() == Qt::ControlModifier)
+    {
+      m_console->toggleShowSearchBar();
+    }
+  }
+
+  return false;
 }

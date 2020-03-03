@@ -34,6 +34,7 @@
 #include <cassert>
 #include "searchlineedit.h"
 #include "xbpsexec.h"
+#include "termwidget.h"
 
 #include <QComboBox>
 #include <QProgressBar>
@@ -691,6 +692,8 @@ void MainWindow::prepareSystemUpgrade()
                    this, SLOT( xbpsProcessFinished(int, QProcess::ExitStatus) ));
   QObject::connect(m_xbpsExec, SIGNAL(percentage(int)), this, SLOT(incrementPercentage(int)));
   QObject::connect(m_xbpsExec, SIGNAL(textToPrintExt(QString)), this, SLOT(outputText(QString)));
+  QObject::connect(m_xbpsExec, SIGNAL(commandToExecInQTermWidget(QString)),
+                   this, SLOT(onExecCommandInTabTerminal(QString)));
 
   disableTransactionActions();
 }
@@ -821,7 +824,7 @@ void MainWindow::doSystemUpgrade(SystemUpgradeOptions systemUpgradeOptions)
     else if (result == QDialogButtonBox::AcceptRole)
     {
       m_commandExecuting = ectn_RUN_SYSTEM_UPGRADE_IN_TERMINAL;
-      m_xbpsExec->doSystemUpgradeInTerminal();
+      m_xbpsExec->doSystemUpgradeInTerminal(upgradeXBPS);
       m_commandQueued = ectn_NONE;
     }
   }
@@ -919,6 +922,8 @@ void MainWindow::doRemoveAndInstall()
 
     QObject::connect(m_xbpsExec, SIGNAL(percentage(int)), this, SLOT(incrementPercentage(int)));
     QObject::connect(m_xbpsExec, SIGNAL(textToPrintExt(QString)), this, SLOT(outputText(QString)));
+    QObject::connect(m_xbpsExec, SIGNAL(commandToExecInQTermWidget(QString)),
+                     this, SLOT(onExecCommandInTabTerminal(QString)));
 
     disableTransactionActions();
 
@@ -998,6 +1003,8 @@ void MainWindow::doRemove()
                      this, SLOT( xbpsProcessFinished(int, QProcess::ExitStatus) ));
     QObject::connect(m_xbpsExec, SIGNAL(percentage(int)), this, SLOT(incrementPercentage(int)));
     QObject::connect(m_xbpsExec, SIGNAL(textToPrintExt(QString)), this, SLOT(outputText(QString)));
+    QObject::connect(m_xbpsExec, SIGNAL(commandToExecInQTermWidget(QString)),
+                     this, SLOT(onExecCommandInTabTerminal(QString)));
 
     disableTransactionActions();
 
@@ -1091,6 +1098,8 @@ void MainWindow::doInstall()
 
     QObject::connect(m_xbpsExec, SIGNAL(percentage(int)), this, SLOT(incrementPercentage(int)));
     QObject::connect(m_xbpsExec, SIGNAL(textToPrintExt(QString)), this, SLOT(outputText(QString)));
+    QObject::connect(m_xbpsExec, SIGNAL(commandToExecInQTermWidget(QString)),
+                     this, SLOT(onExecCommandInTabTerminal(QString)));
 
     if (result == QDialogButtonBox::Yes)
     {
@@ -1203,17 +1212,19 @@ void MainWindow::doInstallLocalPackages()
                      this, SLOT( xbpsProcessFinished(int, QProcess::ExitStatus) ));
     QObject::connect(m_xbpsExec, SIGNAL(percentage(int)), this, SLOT(incrementPercentage(int)));
     QObject::connect(m_xbpsExec, SIGNAL(textToPrintExt(QString)), this, SLOT(outputText(QString)));
+    QObject::connect(m_xbpsExec, SIGNAL(commandToExecInQTermWidget(QString)),
+                     this, SLOT(onExecCommandInTabTerminal(QString)));
 
     if (result == QDialogButtonBox::Yes)
     {
       m_commandExecuting = ectn_INSTALL;
       m_xbpsExec->doInstallLocal(targetPath, listOfTargets);
     }
-    /*else if (result == QDialogButtonBox::AcceptRole)
+    else if (result == QDialogButtonBox::AcceptRole)
     {
       m_commandExecuting = ectn_RUN_IN_TERMINAL;
-      m_unixCommand->runCommandInTerminal(m_lastCommandList);
-    }*/
+      m_xbpsExec->doInstallLocalInTerminal(targetPath, listOfTargets);
+    }
   }
 }
 
@@ -1317,6 +1328,7 @@ void MainWindow::toggleTransactionActions(const bool value)
   ui->actionDonate->setEnabled(value);
   ui->actionHelpAbout->setEnabled(value);
   ui->actionExit->setEnabled(value);
+  ui->actionInstallLocalPackage->setEnabled(value);
 
   //We have to toggle the combobox groups as well
   if (m_initializationCompleted) ui->twGroups->setEnabled(value);
@@ -1482,6 +1494,53 @@ void MainWindow::xbpsProcessFinished(int exitCode, QProcess::ExitStatus exitStat
   if (exitCode != 0)
   {
     resetTransaction();
+  }
+}
+
+/*
+ * THIS IS THE COUNTERPART OF "xbpsProcessFinished" FOR QTERMWIDGET AUR COMMANDS
+ * Whenever the terminal transaction has finished, we can update the UI
+ */
+void MainWindow::onPressAnyKeyToContinue()
+{
+  if (m_commandExecuting == ectn_NONE) return;
+
+  m_progressWidget->setValue(0);
+  m_progressWidget->show();
+  clearTransactionTreeView();
+
+  metaBuildPackageList();
+  enableTransactionActions();
+
+  if (m_xbpsExec == nullptr)
+    delete m_xbpsExec;
+
+  m_commandExecuting = ectn_NONE;
+  m_console->execute("");
+  m_console->setFocus();
+
+  if (m_cic)
+  {
+    delete m_cic;
+    m_cic = nullptr;
+  }
+}
+
+/*
+ * Whenever a user strikes Ctrl+C, Ctrl+D or Ctrl+Z in the terminal
+ */
+void MainWindow::onCancelControlKey()
+{
+  if (m_commandExecuting != ectn_NONE)
+  {
+    clearTransactionTreeView();
+    enableTransactionActions();
+
+    if (m_xbpsExec == nullptr)
+      delete m_xbpsExec;
+
+    m_xbpsExec = nullptr;
+    m_commandExecuting = ectn_NONE;
   }
 }
 

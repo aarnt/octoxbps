@@ -270,6 +270,11 @@ QString StrConstants::getTabNewsName(){
   return QObject::tr("News");
 }
 
+QString StrConstants::getTabTerminal()
+{
+  return QObject::tr("Terminal");
+}
+
 QString StrConstants::getContentsOf(){
   return QObject::tr("Contents of \"%1\"");
 }
@@ -510,6 +515,10 @@ QString StrConstants::getErrorRunningWithRoot(){
   return QObject::tr("You can not run OctoXBPS with administrator's credentials.");
 }
 
+QString StrConstants::getThereIsARunningTransaction(){
+  return QObject::tr("Canceling the running transaction may damage your system!");
+}
+
 QString StrConstants::getThereIsAPendingTransaction(){
   return QObject::tr("There is a pending action");
 }
@@ -524,6 +533,31 @@ QString StrConstants::getExecutingCommand(){
 
 QString StrConstants::getRunInTerminal(){
   return QObject::tr("Run in terminal");
+}
+
+QString StrConstants::getZoomIn()
+{
+  return QObject::tr("Zoom in");
+}
+
+QString StrConstants::getZoomOut()
+{
+  return QObject::tr("Zoom out");
+}
+
+QString StrConstants::getMaximize()
+{
+  return QObject::tr("Maximize");
+}
+
+QString StrConstants::getCopy()
+{
+  return QObject::tr("Copy");
+}
+
+QString StrConstants::getPaste()
+{
+  return QObject::tr("Paste");
 }
 
 QString StrConstants::getNeedsAppRestart(){
@@ -621,6 +655,11 @@ QString StrConstants::getOnceEveryDesc(){
 
 QString StrConstants::getSetInterval(){
   return QObject::tr("Set interval...");
+}
+
+QString StrConstants::getUpgrading()
+{
+  return QObject::tr("Upgrading...");
 }
 
 //Style Sheets ---------------------------------

@@ -212,6 +212,11 @@ QByteArray SettingsManager::getTransactionWindowSize()
   return (instance()->getSYSsettings()->value( ctn_KEY_TRANSACTION_WINDOW_SIZE, 0).toByteArray());
 }
 
+QByteArray SettingsManager::getOutputDialogWindowSize()
+{
+  return (instance()->getSYSsettings()->value(ctn_KEY_OUTPUTDIALOG_WINDOW_SIZE, 0).toByteArray());
+}
+
 QByteArray SettingsManager::getSplitterHorizontalState(){
   return (instance()->getSYSsettings()->value( ctn_KEY_SPLITTER_HORIZONTAL_STATE, 0).toByteArray());
 }
@@ -220,6 +225,12 @@ bool SettingsManager::isInstantSearchSelected()
 {
   SettingsManager p_instance;
   return (p_instance.getSYSsettings()->value(ctn_KEY_INSTANT_SEARCH, 1)).toBool();
+}
+
+int SettingsManager::getConsoleFontSize()
+{
+  SettingsManager p_instance;
+  return (p_instance.getSYSsettings()->value(ctn_KEY_CONSOLE_SIZE, 0)).toInt();
 }
 
 void SettingsManager::setCurrentTabIndex(int newValue){
@@ -256,6 +267,12 @@ void SettingsManager::setWindowSize(QByteArray newValue){
 void SettingsManager::setTransactionWindowSize(QByteArray newValue)
 {
   instance()->getSYSsettings()->setValue( ctn_KEY_TRANSACTION_WINDOW_SIZE, newValue);
+  instance()->getSYSsettings()->sync();
+}
+
+void SettingsManager::setOutputDialogWindowSize(QByteArray newValue)
+{
+  instance()->getSYSsettings()->setValue(ctn_KEY_OUTPUTDIALOG_WINDOW_SIZE, newValue);
   instance()->getSYSsettings()->sync();
 }
 
@@ -337,6 +354,12 @@ bool SettingsManager::isValidTerminalSelected()
   {
     return false;
   }
+}
+
+void SettingsManager::setConsoleFontSize(int newValue)
+{
+  instance()->getSYSsettings()->setValue(ctn_KEY_CONSOLE_SIZE, newValue);
+  instance()->getSYSsettings()->sync();
 }
 
 //OctoPkg related --------------------------------------------------------------------

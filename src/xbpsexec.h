@@ -57,16 +57,13 @@ public:
   void runLastestCommandInTerminal();
   void removeTemporaryFile();
 
-  //static bool isDatabaseLocked();
-  //static void removeDatabaseLock();
-
   //XBPS
   void doCleanCache();
   void doInstall(const QString &listOfPackages);
   void doInstallInTerminal(const QString &listOfPackages);
 
   void doInstallLocal(const QString &targetPath, const QString &listOfPackages);
-  //void doInstallLocalInTerminal(const QString &listOfPackages);
+  void doInstallLocalInTerminal(const QString &targetPath, const QString &listOfPackages);
 
   void doRemove(const QString &listOfPackages);
   void doRemoveInTerminal(const QString &listOfPackages);
@@ -74,9 +71,10 @@ public:
   void doRemoveAndInstall(const QString &listOfPackagestoRemove, const QString &listOfPackagestoInstall);
   void doRemoveAndInstallInTerminal(const QString &listOfPackagestoRemove, const QString &listOfPackagestoInstall);
 
-  void doSystemUpgrade(bool upgradeXBPS);
-  void doSystemUpgradeInTerminal();
   void doSyncDatabase();
+
+  void doSystemUpgrade(bool upgradeXBPS);
+  void doSystemUpgradeInTerminal(bool upgradeXBPS);
 
 signals:
   void percentage(int);
@@ -85,7 +83,7 @@ signals:
   void readOutputError();
   void finished(int exitCode, QProcess::ExitStatus);
   void textToPrintExt(QString m_textToPrint);
-
+  void commandToExecInQTermWidget(QString);
 };
 
 #endif // XBPSEXEC_H

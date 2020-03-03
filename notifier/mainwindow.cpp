@@ -50,13 +50,12 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
   m_transactionDialog = nullptr;
-
   m_debugInfo = false;
   m_optionsDialog = nullptr;
-  m_pacmanDatabaseSystemWatcher =
+  m_xbpsDatabaseSystemWatcher =
             new QFileSystemWatcher(QStringList() << ctn_XBPS_DATABASE_DIR, this);
 
-  connect(m_pacmanDatabaseSystemWatcher,
+  connect(m_xbpsDatabaseSystemWatcher,
           SIGNAL(directoryChanged(QString)), this, SLOT(refreshAppIcon()));
 
   initSystemTrayIcon();
@@ -66,6 +65,18 @@ MainWindow::~MainWindow()
 {
 #ifdef KSTATUS
   delete m_systemTrayIcon;
+#endif
+}
+
+/*
+ * Changes tooltip of systray component to indicate system is upgrading
+ */
+void MainWindow::setUpgradingTooltip()
+{
+#ifdef KSTATUS
+  m_systemTrayIcon->setToolTipSubTitle(StrConstants::getUpgrading());
+#else
+  m_systemTrayIcon->setToolTip(StrConstants::getUpgrading());
 #endif
 }
 
@@ -91,7 +102,7 @@ void MainWindow::initSystemTrayIcon()
 #ifdef KSTATUS
   m_systemTrayIcon->setIconByPixmap(m_icon);
   m_systemTrayIcon->setToolTipIconByPixmap(m_icon);
-  m_systemTrayIcon->setTitle("Octopi Notifier");
+  m_systemTrayIcon->setTitle("OctoXBPS Notifier");
 #else
   m_systemTrayIcon->setIcon(m_icon); 
 #endif
@@ -146,19 +157,17 @@ void MainWindow::initSystemTrayIcon()
             this, SLOT( execSystemTrayActivated ( QSystemTrayIcon::ActivationReason ) ) );
 #endif
 
-  //m_pacmanHelperClient = new PacmanHelperClient("org.octopi.pacmanhelper", "/", QDBusConnection::systemBus(), 0);
-  //connect(m_pacmanHelperClient, SIGNAL(syncdbcompleted()), this, SLOT(afterPacmanHelperSyncDatabase()));
-  m_pacmanHelperTimer = new QTimer();
-  m_pacmanHelperTimer->setInterval(1000);
-  m_pacmanHelperTimer->start();
+  m_notifierTimer = new QTimer();
+  m_notifierTimer->setInterval(1000);
+  m_notifierTimer->start();
 
-  connect(m_pacmanHelperTimer, SIGNAL(timeout()), this, SLOT(pacmanHelperTimerTimeout()));
+  connect(m_notifierTimer, SIGNAL(timeout()), this, SLOT(notifierTimerTimeout()));
 }
 
 /*
  * Whenever this timer ticks, we need to call the PacmanHelper DBus interface to sync Pacman's dbs
  */
-void MainWindow::pacmanHelperTimerTimeout()
+void MainWindow::notifierTimerTimeout()
 {
   static bool firstTime=true;
 
@@ -169,13 +178,13 @@ void MainWindow::pacmanHelperTimerTimeout()
     refreshAppIcon();
 
 #ifdef KSTATUS
-    m_systemTrayIcon->setToolTipTitle("Octopi");
+    m_systemTrayIcon->setToolTipTitle("OctoXBPS Notifier");
 #else
     m_systemTrayIcon->show();
 #endif
 
     //From now on, we verify if it's time to check for updates every 5 minutes
-    m_pacmanHelperTimer->setInterval(60000 * 5);
+    m_notifierTimer->setInterval(60000 * 5);
     setWindowIcon(m_icon);
     firstTime=false;
   }
@@ -229,8 +238,8 @@ void MainWindow::pacmanHelperTimerTimeout()
         qDebug() << "SyncDb is scheduled once every " << syncDbInterval << " minutes.";
     }
 
-    m_pacmanHelperTimer->stop();
-    m_pacmanHelperTimer->start();
+    m_notifierTimer->stop();
+    m_notifierTimer->start();
   }
 }
 
@@ -364,39 +373,34 @@ void MainWindow::doSystemUpgrade()
     m_actionSystemUpgrade->setEnabled(false);
 
     OutputDialog *dlg = new OutputDialog(this);
+    dlg->setViewAsTextBrowser(true);
     dlg->setUpgradeXBPS(upgradeXBPS);
     if (m_debugInfo)
       dlg->setDebugMode(true);
 
     QObject::connect(dlg, SIGNAL( finished(int)),
                      this, SLOT( doSystemUpgradeFinished() ));
+    setUpgradingTooltip();
     dlg->show();
+    dlg->doSystemUpgrade();
   }
   else if(result == QDialogButtonBox::AcceptRole)
   {
+    m_commandExecuting = ectn_RUN_SYSTEM_UPGRADE_IN_TERMINAL;
+
     m_systemUpgradeDialog = false;
-
-    //If there are no means to run the actions, we must warn!
-    if (!_isSUAvailable()) return;
-
-    QStringList lastCommandList;
-    lastCommandList.append("/usr/bin/xbps-install -u;");
-    lastCommandList.append("echo -e;");
-    lastCommandList.append("read -n1 -p \"" + StrConstants::getPressAnyKey() + "\"");
-
-    m_unixCommand = new UnixCommand(this);
-
-    QObject::connect(m_unixCommand, SIGNAL( finished ( int, QProcess::ExitStatus )),
-                     this, SLOT( doSystemUpgradeFinished() ));
-
     toggleEnableInterface(false);
     m_actionSystemUpgrade->setEnabled(false);
 
-    if (result == QDialogButtonBox::AcceptRole)
-    {
-      m_commandExecuting = ectn_RUN_SYSTEM_UPGRADE_IN_TERMINAL;
-      m_unixCommand->runCommandInTerminal(lastCommandList);
-    }
+    OutputDialog *dlg = new OutputDialog(this);
+    dlg->setViewAsTextBrowser(false);
+    dlg->setUpgradeXBPS(upgradeXBPS);
+
+    QObject::connect(dlg, SIGNAL( finished(int)),
+                     this, SLOT( doSystemUpgradeFinished() ));
+    setUpgradingTooltip();
+    dlg->show();
+    dlg->doSystemUpgradeInTerminal();
   }
   else if (result == QDialogButtonBox::No)
   {   
@@ -442,19 +446,12 @@ void MainWindow::toggleEnableInterface(bool state)
 }
 
 /*
- * Called right after the PacmanHelper syncdb() method has finished!
- */
-void MainWindow::afterPacmanHelperSyncDatabase()
-{
-}
-
-/*
  * Called right after the pkexec xbps-install -Syy command has finished!
  */
 void MainWindow::finishedPkexec(int)
 {
   if (m_debugInfo)
-    qDebug() << "At afterPacmanHelperSyncDatabase()...";
+    qDebug() << "At finishedPkexec()...";
   toggleEnableInterface(true);
 
 #ifndef KSTATUS
@@ -479,7 +476,7 @@ void MainWindow::finishedPkexec(int)
 
         #ifdef KSTATUS
           m_systemTrayIcon->setToolTipSubTitle(notification);
-          m_systemTrayIcon->showMessage("Octopi",
+          m_systemTrayIcon->showMessage("OctoXBPS",
                                         notification, m_systemTrayIcon->iconName());
         #else
           m_systemTrayIcon->setToolTip(notification);
@@ -491,7 +488,7 @@ void MainWindow::finishedPkexec(int)
 
         #ifdef KSTATUS
           m_systemTrayIcon->setToolTipSubTitle(notification);
-          m_systemTrayIcon->showMessage("Octopi",
+          m_systemTrayIcon->showMessage("OctoXBPS",
                                         notification, m_systemTrayIcon->iconName());
         #else
           m_systemTrayIcon->setToolTip(notification);
@@ -509,7 +506,7 @@ void MainWindow::finishedPkexec(int)
 
       #ifdef KSTATUS
         m_systemTrayIcon->setToolTipSubTitle(notification);
-        m_systemTrayIcon->showMessage("Octopi",
+        m_systemTrayIcon->showMessage("OctoXBPS",
                                       notification, m_systemTrayIcon->iconName());
       #else
         m_systemTrayIcon->setToolTip(notification);
@@ -521,7 +518,7 @@ void MainWindow::finishedPkexec(int)
 
       #ifdef KSTATUS
         m_systemTrayIcon->setToolTipSubTitle(notification);
-        m_systemTrayIcon->showMessage("Octopi",
+        m_systemTrayIcon->showMessage("OctoXBPS",
                                       notification, m_systemTrayIcon->iconName());
       #else
         m_systemTrayIcon->setToolTip(notification);
@@ -535,7 +532,7 @@ void MainWindow::finishedPkexec(int)
  */
 void MainWindow::syncDatabase()
 {
-  disconnect(m_pacmanDatabaseSystemWatcher,
+  disconnect(m_xbpsDatabaseSystemWatcher,
           SIGNAL(directoryChanged(QString)), this, SLOT(refreshAppIcon()));
 
   QTime now;
@@ -554,7 +551,6 @@ void MainWindow::syncDatabase()
 #endif
 
   qApp->processEvents();
-
   m_systemTrayIconMenu->close();
 
 #ifndef KSTATUS
@@ -562,17 +558,7 @@ void MainWindow::syncDatabase()
 #endif
 
   m_commandExecuting = ectn_SYNC_DATABASE;
-
-  //Let's synchronize kcp database too...
-  /*if (UnixCommand::getLinuxDistro() == ectn_KAOS && UnixCommand::hasTheExecutable("kcp"))
-  {
-    if (m_debugInfo)
-      qDebug() << "Synchronizing kcp database...";
-    UnixCommand::execCommandAsNormalUser("kcp -u");
-  }*/
-
   startPkexec();
-  //m_pacmanHelperClient->syncdb();
 }
 
 /*
@@ -584,7 +570,7 @@ void MainWindow::sendNotification(const QString &msg)
 
   if (UnixCommand::hasTheExecutable(processToExec))
   {
-    processToExec += " -i /usr/share/icons/octopi_red.png -t 5000 \"" +
+    processToExec += " -i /usr/share/icons/OctoXBPS_red.png -t 5000 \"" +
         StrConstants::getApplicationName() + "\"  \"" + msg + "\"";
     QProcess::startDetached(processToExec);
   }
@@ -604,7 +590,7 @@ void MainWindow::refreshAppIcon()
 {
   if (m_commandExecuting != ectn_NONE) return;
 
-  disconnect(m_pacmanDatabaseSystemWatcher,
+  disconnect(m_xbpsDatabaseSystemWatcher,
           SIGNAL(directoryChanged(QString)), this, SLOT(refreshAppIcon()));
 
   if (m_debugInfo)
@@ -612,15 +598,15 @@ void MainWindow::refreshAppIcon()
 
   m_outdatedStringList = Package::getOutdatedStringList();
   m_numberOfOutdatedPackages = m_outdatedStringList->count();
-  m_numberOfOutdatedAURPackages = 0;
+  //m_numberOfOutdatedAURPackages = 0;
 
-  if (m_numberOfOutdatedPackages == 0 && m_numberOfOutdatedAURPackages == 0)
+  if (m_numberOfOutdatedPackages == 0) //&& m_numberOfOutdatedAURPackages == 0)
   {
-    #ifdef KSTATUS
-      m_systemTrayIcon->setToolTipSubTitle("");
-    #else
-      m_systemTrayIcon->setToolTip("");
-    #endif
+#ifdef KSTATUS
+    m_systemTrayIcon->setToolTipSubTitle("OctoXBPS Notifier");
+#else
+    m_systemTrayIcon->setToolTip("OctoXBPS Notifier");
+#endif
   }
   else if (m_numberOfOutdatedPackages > 0)
   {
@@ -642,7 +628,7 @@ void MainWindow::refreshAppIcon()
       #endif
     }
   }
-  else if (m_numberOfOutdatedAURPackages > 0)
+  /*else if (m_numberOfOutdatedAURPackages > 0)
   {
     if (m_numberOfOutdatedAURPackages == 1)
     {
@@ -665,7 +651,7 @@ void MainWindow::refreshAppIcon()
                                      " (" + StrConstants::getForeignRepositoryName() + ")");
       #endif
     }
-  }
+  }*/
 
   if(m_outdatedStringList->count() > 0) //RED ICON!
   {
@@ -706,7 +692,7 @@ void MainWindow::refreshAppIcon()
   m_systemTrayIcon->setIcon(m_icon);
 #endif
 
-  connect(m_pacmanDatabaseSystemWatcher,
+  connect(m_xbpsDatabaseSystemWatcher,
           SIGNAL(directoryChanged(QString)), this, SLOT(refreshAppIcon()));
 }
 
@@ -736,7 +722,7 @@ void MainWindow::execSystemTrayActivated(QSystemTrayIcon::ActivationReason ar)
   {
     if (m_outdatedStringList->count() > 0)
     {
-      doSystemUpgrade();
+      runOctoXBPSSysUpgrade();
     }
 
     break;
@@ -750,9 +736,10 @@ void MainWindow::execSystemTrayActivated(QSystemTrayIcon::ActivationReason ar)
  */
 void MainWindow::execSystemTrayKF5()
 {
+  if (m_commandExecuting != ectn_NONE) return;
   if (m_outdatedStringList->count() > 0)
   {
-    doSystemUpgrade();
+    runOctoXBPSSysUpgrade();
   }
 }
 
@@ -763,6 +750,7 @@ void MainWindow::exitNotifier()
 {
   if (m_debugInfo)
     qDebug() << "At exitNotifier()...";
+
   qApp->quit();
 }
 
@@ -771,50 +759,9 @@ void MainWindow::exitNotifier()
  */
 void MainWindow::runOctoXBPS(ExecOpt execOptions)
 {
-  /*if (execOptions == ectn_SYSUPGRADE_NOCONFIRM_EXEC_OPT)
-  {
-    if (!WMHelper::isKDERunning() && (!WMHelper::isRazorQtRunning()) && (!WMHelper::isLXQTRunning()))
-    {
-      QProcess::startDetached("octoxbps -sysupgrade-noconfirm -style gtk");
-    }
-    else
-    {
-      QProcess::startDetached("octoxbps -sysupgrade-noconfirm");
-    }
-  }
-  else if (execOptions == ectn_SYSUPGRADE_EXEC_OPT &&
-      !UnixCommand::isAppRunning("octoxbps", true) && m_outdatedStringList->count() > 0)
-  {
-    doSystemUpgrade();
-  }
-  else if (execOptions == ectn_SYSUPGRADE_EXEC_OPT &&
-      UnixCommand::isAppRunning("octoxbps", true) && m_outdatedStringList->count() > 0)
-  {
-    if (!WMHelper::isKDERunning() && (!WMHelper::isRazorQtRunning()) && (!WMHelper::isLXQTRunning()))
-    {
-      QProcess::startDetached("octoxbps -sysupgrade -style gtk");
-    }
-    else
-    {
-      QProcess::startDetached("octoxbps -sysupgrade");
-    }
-  }
-  else if (execOptions == ectn_NORMAL_EXEC_OPT)
-  {
-    if (!WMHelper::isKDERunning() && (!WMHelper::isRazorQtRunning()) && (!WMHelper::isLXQTRunning()))
-    {
-      QProcess::startDetached("octoxbps -style gtk");
-    }
-    else
-    {
-      QProcess::startDetached("octoxbps");
-    }
-  }*/
-
   if (execOptions == ectn_SYSUPGRADE_EXEC_OPT && m_outdatedStringList->count() > 0)
   {
     QProcess::startDetached("octoxbps -sysupgrade");
-    //doSystemUpgrade();
   }
   else if (execOptions == ectn_NORMAL_EXEC_OPT)
   {

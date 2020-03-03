@@ -357,7 +357,7 @@ void QtSingleApplication::activateWindow(const QString &message)
       {
         if (message == "SYSUPGRADE")
         {
-          mw->doSystemUpgrade();
+          mw->doPreSystemUpgrade();
         }
       }
     }

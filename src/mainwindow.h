@@ -51,6 +51,7 @@ class QTreeWidgetItem;
 class QTime;
 class XBPSExec;
 class QDropEvent;
+class TermWidget;
 
 #include "src/model/packagemodel.h"
 #include "src/packagerepository.h"
@@ -62,6 +63,7 @@ const int ctn_TABINDEX_TRANSACTION(2);
 const int ctn_TABINDEX_OUTPUT(3);
 const int ctn_TABINDEX_NEWS(4);
 const int ctn_TABINDEX_HELPUSAGE(5);
+const int ctn_TABINDEX_TERMINAL(6);
 
 //enum TreatURLLinks { ectn_TREAT_URL_LINK, ectn_DONT_TREAT_URL_LINK };
 //enum SystemUpgradeOptions { ectn_NO_OPT, ectn_SYNC_DATABASE_OPT, ectn_NOCONFIRM_OPT };
@@ -101,6 +103,7 @@ private:
   QList<QModelIndex> *m_foundFilesInPkgFileList;
   int m_indFoundFilesInPkgFileList;
   QFileSystemWatcher *m_pacmanDatabaseSystemWatcher;
+  TermWidget *m_console;
 
   // Package Data
   PackageRepository           m_packageRepo;
@@ -321,6 +324,11 @@ private slots:
 
   void showPackageInfo();
 
+  void initTabTerminal();
+  void onExecCommandInTabTerminal(QString command);
+  void onPressAnyKeyToContinue();
+  void onCancelControlKey();
+
   void tvPackagesSearchColumnChanged(QAction*);
   void tvPackagesSelectionChanged(const QItemSelection&, const QItemSelection&);
   void tvTransactionSelectionChanged (const QItemSelection&, const QItemSelection&);
@@ -388,7 +396,6 @@ private slots:
   void selectedRepositoryMenu(QAction *actionRepoSelected);
 
   void resetTransaction();
-
   void xbpsProcessFinished(int exitCode, QProcess::ExitStatus);
 
   void insertIntoRemovePackage();
@@ -400,6 +407,7 @@ private slots:
   void hideGroupsWidget(bool pSaveSettings = true);
   void maximizePackagesTreeView(bool pSaveSettings = true);
   void maximizePropertiesTabWidget(bool pSaveSettings = true);
+  void maximizeTerminalTab();
   QString getOutdatedPkgOldVersion(const QString& pkgName);
   QString getOutdatedPkgNewVersion(const QString& pkgName);
   void outputOutdatedPackageList();
@@ -430,10 +438,10 @@ private slots:
   void positionInPackageList(const QString &pkgName);
   void outputTextBrowserAnchorClicked(const QUrl & link);
   void execToolTip();
-  void doPreSystemUpgrade();
   void testSpecialDependencies();
 
 public slots:
+  void doPreSystemUpgrade();
   void doSystemUpgrade(SystemUpgradeOptions sysUpgradeOption = ectn_NO_OPT);
 
 public:

@@ -30,6 +30,7 @@
 #include "utils.h"
 #include "globals.h"
 #include <iostream>
+#include "termwidget.h"
 
 #include <QDropEvent>
 #include <QMimeData>
@@ -72,6 +73,7 @@ MainWindow::MainWindow(QWidget *parent) :
   m_time = new QTime();
   m_unrequiredPackageList = NULL;
   m_foreignPackageList = NULL;
+  m_console = nullptr;
 
   //Here we try to speed up first pkg list build!
   //m_time->start();
@@ -171,6 +173,7 @@ void MainWindow::show()
     initAppIcon();
     initMenuBar();
     initToolBar();
+    initTabTerminal();
     initTabWidgetPropertiesIndex();
     refreshDistroNews(false);
 
@@ -1021,6 +1024,10 @@ void MainWindow::changedTabIndex()
     refreshTabInfo();
   else if (ui->twProperties->currentIndex() == ctn_TABINDEX_FILES)
     refreshTabFiles();
+  else if (ui->twProperties->currentIndex() == ctn_TABINDEX_TERMINAL)
+  {
+    m_console->setFocus();
+  }
 
   if(m_initializationCompleted)
     saveSettings(ectn_CurrentTabIndex);
@@ -1144,10 +1151,22 @@ void MainWindow::maximizePropertiesTabWidget(bool pSaveSettings)
       if (tv)
         tv->scrollTo(tv->currentIndex());
     }
+    else if(ui->twProperties->currentIndex() == ctn_TABINDEX_TERMINAL)
+    {
+      m_console->setFocus();
+    }
 
     if(pSaveSettings)
       saveSettings(ectn_NORMAL);
   }
+}
+
+/*
+ * Maximizes/de-maximizes terminal tab
+ */
+void MainWindow::maximizeTerminalTab()
+{
+  maximizePropertiesTabWidget(false);
 }
 
 /*
@@ -1287,7 +1306,8 @@ void MainWindow::openTerminal()
   QString dir = getSelectedDirectory();
   if (!dir.isEmpty())
   {
-    WMHelper::openTerminal(dir);
+    m_console->execute("cd " + dir);
+    ensureTabVisible(ctn_TABINDEX_TERMINAL);
   }
 }
 

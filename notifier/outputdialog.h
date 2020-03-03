@@ -35,6 +35,7 @@ class SearchBar;
 class QWidget;
 class QCloseEvent;
 class QKeyEvent;
+class TermWidget;
 
 class OutputDialog : public QDialog
 {
@@ -46,13 +47,14 @@ private:
   QVBoxLayout *m_mainLayout;
   XBPSExec *m_xbpsExec;
   SearchBar *m_searchBar;
+  TermWidget *m_console;
   bool m_upgradeRunning;
   bool m_debugInfo;
   bool m_upgradeXBPS;
+  bool m_viewAsTextBrowser;
 
-  void init();
-
-  void doSystemUpgrade();
+  void initAsTextBrowser();
+  void initAsTermWidget();
   void positionTextEditCursorAtEnd();
   bool textInTabOutput(const QString& findText);
   void writeToTabOutput(const QString &msg, TreatURLLinks treatURLLinks = ectn_TREAT_URL_LINK);
@@ -71,15 +73,23 @@ private slots:
 protected:
   virtual void closeEvent(QCloseEvent * event);
   virtual void keyPressEvent(QKeyEvent * ke);
+  virtual bool eventFilter(QObject *, QEvent *);
 
 public:
   explicit OutputDialog(QWidget *parent = 0);
   void setDebugMode(bool newValue);
   void setUpgradeXBPS(bool newValue);
+  void setViewAsTextBrowser(bool value);
 
 public slots:
   void show();
   void reject();
+
+  void doSystemUpgrade();
+  void doSystemUpgradeInTerminal();
+  void onExecCommandInTabTerminal(QString command);
+  void onPressAnyKeyToContinue();
+  void onCancelControlKey();
 };
 
 #endif // OUTPUTDIALOG_H

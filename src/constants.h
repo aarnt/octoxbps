@@ -50,13 +50,15 @@ enum TreatURLLinks { ectn_TREAT_URL_LINK, ectn_DONT_TREAT_URL_LINK };
 
 //SettingsManager related
 enum SaveSettingsReason { ectn_PackageList, ectn_CurrentTabIndex, ectn_NORMAL=30,
-                          ectn_MAXIMIZE_PACKAGES=40, ectn_MAXIMIZE_PROPERTIES=50, ectn_GROUPS=5 };
+                          ectn_MAXIMIZE_PACKAGES=40, ectn_MAXIMIZE_PROPERTIES=50, ectn_GROUPS=5,
+                          ectn_CONSOLE_FONT_SIZE };
 
 const QString ctn_ORGANIZATION("octoxbps");
 const QString ctn_APPLICATION("octoxbps");
 const QString ctn_KEY_CURRENT_TAB_INDEX("Current_Tab_Index");
 const QString ctn_KEY_WINDOW_SIZE("Window_Size");
 const QString ctn_KEY_TRANSACTION_WINDOW_SIZE("Transaction_Window_Size");
+const QString ctn_KEY_OUTPUTDIALOG_WINDOW_SIZE("OutputDialog_Window_Size");
 const QString ctn_KEY_PANEL_ORGANIZING("Panel_Organizing");
 const QString ctn_KEY_PACKAGE_LIST_ORDERED_COL("PackageList_Ordered_Col");
 const QString ctn_KEY_PACKAGE_LIST_SORT_ORDER("PackageList_Sort_Order");
@@ -71,6 +73,7 @@ const QString ctn_KEY_PACKAGE_VERSION_COLUMN_WIDTH("Package_Version_Column_Width
 const QString ctn_KEY_TERMINAL("Terminal");
 const QString ctn_KEY_INSTANT_SEARCH("Instant_Search");
 const QString ctn_AUTOMATIC("automatic");
+const QString ctn_KEY_CONSOLE_SIZE("Console_Font_Size");
 
 //Notifier related
 const QString ctn_KEY_LAST_SYNC_DB_TIME("LastSyncDbTime");

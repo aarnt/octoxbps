@@ -54,7 +54,7 @@ TransactionDialog::TransactionDialog(QWidget* parent) :
   setWindowFlags(Qt::MSWindowsFixedSizeDialogHint | Qt::Dialog |
                  Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint);
 
-  removeRunInTerminalButton();
+  //removeRunInTerminalButton();
 }
 
 void TransactionDialog::setText(const QString text)

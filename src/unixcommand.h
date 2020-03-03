@@ -55,12 +55,14 @@ private:
   QString m_errorString;
   Terminal *m_terminal;
   QProcess *m_process;
-  static QFile *m_temporaryFile;
+  static QFile *m_temporaryFile;    
 
 public:
   UnixCommand(QObject *parent);
 
   inline QProcess * getProcess(){ return m_process; }
+
+  static QString getShell();
 
   //Returns true if ILoveCandy is enabled in "/etc/pacman.conf"
   static bool isILoveCandyEnabled();
@@ -166,6 +168,7 @@ signals:
   void readyReadStandardOutput();
   void finished ( int, QProcess::ExitStatus );
   void readyReadStandardError();
+  void commandToExecInQTermWidget(QString);
 
   //ProcessWrapper signals
   void startedTerminal();

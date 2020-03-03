@@ -6,6 +6,7 @@
   BugFix: If there's xbps inside an upgrade, it is upgraded first.
   Added new sudo tool called "octoxbps-sudo". It's based on "lxqt-sudo" code 
 	(without LXQt libs) and its use is mandatory in OctoXBPS.
+  Added Terminal tab to execute actions manually.
   Added new icons to UI.
   Added new menu option "File/Install local package" to install any package available
 	on your local repositories.

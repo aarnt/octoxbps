@@ -39,6 +39,9 @@ public:
   Terminal(QObject *parent, const QString& selectedTerminal);
   virtual ~Terminal();
 
+  //Executes the given command using sudo
+  void runCommandInTerminalWithSudo(const QString& command);
+
   void openTerminal(const QString& dirName);
   void openRootTerminal();
   void runCommandInTerminal(const QStringList& commandList);
@@ -50,6 +53,7 @@ signals:
   void finished(int, QProcess::ExitStatus);
   void startedTerminal();
   void finishedTerminal(int, QProcess::ExitStatus);
+  void commandToExecInQTermWidget(QString);
 };
 
 #endif // TERMINAL_H

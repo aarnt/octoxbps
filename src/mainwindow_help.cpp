@@ -105,7 +105,9 @@ void MainWindow::initTabHelpUsage()
   QString("</li><li>") +
      tr("Alt+6 or 'F1' to show this help page") +
   QString("</li><li>") +
-     tr("Alt+\"Left key\" to go to previous clicked anchor") +
+     tr("Alt+7 to switch to 'Terminal' tab") +
+  QString("</li><li>") +
+      tr("Alt+\"Left key\" to go to previous clicked anchor") +
   QString("</li><li>") +
      tr("Alt+\"Right key\" to go to next clicked anchor") +
   QString("</li><li>") +

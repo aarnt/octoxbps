@@ -32,6 +32,7 @@
 #include "searchbar.h"
 #include <iostream>
 #include <cassert>
+#include "termwidget.h"
 
 #include <QLabel>
 #include <QStandardItemModel>
@@ -96,6 +97,9 @@ void MainWindow::loadPanelSettings(){
  */
 void MainWindow::saveSettings(SaveSettingsReason saveSettingsReason){
   switch(saveSettingsReason){
+    case ectn_CONSOLE_FONT_SIZE:
+      break;
+
     case ectn_CurrentTabIndex:
       SettingsManager::instance()->setCurrentTabIndex(ui->twProperties->currentIndex());
       break;
@@ -504,6 +508,48 @@ void MainWindow::initTabInfo(){
   ui->twProperties->setCurrentIndex(ctn_TABINDEX_INFORMATION);
   text->show();
   text->setFocus();
+}
+
+/*
+ * This is the QTermWidget used to exec xbps commands.
+ */
+void MainWindow::initTabTerminal()
+{
+  QWidget *tabTerminal = new QWidget(this);
+  QGridLayout *gridLayoutX = new QGridLayout(tabTerminal);
+  gridLayoutX->setSpacing ( 0 );
+  gridLayoutX->setMargin ( 0 );
+
+  m_console = new TermWidget(this);
+  //connect(m_console, SIGNAL(finished()), this, SLOT(initTabTerminal()));
+  connect(m_console, SIGNAL(onKeyQuit()), this, SLOT(close()));
+  connect(m_console, SIGNAL(onKeyF11()), this, SLOT(maximizeTerminalTab()));
+
+  gridLayoutX->addWidget(m_console, 0, 0, 1, 1);
+  ui->twProperties->removeTab(ctn_TABINDEX_TERMINAL);
+  QString aux(StrConstants::getTabTerminal());
+  ui->twProperties->insertTab(ctn_TABINDEX_TERMINAL, tabTerminal, QApplication::translate (
+                                                  "MainWindow", aux.toUtf8(), 0) );
+  ui->twProperties->setCurrentIndex(ctn_TABINDEX_TERMINAL);
+  m_console->setFocus();
+}
+
+/*
+ * Executes the given command in the QTermWidget5
+ */
+void MainWindow::onExecCommandInTabTerminal(QString command)
+{
+  ensureTabVisible(ctn_TABINDEX_TERMINAL);
+
+  disconnect(m_console, SIGNAL(onPressAnyKeyToContinue()), this, SLOT(onPressAnyKeyToContinue()));
+  disconnect(m_console, SIGNAL(onCancelControlKey()), this, SLOT(onCancelControlKey()));
+  connect(m_console, SIGNAL(onPressAnyKeyToContinue()), this, SLOT(onPressAnyKeyToContinue()));
+  connect(m_console, SIGNAL(onCancelControlKey()), this, SLOT(onCancelControlKey()));
+
+  m_console->enter();
+  m_console->execute("clear");
+  m_console->execute(command);
+  m_console->setFocus();
 }
 
 /*
