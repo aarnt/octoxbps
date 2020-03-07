@@ -73,6 +73,10 @@ QString StrConstants::getForeignRepositoryToolName()
   return ret;
 }
 
+QString StrConstants::getTridentNews(){
+  return QObject::tr("Project Trident news");
+}
+
 QString StrConstants::getVoidNews(){
   return QObject::tr("Void Linux news");
 }

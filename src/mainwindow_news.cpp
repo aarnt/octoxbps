@@ -56,7 +56,12 @@ void MainWindow::refreshDistroNews(bool searchForLatestNews, bool gotoNewsTab)
       clearTabOutput();
     }
 
-    if (gotoNewsTab && distro == ectn_VOID)
+    if (gotoNewsTab && distro == ectn_TRIDENT)
+    {
+      writeToTabOutput("<b>" +
+                          StrConstants::getSearchingForBSDNews().arg("Project Trident") + "</b>");
+    }
+    else if (gotoNewsTab && distro == ectn_VOID)
     {
       writeToTabOutput("<b>" +
                           StrConstants::getSearchingForBSDNews().arg("Void Linux") + "</b>");

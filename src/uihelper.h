@@ -172,7 +172,7 @@ public:
       return QIcon::fromTheme("document-open-folder", QIcon(":/resources/images/folder.png"));
     else
     {
-      if (WMHelper::isKDERunning() || WMHelper::isRazorQtRunning() || WMHelper::isLXQTRunning())
+      if (WMHelper::isKDERunning() || WMHelper::isLXQTRunning())
       {
         return QIcon(":/resources/images/folder.png");
       }

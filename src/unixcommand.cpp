@@ -1035,7 +1035,11 @@ LinuxDistro UnixCommand::getLinuxDistro()
 
   if (firstTime)
   {
-    if (QFile::exists("/etc/os-release"))
+    if (QFile::exists("/boot/loader.conf.local") && QFile::exists("/etc/rc.conf.d/trident.conf"))
+    {
+      ret = ectn_TRIDENT;
+    }
+    else if (QFile::exists("/etc/os-release"))
     {
       QFile file("/etc/os-release");
 

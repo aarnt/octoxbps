@@ -208,6 +208,7 @@ void XBPSExec::parseXBPSProcessOutput(QString output)
     //We're dealing with packages being downloaded
     int colon = msg.indexOf(":");
     target = msg.left(colon);
+    target = target.remove("]").trimmed();
 
     if(!m_textPrinted.contains(target))
       prepareTextToPrint("<b><font color=\"#B4AB58\">" + target + "</font></b>");

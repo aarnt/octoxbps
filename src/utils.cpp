@@ -110,8 +110,8 @@ QList<QModelIndex> * utils::findFileInTreeView( const QString& name, const QStan
  */
 QString utils::retrieveDistroNews(bool searchForLatestNews)
 {
+  const QString ctn_TRIDENT_RSS_URL = "https://project-trident.org/index.xml";
   const QString ctn_VOID_RSS_URL = "https://voidlinux.org/atom.xml";
-
   LinuxDistro distro = UnixCommand::getLinuxDistro();
   QString res;
   QString tmpRssPath = QDir::homePath() + QDir::separator() + ".config/octoxbps/.tmp_distro_rss.xml";
@@ -131,7 +131,11 @@ QString utils::retrieveDistroNews(bool searchForLatestNews)
   {
     QString curlCommand = "curl %1 -o %2";
 
-    if (distro == ectn_VOID)
+    if (distro == ectn_TRIDENT)
+    {
+      curlCommand = curlCommand.arg(ctn_TRIDENT_RSS_URL).arg(tmpRssPath);
+    }
+    else if (distro == ectn_VOID)
     {
       curlCommand = curlCommand.arg(ctn_VOID_RSS_URL).arg(tmpRssPath);
     }
@@ -217,88 +221,169 @@ QString utils::parseDistroNews()
 {
   QString html;
   LinuxDistro distro = UnixCommand::getLinuxDistro();
-
-  if (distro == ectn_VOID)
-  {
-    html = "<p align=\"center\"><h2>" + StrConstants::getVoidNews() + "</h2></p><ul>";
-  }
-
   QString rssPath = QDir::homePath() + QDir::separator() + ".config/octoxbps/distro_rss.xml";
-  QDomDocument doc("feed"); //("rss");
-  int itemCounter=0;
 
-  QFile file(rssPath);
+  if (distro == ectn_TRIDENT)
+  {
+    html = "<p align=\"center\"><h2>" + StrConstants::getTridentNews() + "</h2></p><ul>";
 
-  if (!file.open(QIODevice::ReadOnly)) return "";
+    QDomDocument doc("rss");
+    int itemCounter=0;
 
-  if (!doc.setContent(&file)) {
-      file.close();
-      return "";
-  }
+    QFile file(rssPath);
 
-  file.close();
+    if (!file.open(QIODevice::ReadOnly)) return "";
 
-  QDomElement docElem = doc.documentElement(); //This is rss
-  QDomNode n = docElem.firstChild(); //This is channel
-  //n = n.firstChild();
-
-  while(!n.isNull()) {
-    QDomElement e = n.toElement();
-
-    if(!e.isNull())
-    {
-      if(e.tagName() == "entry") //"item")
-      {
-        //Let's iterate over the 10 lastest "item" news
-        if (itemCounter == 10) break;
-
-        QDomNode text = e.firstChild();
-        QString itemTitle;
-        QString itemLink;
-        QString itemDescription;
-        QString itemPubDate;
-
-        while(!text.isNull())
-        {
-          QDomElement eText = text.toElement();
-
-          if(!eText.isNull())
-          {
-            if (eText.tagName() == "title")
-            {
-              itemTitle = "<h3>" + eText.text() + "</h3>";
-            }
-            else if (eText.tagName() == "id") //"link")
-            {
-              itemLink = Package::makeURLClickable(eText.text());
-            }
-            /*else if (eText.tagName() == "description")
-            {
-              itemDescription = eText.text();
-              itemDescription += "<br>";
-            }*/
-            else if (eText.tagName() == "published") //"pubDate")
-            {
-              itemPubDate = eText.text();
-              itemPubDate = itemPubDate.remove(QRegularExpression("\\n"));
-              int pos = itemPubDate.indexOf("+");
-
-              if (pos > -1)
-              {
-                itemPubDate = itemPubDate.mid(0, pos-1).trimmed() + "<br>";
-              }
-            }
-          }
-
-          text = text.nextSibling();
-        }
-
-        html += "<li><p>" + itemTitle + " " + itemPubDate + "<br>" + itemLink + itemDescription + "</p></li>";
-        itemCounter++;
-      }
+    if (!doc.setContent(&file)) {
+        file.close();
+        return "";
     }
 
-    n = n.nextSibling();
+    file.close();
+
+    QDomElement docElem = doc.documentElement(); //This is rss
+    QDomNode n = docElem.firstChild(); //This is channel
+    n = n.firstChild();
+
+    while(!n.isNull()) {
+      QDomElement e = n.toElement();
+
+      if(!e.isNull())
+      {
+        if(e.tagName() == "item")
+        {
+          //Let's iterate over the 10 lastest "item" news
+          if (itemCounter == 10) break;
+
+          QDomNode text = e.firstChild();
+          QString itemTitle;
+          QString itemLink;
+          QString itemDescription;
+          QString itemPubDate;
+
+          while(!text.isNull())
+          {
+            QDomElement eText = text.toElement();
+
+            if(!eText.isNull())
+            {
+              if (eText.tagName() == "title")
+              {
+                itemTitle = "<h3>" + eText.text() + "</h3>";
+              }
+              else if (eText.tagName() == "link")
+              {
+                itemLink = Package::makeURLClickable(eText.text());
+              }
+              else if (eText.tagName() == "description")
+              {
+                itemDescription = eText.text();
+                itemDescription += "<br>";
+              }
+              else if (eText.tagName() == "pubDate")
+              {
+                itemPubDate = eText.text();
+                itemPubDate = itemPubDate.remove(QRegularExpression("\\n"));
+                int pos = itemPubDate.indexOf("+");
+
+                if (pos > -1)
+                {
+                  itemPubDate = itemPubDate.mid(0, pos-1).trimmed() + "<br>";
+                }
+              }
+            }
+
+            text = text.nextSibling();
+          }
+
+          html += "<li><p>" + itemTitle + " " + itemPubDate + "<br>" + itemLink + itemDescription + "</p></li>";
+          itemCounter++;
+        }
+      }
+
+      n = n.nextSibling();
+    }
+  }
+  else if (distro == ectn_VOID)
+  {
+    html = "<p align=\"center\"><h2>" + StrConstants::getVoidNews() + "</h2></p><ul>";
+
+    QDomDocument doc("feed");
+    int itemCounter=0;
+
+    QFile file(rssPath);
+
+    if (!file.open(QIODevice::ReadOnly)) return "";
+
+    if (!doc.setContent(&file)) {
+        file.close();
+        return "";
+    }
+
+    file.close();
+
+    QDomElement docElem = doc.documentElement(); //This is rss
+    QDomNode n = docElem.firstChild(); //This is channel
+    //n = n.firstChild();
+
+    while(!n.isNull()) {
+      QDomElement e = n.toElement();
+
+      if(!e.isNull())
+      {
+        if(e.tagName() == "entry") //"item")
+        {
+          //Let's iterate over the 10 lastest "item" news
+          if (itemCounter == 10) break;
+
+          QDomNode text = e.firstChild();
+          QString itemTitle;
+          QString itemLink;
+          QString itemDescription;
+          QString itemPubDate;
+
+          while(!text.isNull())
+          {
+            QDomElement eText = text.toElement();
+
+            if(!eText.isNull())
+            {
+              if (eText.tagName() == "title")
+              {
+                itemTitle = "<h3>" + eText.text() + "</h3>";
+              }
+              else if (eText.tagName() == "id") //"link")
+              {
+                itemLink = Package::makeURLClickable(eText.text());
+              }
+              /*else if (eText.tagName() == "description")
+              {
+                itemDescription = eText.text();
+                itemDescription += "<br>";
+              }*/
+              else if (eText.tagName() == "published") //"pubDate")
+              {
+                itemPubDate = eText.text();
+                itemPubDate = itemPubDate.remove(QRegularExpression("\\n"));
+                int pos = itemPubDate.indexOf("+");
+
+                if (pos > -1)
+                {
+                  itemPubDate = itemPubDate.mid(0, pos-1).trimmed() + "<br>";
+                }
+              }
+            }
+
+            text = text.nextSibling();
+          }
+
+          html += "<li><p>" + itemTitle + " " + itemPubDate + "<br>" + itemLink + itemDescription + "</p></li>";
+          itemCounter++;
+        }
+      }
+
+      n = n.nextSibling();
+    }
   }
 
   html += "</ul><br>";

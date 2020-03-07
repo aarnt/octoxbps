@@ -39,7 +39,7 @@ enum CommandExecuting { ectn_NONE, ectn_MIRROR_CHECK, ectn_SYNC_DATABASE,
                         ectn_REMOVE_INSTALL, ectn_REMOVE_KCP_PKG, ectn_CLEAN_CACHE,
                         ectn_RUN_SYSTEM_UPGRADE_IN_TERMINAL, ectn_RUN_IN_TERMINAL, ectn_LOCAL_PKG_REFRESH };
 
-enum LinuxDistro { ectn_VOID, ectn_UNKNOWN };
+enum LinuxDistro { ectn_TRIDENT, ectn_VOID, ectn_UNKNOWN };
 
 enum Language { ectn_LANG_ENGLISH, ectn_LANG_USER_DEFINED };
 
@@ -145,6 +145,11 @@ const QString ctn_LXDE_DESKTOP("lxsession");
 const QString ctn_LXDE_TERMINAL("lxterminal");
 const QString ctn_LXDE_FILE_MANAGER("pcmanfm");
 
+const QString ctn_LUMINA_DESKTOP("lumina-desktop");
+const QString ctn_LUMINA_EDITOR("lumina-textedit");
+const QString ctn_LUMINA_FILE_MANAGER("lumina-fm");
+const QString ctn_LUMINA_OPEN("lumina-open");
+
 const QString ctn_LXQT_DESKTOP("lxqt-session");
 const QString ctn_LXQT_TERMINAL("qterminal");
 const QString ctn_LXQT_FILE_MANAGER("pcmanfm-qt");
@@ -160,7 +165,6 @@ const QString ctn_CINNAMON_EDITOR("gedit");
 const QString ctn_CINNAMON_FILE_MANAGER("nemo");
 const QString ctn_CINNAMON_TERMINAL("gnome-terminal");
 
-const QString ctn_RAZORQT_DESKTOP("razor-session");
 const QString ctn_PEK_TERMINAL("sakura");
 const QString ctn_XTERM("xterm");
 

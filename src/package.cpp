@@ -1188,7 +1188,7 @@ bool Package::hasXBPSDatabase()
 
   if (!done)
   {
-    if (UnixCommand::getLinuxDistro() == ectn_VOID)
+    if (UnixCommand::getLinuxDistro() == ectn_TRIDENT || UnixCommand::getLinuxDistro() == ectn_VOID)
     {
       QDir info;
       info.setPath("/var/db/xbps/");

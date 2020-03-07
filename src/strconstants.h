@@ -34,6 +34,7 @@ public:
   static QString getForeignRepositoryName();
   static QString getForeignPkgRepositoryName();
   static QString getForeignRepositoryToolName();
+  static QString getTridentNews();
   static QString getVoidNews();
   static QString getNewsErrorMessage();
   static QString getIncompatibleDistroError();

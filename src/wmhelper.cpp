@@ -197,9 +197,9 @@ bool WMHelper::isCinnamonRunning(){
 }
 
 /*
- * Checks if RazorQt is running
+ * Checks if Lumina is running
  */
-bool WMHelper::isRazorQtRunning()
+bool WMHelper::isLuminaRunning()
 {
   QProcess proc;
   proc.start("ps -A -o command");
@@ -208,7 +208,7 @@ bool WMHelper::isRazorQtRunning()
   QString out = proc.readAll();
   proc.close();
 
-  if (out.count(ctn_RAZORQT_DESKTOP)>0)
+  if (out.count(ctn_LUMINA_DESKTOP)>0)
     return true;
   else
     return false;
@@ -355,6 +355,10 @@ void WMHelper::openFile(const QString& fileName){
     s << fileToOpen;
     p->startDetached( ctn_LXQT_FILE_MANAGER, s );
   }
+  else if (isLuminaRunning() && UnixCommand::hasTheExecutable(ctn_LUMINA_OPEN)){
+    s << fileToOpen;
+    p->startDetached( ctn_LUMINA_OPEN, s );
+  }
   else if (UnixCommand::hasTheExecutable(ctn_ARCHBANG_FILE_MANAGER)){
     s << fileToOpen;
     p->startDetached( ctn_ARCHBANG_FILE_MANAGER, s );
@@ -385,6 +389,9 @@ void WMHelper::editFile( const QString& fileName, EditOptions opt ){
   else if (isLXQTRunning() && UnixCommand::hasTheExecutable(ctn_LXQT_EDITOR)){
     p = ctn_LXQT_EDITOR + " " + fileName;
   }
+  else if (isLuminaRunning() && UnixCommand::hasTheExecutable(ctn_LUMINA_EDITOR)){
+    p += ctn_LUMINA_EDITOR + " " + fileName;
+  }
   else if (UnixCommand::hasTheExecutable(ctn_ARCHBANG_EDITOR))
   {
     p = ctn_ARCHBANG_EDITOR + " " + fileName;
@@ -408,7 +415,7 @@ void WMHelper::editFile( const QString& fileName, EditOptions opt ){
     p = getXFCEEditor() + " " + fileName;
   }
 
-  if (UnixCommand::isRootRunning() || opt == ectn_EDIT_AS_NORMAL_USER)
+  if (opt == ectn_EDIT_AS_NORMAL_USER)
   {
     process->startDetached("/bin/sh -c \"" + p + "\"");
   }
@@ -496,6 +503,11 @@ void WMHelper::openDirectory( const QString& dirName ){
     {
       s << dir;
       p->startDetached( ctn_LXQT_FILE_MANAGER, s );
+    }
+    else if (isLuminaRunning() && UnixCommand::hasTheExecutable(ctn_LUMINA_FILE_MANAGER))
+    {
+      s << dir;
+      p->startDetached( ctn_LUMINA_FILE_MANAGER, s );
     }
     else if (UnixCommand::hasTheExecutable(ctn_XFCE_FILE_MANAGER))
     {
