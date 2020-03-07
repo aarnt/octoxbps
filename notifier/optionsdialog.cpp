@@ -51,6 +51,7 @@ void OptionsDialog::init()
   ui->lblOnceADayAt->setText(StrConstants::getOnceADayAtDesc());
   ui->rbOnceEvery->setText(StrConstants::getOnceEvery());
   ui->lblOnceEvery->setText(StrConstants::getOnceEveryDesc().arg(5).arg(44640));
+  ui->rbNever->setText(StrConstants::getNever());
 
   connect(ui->rbOnceADay, SIGNAL(clicked()), this, SLOT(selectOnceADay()));
   connect(ui->rbOnceADayAt, SIGNAL(clicked()), this, SLOT(selectOnceADayAt()));
@@ -62,7 +63,13 @@ void OptionsDialog::init()
   bool useSyncDbInterval = false;
   bool useSyncDbHour = false;
 
-  if (syncDbInterval == -1)
+  //User does NOT want to check for updates!
+  if (syncDbInterval == -2)
+  {
+    selectNever();
+    return;
+  }
+  else if (syncDbInterval == -1)
   {
     ui->spinOnceEvery->setValue(5);
   }
@@ -126,6 +133,10 @@ void OptionsDialog::saveChanges()
   {
     SettingsManager::setSyncDbInterval(ui->spinOnceEvery->value());
   }
+  else if (ui->rbNever->isChecked())
+  {
+    SettingsManager::setSyncDbInterval(-2);
+  }
 }
 
 /*
@@ -138,6 +149,7 @@ void OptionsDialog::selectOnceADay()
   ui->spinOnceEvery->setEnabled(false);
   ui->rbOnceADayAt->setChecked(false);
   ui->rbOnceEvery->setChecked(false);
+  ui->rbNever->setChecked(false);
 }
 
 /*
@@ -150,6 +162,7 @@ void OptionsDialog::selectOnceADayAt()
   ui->spinOnceEvery->setEnabled(false);
   ui->rbOnceADay->setChecked(false);
   ui->rbOnceEvery->setChecked(false);
+  ui->rbNever->setChecked(false);
 }
 
 /*
@@ -162,4 +175,18 @@ void OptionsDialog::selectOnceEvery()
   ui->spinOnceEvery->setEnabled(true);
   ui->rbOnceADay->setChecked(false);
   ui->rbOnceADayAt->setChecked(false);
+  ui->rbNever->setChecked(false);
+}
+
+/*
+ * Whenever user selects the forth radio button, we have to disable some widgets
+ */
+void OptionsDialog::selectNever()
+{
+  ui->rbOnceEvery->setChecked(false);
+  ui->spinOnceADayAt->setEnabled(false);
+  ui->spinOnceEvery->setEnabled(false);
+  ui->rbOnceADay->setChecked(false);
+  ui->rbOnceADayAt->setChecked(false);
+  ui->rbNever->setChecked(true);
 }

@@ -45,7 +45,7 @@ QFile *UnixCommand::m_temporaryFile = 0;
 UnixCommand::UnixCommand(QObject *parent): QObject()
 {
   m_process = new QProcess(parent);
-  m_terminal = new Terminal(parent, SettingsManager::getTerminal());
+  m_terminal = new Terminal(parent);
 
   QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
   env.insert("LANG", "C");
@@ -737,7 +737,7 @@ QString UnixCommand::getXBPSVersion()
  * Opens a root terminal
  */
 void UnixCommand::openRootTerminal(){
-  m_terminal->openRootTerminal();
+  //m_terminal->openRootTerminal();
 }
 
 /*

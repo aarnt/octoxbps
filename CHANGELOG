@@ -15,6 +15,7 @@
   Added drag and drop support to drop local ".xbps" packages for installation.
   Added new menu option "Search/Use instant search" to toggle automatic filtering 
 	search results on package list.
+  Added option to never sync database on notifier.
   Added new context menu option "Info" on pkg list.
   Added more information about packages on Info tab.
 

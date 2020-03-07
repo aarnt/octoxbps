@@ -224,7 +224,7 @@ void MainWindow::notifierTimerTimeout()
       SettingsManager::setLastSyncDbTime(now);
     }
   }
-  else
+  else if (syncDbInterval != -2) //Because if it's "-2" user does NOT want any checkupdates!
   {
     if (lastCheckTime.isNull() || now.addSecs(-(syncDbInterval * 60)) >= lastCheckTime)
     {

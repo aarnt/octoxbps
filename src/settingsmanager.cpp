@@ -83,18 +83,19 @@ int SettingsManager::getSyncDbHour()
 //The syncDb interval is in MINUTES and it cannot be less than 5!
 int SettingsManager::getSyncDbInterval()
 {
+  const int ctn_MAX_MIN = 44640;
   SettingsManager p_instance;
   int n = p_instance.getSYSsettings()->value(ctn_KEY_SYNC_DB_INTERVAL, -1).toInt();
 
-  if ((n != -1) && (n < 5))
+  if ((n != -1 && n != -2) && (n < 5))
   {
     n = 5;
     p_instance.getSYSsettings()->setValue(ctn_KEY_SYNC_DB_INTERVAL, n);
     p_instance.getSYSsettings()->sync();
   }
-  else if (n > 44640)
+  else if (n > ctn_MAX_MIN)
   {
-    n = 44640; //This is 1 month, the maximum allowed!
+    n = ctn_MAX_MIN; //This is 1 month (31 days), the maximum allowed!
     p_instance.getSYSsettings()->setValue(ctn_KEY_SYNC_DB_INTERVAL, n);
     p_instance.getSYSsettings()->sync();
   }
@@ -190,19 +191,6 @@ bool SettingsManager::getShowGroupsPanel()
   return (instance()->getSYSsettings()->value( ctn_KEY_SHOW_GROUPS_PANEL, false).toInt() == 1);
 }
 
-QString SettingsManager::getTerminal(){
-  if (!instance()->getSYSsettings()->contains(ctn_KEY_TERMINAL))
-  {
-    instance()->getSYSsettings()->setValue(ctn_KEY_TERMINAL, ctn_AUTOMATIC);
-    return ctn_AUTOMATIC;
-  }
-  else
-  {
-    SettingsManager p_instance;
-    return (p_instance.getSYSsettings()->value( ctn_KEY_TERMINAL, ctn_AUTOMATIC)).toString();
-  }
-}
-
 QByteArray SettingsManager::getWindowSize(){
   return (instance()->getSYSsettings()->value( ctn_KEY_WINDOW_SIZE, 0).toByteArray());
 }
@@ -281,11 +269,6 @@ void SettingsManager::setSplitterHorizontalState(QByteArray newValue){
   instance()->getSYSsettings()->sync();
 }
 
-void SettingsManager::setTerminal(QString newValue){
-  instance()->getSYSsettings()->setValue( ctn_KEY_TERMINAL, newValue);
-  instance()->getSYSsettings()->sync();
-}
-
 void SettingsManager::setKeepNumInstalledPackages(int newValue)
 {
   instance()->getSYSsettings()->setValue(ctn_KEEP_NUM_INSTALLED, newValue);
@@ -322,44 +305,10 @@ void SettingsManager::setInstantSearchSelected(bool newValue)
   instance()->getSYSsettings()->sync();
 }
 
-/*
- * Search all supported terminals to see if the selected one is valid
- */
-bool SettingsManager::isValidTerminalSelected()
-{
-  QString userTerminal = getTerminal();
-  if (userTerminal == ctn_AUTOMATIC)
-    return true;
-
-  if (userTerminal == ctn_XFCE_TERMINAL ||
-      userTerminal == ctn_LXDE_TERMINAL ||
-      userTerminal == ctn_LXQT_TERMINAL ||
-      userTerminal == ctn_KDE_TERMINAL ||
-      userTerminal == ctn_TDE_TERMINAL ||
-      userTerminal == ctn_CINNAMON_TERMINAL ||
-      userTerminal == ctn_MATE_TERMINAL ||
-      userTerminal == ctn_RXVT_TERMINAL ||
-      userTerminal == ctn_XTERM)
-  {
-    if (UnixCommand::hasTheExecutable(userTerminal))
-    {
-      return true;
-    }
-    else
-    {
-      return false;
-    }
-  }
-  else
-  {
-    return false;
-  }
-}
-
 void SettingsManager::setConsoleFontSize(int newValue)
 {
   instance()->getSYSsettings()->setValue(ctn_KEY_CONSOLE_SIZE, newValue);
   instance()->getSYSsettings()->sync();
 }
 
-//OctoPkg related --------------------------------------------------------------------
+//OctoXBPS related --------------------------------------------------------------------

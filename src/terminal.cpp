@@ -32,19 +32,8 @@
  * This class abstracts all the relevant terminal related code
  */
 
-Terminal::Terminal(QObject *parent, const QString &selectedTerminal) : QObject(parent)
+Terminal::Terminal(QObject *parent) : QObject(parent)
 {
-  /*m_process = new QProcess(parent);
-
-  //Make the needed signal propagations...
-  connect(m_process, SIGNAL(started()), this, SIGNAL(started()));
-  connect(m_process, SIGNAL(finished(int,QProcess::ExitStatus)), this, SIGNAL(finished(int,QProcess::ExitStatus)));
-
-  QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-  env.insert("LANG", "C");
-  env.insert("LC_MESSAGES", "C");
-  m_process->setProcessEnvironment(env);
-  m_selectedTerminal = selectedTerminal;*/
 }
 
 Terminal::~Terminal()

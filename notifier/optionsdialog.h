@@ -47,6 +47,7 @@ private slots:
   void selectOnceADay();
   void selectOnceADayAt();
   void selectOnceEvery();
+  void selectNever();
 };
 
 #endif // OPTIONSDIALOG_H

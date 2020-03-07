@@ -442,7 +442,7 @@ private slots:
 
 public slots:
   void doPreSystemUpgrade();
-  void doSystemUpgrade(SystemUpgradeOptions sysUpgradeOption = ectn_NO_OPT);
+  void doSystemUpgrade(SystemUpgradeOptions = ectn_NO_OPT);
 
 public:
   explicit MainWindow(QWidget *parent = 0);

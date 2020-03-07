@@ -42,7 +42,6 @@ class SettingsManager
   public:
 
     static SettingsManager* instance();
-    static QString getTerminal();
 
     static QString getOctoXBPSConfPath()
     {
@@ -71,7 +70,6 @@ class SettingsManager
     static QByteArray getOutputDialogWindowSize();
     static QByteArray getSplitterHorizontalState();
     static bool isInstantSearchSelected();
-    static bool isValidTerminalSelected();
 
     static void setCurrentTabIndex(int newValue);
     static void setPanelOrganizing(int newValue);
@@ -87,10 +85,8 @@ class SettingsManager
     static void setSyncDbInterval(int newValue);
     static void setLastSyncDbTime(QDateTime newValue);
 
-    static void setTerminal(QString newValue);
     static void setKeepNumInstalledPackages(int newValue);
     static void setKeepNumUninstalledPackages(int newValue);
-
     static void setPackageIconColumnWidth(int newValue);
     static void setPackageNameColumnWidth(int newValue);
     static void setPackageVersionColumnWidth(int newValue);

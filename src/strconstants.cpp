@@ -657,6 +657,10 @@ QString StrConstants::getOnceEveryDesc(){
   return QObject::tr("(value in minutes: %1 to %2)");
 }
 
+QString StrConstants::getNever(){
+  return QObject::tr("Never");
+}
+
 QString StrConstants::getSetInterval(){
   return QObject::tr("Set interval...");
 }

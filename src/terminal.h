@@ -36,7 +36,7 @@ private:
   QProcess *m_process;
 
 public:
-  Terminal(QObject *parent, const QString& selectedTerminal);
+  Terminal(QObject *parent);
   virtual ~Terminal();
 
   //Executes the given command using sudo

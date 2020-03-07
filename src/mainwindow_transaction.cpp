@@ -747,7 +747,7 @@ void MainWindow::doPreSystemUpgrade()
 /*
  * Does a system upgrade with "pacman -Su" !
  */
-void MainWindow::doSystemUpgrade(SystemUpgradeOptions systemUpgradeOptions)
+void MainWindow::doSystemUpgrade(SystemUpgradeOptions)
 {
   if (m_systemUpgradeDialog) return;
 
@@ -1327,7 +1327,7 @@ void MainWindow::toggleTransactionActions(const bool value)
   ui->actionHelpUsage->setEnabled(value);
   ui->actionDonate->setEnabled(value);
   ui->actionHelpAbout->setEnabled(value);
-  ui->actionExit->setEnabled(value);
+  //ui->actionExit->setEnabled(value);
   ui->actionInstallLocalPackage->setEnabled(value);
 
   //We have to toggle the combobox groups as well

@@ -54,7 +54,7 @@
       <property name="geometry">
        <rect>
         <x>8</x>
-        <y>71</y>
+        <y>60</y>
         <width>481</width>
         <height>64</height>
        </rect>
@@ -137,7 +137,7 @@
       <property name="geometry">
        <rect>
         <x>8</x>
-        <y>147</y>
+        <y>130</y>
         <width>481</width>
         <height>64</height>
        </rect>
@@ -218,6 +218,25 @@
         </layout>
        </item>
       </layout>
+     </widget>
+     <widget class="QRadioButton" name="rbNever">
+      <property name="geometry">
+       <rect>
+        <x>8</x>
+        <y>200</y>
+        <width>371</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="text">
+       <string notr="true">Never</string>
+      </property>
      </widget>
     </widget>
    </item>
