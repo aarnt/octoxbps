@@ -121,7 +121,7 @@ void OutputDialog::initAsTermWidget()
   m_mainLayout->setSizeConstraint(QLayout::SetMinimumSize);
   m_mainLayout->setContentsMargins(2, 2, 2, 2);
   m_console->setFocus();
-  m_console->toggleShowSearchBar();
+  //m_console->toggleShowSearchBar();
   m_console->installEventFilter(this);
 }
 
@@ -148,7 +148,7 @@ void OutputDialog::onPressAnyKeyToContinue()
   m_console->setFocus();
 
   if (!m_upgradeRunning) return;
-  if (m_xbpsExec == nullptr)
+  if (m_xbpsExec != nullptr)
     delete m_xbpsExec;
 
   m_upgradeRunning = false;
@@ -161,7 +161,7 @@ void OutputDialog::onCancelControlKey()
 {
   if (m_upgradeRunning)
   {
-    if (m_xbpsExec == nullptr)
+    if (m_xbpsExec != nullptr)
       delete m_xbpsExec;
 
     m_xbpsExec = nullptr;
@@ -180,7 +180,7 @@ void OutputDialog::doSystemUpgrade()
     m_xbpsExec->setDebugMode(true);
 
   QObject::connect(m_xbpsExec, SIGNAL( finished ( int, QProcess::ExitStatus )),
-                   this, SLOT( pacmanProcessFinished(int, QProcess::ExitStatus) ));
+                   this, SLOT( xbpsProcessFinished(int, QProcess::ExitStatus) ));
 
   QObject::connect(m_xbpsExec, SIGNAL(percentage(int)), this, SLOT(onPencertange(int)));
   QObject::connect(m_xbpsExec, SIGNAL(textToPrintExt(QString)), this, SLOT(onWriteOutput(QString)));
@@ -283,7 +283,7 @@ bool OutputDialog::textInTabOutput(const QString& findText)
 /*
  * Slot called whenever xbpsExec finishes its job
  */
-void OutputDialog::pacmanProcessFinished(int exitCode, QProcess::ExitStatus exitStatus)
+void OutputDialog::xbpsProcessFinished(int exitCode, QProcess::ExitStatus exitStatus)
 {
   m_progressBar->close();
 
@@ -309,7 +309,7 @@ void OutputDialog::pacmanProcessFinished(int exitCode, QProcess::ExitStatus exit
     }
   }
 
-  delete m_xbpsExec;
+  if (m_xbpsExec != nullptr) delete m_xbpsExec;
   m_upgradeRunning = false;
 }
 

@@ -62,7 +62,7 @@ private:
 private slots:
   void onPencertange(int percentage);
   void onWriteOutput(const QString &output);
-  void pacmanProcessFinished(int exitCode, QProcess::ExitStatus exitStatus);
+  void xbpsProcessFinished(int exitCode, QProcess::ExitStatus exitStatus);
 
   //SearchBar slots
   void onSearchBarTextChanged(QString strToSearch);
