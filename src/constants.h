@@ -85,7 +85,8 @@ const QString ctn_KEEP_NUM_INSTALLED("Keep_Num_Installed");
 const QString ctn_KEEP_NUM_UNINSTALLED("Keep_Num_Uninstalled");
 
 //Package related
-const QString ctn_TEMP_ACTIONS_FILE ( QDir::tempPath() + QDir::separator() + ".qt_temp_" );
+const QString ctn_TEMP_ACTIONS_FILE(QDir::homePath() + QDir::separator() + ".config/octoxbps" + QDir::separator() + ".qt_temp_");
+//const QString ctn_TEMP_ACTIONS_FILE(QDir::tempPath() + QDir::separator() + ".qt_temp_");
 const QString ctn_XBPS_DATABASE_DIR = "/var/db/xbps";
 const QString ctn_PACMAN_CORE_DB_FILE = "/var/lib/pacman/sync/core.db";
 

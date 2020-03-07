@@ -1512,7 +1512,7 @@ void MainWindow::onPressAnyKeyToContinue()
   metaBuildPackageList();
   enableTransactionActions();
 
-  if (m_xbpsExec == nullptr)
+  if (m_xbpsExec != nullptr)
     delete m_xbpsExec;
 
   m_commandExecuting = ectn_NONE;
@@ -1536,7 +1536,7 @@ void MainWindow::onCancelControlKey()
     clearTransactionTreeView();
     enableTransactionActions();
 
-    if (m_xbpsExec == nullptr)
+    if (m_xbpsExec != nullptr)
       delete m_xbpsExec;
 
     m_xbpsExec = nullptr;
@@ -1550,7 +1550,10 @@ void MainWindow::onCancelControlKey()
 void MainWindow::resetTransaction()
 {
   enableTransactionActions();
-  delete m_xbpsExec;
+  if (m_xbpsExec != nullptr)
+  {
+    delete m_xbpsExec;
+  }
   m_commandExecuting = ectn_NONE;
   disconnect(this, SIGNAL(buildPackageListDone()), this, SLOT(resetTransaction()));
 }

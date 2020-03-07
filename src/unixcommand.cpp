@@ -79,11 +79,6 @@ UnixCommand::UnixCommand(QObject *parent): QObject()
                    SIGNAL( finished ( int, QProcess::ExitStatus )) );
   QObject::connect(m_terminal, SIGNAL(commandToExecInQTermWidget(QString)), this,
                    SIGNAL(commandToExecInQTermWidget(QString)));
-
-  /*QObject::connect(m_terminal, SIGNAL( startedTerminal()), this,
-                   SIGNAL( startedTerminal()));
-  QObject::connect(m_terminal, SIGNAL( finishedTerminal(int,QProcess::ExitStatus)), this,
-                   SIGNAL( finishedTerminal(int,QProcess::ExitStatus)));*/
 }
 
 /*
@@ -187,7 +182,6 @@ QByteArray UnixCommand::performQuery(const QStringList args)
   env.insert("LC_MESSAGES", "C");
   env.insert("LC_ALL", "C");
   pacman.setProcessEnvironment(env);
-
   pacman.start("pkg", args);
   pacman.waitForFinished();
   result = pacman.readAllStandardOutput();
@@ -637,7 +631,11 @@ void UnixCommand::removeTemporaryFiles()
   QDir tempDir(QDir::tempPath());
   QStringList nameFilters;
   nameFilters << "qtsingleapp*" << "gpg*" << ".qt_temp_*";
+
   QFileInfoList list = tempDir.entryInfoList(nameFilters, QDir::Dirs | QDir::Files | QDir::System | QDir::Hidden);
+  tempDir.setPath(QDir::homePath() + QDir::separator() + ".config/octoxbps" + QDir::separator());
+  QFileInfoList list2 = tempDir.entryInfoList(nameFilters, QDir::Dirs | QDir::Files | QDir::System | QDir::Hidden);
+  list.append(list2);
 
   foreach(QFileInfo file, list){
     QFile fileAux(file.filePath());

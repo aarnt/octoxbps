@@ -64,11 +64,7 @@ QString Package::makeURLClickable( const QString &s )
 {
 	QString sb = s;
   QRegExp rx("((ht|f)tp(s?))://(\\S)+[^\"|)|(|.|\\s|\\n]");
-  QRegExp rx1("^|[\\s]+(www\\.)(\\S)+[^\"|)|(|.|\\s|\\n]");
-
   rx.setCaseSensitivity( Qt::CaseInsensitive );
-	rx1.setCaseSensitivity( Qt::CaseInsensitive );
-
   int search = 0;
 	int ini = 0;
 
@@ -83,29 +79,6 @@ QString Package::makeURLClickable( const QString &s )
 
     ns = "<a href=\"" + s1.trimmed() + "\">" + s1.trimmed() + "</a>";
     sb.replace( ini, s1.length(), ns);
-		search = ini + (2*s1.length()) + 15;	
-	}
-
-	search = 0;
-	ini = 0;
-
-  //Now, we search for the 2nd pattern: rx1
-	while ( (ini = rx1.indexIn( sb, search )) != -1 ){
-    QString s1 = rx1.cap();
-    QString ns;
-
-    s1.remove(QRegularExpression("</font></b><br>"));
-    s1.remove("`");
-    s1.remove("'");
-
-    if (s1[0] == '\n') ns += "\n";
-
-    int blanks = s1.count(QRegExp("^|[\\s]+"));
-		for (int i=0; i<blanks; i++) ns += " ";
-
-    ns += "<a href=\"http://" + s1.trimmed() + "\">" + s1.trimmed() + "</a>";
-
-		sb.replace( ini, s1.length(), ns);
 		search = ini + (2*s1.length()) + 15;	
 	}
 

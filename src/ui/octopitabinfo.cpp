@@ -74,14 +74,14 @@ QString OctopiTabInfo::formatTabInfo(const PackageRepository::PackageData& packa
   html += "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">";
   html += "<a id=\"" + anchorBegin + "\"></a>";
   html += "<h2>" + package.name + "</h2>";
-  html += "<a style=\"font-size:16px;\">" + pkgDescription + "</a>";
+  html += pkgDescription;
   html += "<table border=\"0\">";
   html += "<tr><th width=\"20%\"></th><th width=\"80%\"></th></tr>";
 
   if (package.repository.isEmpty() && pid.url != "<a href=\"http://\"></a>UNKNOWN")
-    html += "<tr><td>" + url + "</td><td style=\"font-size:14px;\">" + pid.url + "</td></tr>";
+    html += "<tr><td>" + url + "</td><td>" + pid.url + "</td></tr>";
   else if (!package.repository.isEmpty())
-    html += "<tr><td>" + url + "</td><td style=\"font-size:14px;\">" + Package::makeURLClickable(package.www) + "</td></tr>";
+    html += "<tr><td>" + url + "</td><td>" + Package::makeURLClickable(package.www) + "</td></tr>";
 
   if (package.outdated())
   {
