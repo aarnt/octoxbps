@@ -174,7 +174,7 @@ void OutputDialog::onCancelControlKey()
  */
 void OutputDialog::doSystemUpgrade()
 {
-  m_xbpsExec = new XBPSExec();
+  m_xbpsExec = new XBPSExec(this);
 
   if (m_debugInfo)
     m_xbpsExec->setDebugMode(true);
@@ -194,7 +194,7 @@ void OutputDialog::doSystemUpgrade()
  */
 void OutputDialog::doSystemUpgradeInTerminal()
 {
-  m_xbpsExec = new XBPSExec();
+  m_xbpsExec = new XBPSExec(this);
 
   QObject::connect(m_xbpsExec, SIGNAL(commandToExecInQTermWidget(QString)), this,
                    SLOT(onExecCommandInTabTerminal(QString)));
@@ -314,6 +314,14 @@ void OutputDialog::xbpsProcessFinished(int exitCode, QProcess::ExitStatus exitSt
 }
 
 /*
+ * User wants to close the ouput window...
+ */
+void OutputDialog::cancelUpgrade()
+{
+  UnixCommand::execCommand("killall xbps-install");
+}
+
+/*
  * User changed text to search in the line edit
  */
 void OutputDialog::onSearchBarTextChanged(QString strToSearch)
@@ -353,7 +361,22 @@ void OutputDialog::closeEvent(QCloseEvent *event)
   //We cannot quit while there is a running transaction!
   if(m_upgradeRunning)
   {
-    event->ignore();
+    int res = QMessageBox::question(this, StrConstants::getConfirmation(),
+                                    StrConstants::getThereIsARunningTransaction() + "\n" +
+                                    StrConstants::getDoYouReallyWantToQuit(),
+                                    QMessageBox::Yes | QMessageBox::No,
+                                    QMessageBox::No);
+    if (res == QMessageBox::Yes)
+    {
+      cancelUpgrade();
+      m_upgradeRunning = false;
+      emit finished(-1);
+      event->accept();
+    }
+    else
+    {
+      event->ignore();
+    }
   }
   else
   {
@@ -397,6 +420,7 @@ bool OutputDialog::eventFilter(QObject *, QEvent *event)
                                         QMessageBox::No);
         if (res == QMessageBox::Yes)
         {
+          cancelUpgrade();
           m_upgradeRunning = false;
           reject();
           return true;

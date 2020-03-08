@@ -4,6 +4,7 @@
   BugFix: Void Linux RSS news page was outdated.
   BugFix: Files tab now shows file list of non installed packages.
   BugFix: If there's xbps inside an upgrade, it is upgraded first.
+  BugFix: Enable user close OctoXBPS and notifier's upgrade window during a transaction.
   Added Project Trident support.
   Added Lumina desktop support.
   Added new sudo tool called "octoxbps-sudo". It's based on "lxqt-sudo" code 

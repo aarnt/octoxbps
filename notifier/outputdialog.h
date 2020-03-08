@@ -64,6 +64,8 @@ private slots:
   void onWriteOutput(const QString &output);
   void xbpsProcessFinished(int exitCode, QProcess::ExitStatus exitStatus);
 
+  void cancelUpgrade();
+
   //SearchBar slots
   void onSearchBarTextChanged(QString strToSearch);
   void onSearchBarClosed();
