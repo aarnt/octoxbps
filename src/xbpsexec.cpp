@@ -234,6 +234,13 @@ void XBPSExec::parseXBPSProcessOutput(QString output)
 
     return;
   }
+  else if (msg.contains("[*] Verifying package integrity") ||
+           msg.contains("[*] Collecting package files") ||
+           msg.contains("[*] Unpacking packages") ||
+           msg.contains("[*] Configuring unpacked packages"))
+  {
+    emit percentage(100);
+  }
 
   if (msg.indexOf(progressRun) != -1 || continueTesting)
   {
