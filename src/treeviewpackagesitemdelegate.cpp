@@ -53,7 +53,6 @@ bool TreeViewPackagesItemDelegate::helpEvent ( QHelpEvent *event, QAbstractItemV
     const PackageRepository::PackageData*const si = sim->getData(index);
     if (si != NULL)
     {
-      QPoint p;
       gPoint = tvPackages->mapToGlobal(event->pos());
       QFuture<QString> f;
       disconnect(&g_fwToolTip, SIGNAL(finished()), this, SLOT(execToolTip()));

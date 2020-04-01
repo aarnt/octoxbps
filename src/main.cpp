@@ -98,6 +98,7 @@ int main(int argc, char *argv[])
     return ( -2 );
   }
 
+  setenv("COLORTERM", "truecolor", 1);
   setenv("TERM", "xterm-256color", 1);
   MainWindow w;
   app.setActivationWindow(&w);

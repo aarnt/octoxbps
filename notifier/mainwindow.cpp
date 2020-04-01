@@ -452,6 +452,7 @@ void MainWindow::finishedPkexec(int)
 {
   if (m_debugInfo)
     qDebug() << "At finishedPkexec()...";
+
   toggleEnableInterface(true);
 
 #ifndef KSTATUS
@@ -598,9 +599,8 @@ void MainWindow::refreshAppIcon()
 
   m_outdatedStringList = Package::getOutdatedStringList();
   m_numberOfOutdatedPackages = m_outdatedStringList->count();
-  //m_numberOfOutdatedAURPackages = 0;
 
-  if (m_numberOfOutdatedPackages == 0) //&& m_numberOfOutdatedAURPackages == 0)
+  if (m_numberOfOutdatedPackages == 0)
   {
 #ifdef KSTATUS
     m_systemTrayIcon->setToolTipSubTitle("OctoXBPS Notifier");
@@ -628,30 +628,6 @@ void MainWindow::refreshAppIcon()
       #endif
     }
   }
-  /*else if (m_numberOfOutdatedAURPackages > 0)
-  {
-    if (m_numberOfOutdatedAURPackages == 1)
-    {
-      #ifdef KSTATUS
-        m_systemTrayIcon->setToolTipSubTitle(StrConstants::getOneNewUpdate() +
-                                             " (" + StrConstants::getForeignRepositoryName() + ")");
-      #else
-        m_systemTrayIcon->setToolTip(StrConstants::getOneNewUpdate() +
-                                     " (" + StrConstants::getForeignRepositoryName() + ")");
-      #endif
-    }
-    else if (m_numberOfOutdatedAURPackages > 1)
-    {
-      #ifdef KSTATUS
-        m_systemTrayIcon->setToolTipSubTitle(
-              StrConstants::getNewUpdates(m_numberOfOutdatedAURPackages) +
-              " (" + StrConstants::getForeignRepositoryName() + ")");
-      #else
-        m_systemTrayIcon->setToolTip(StrConstants::getNewUpdates(m_numberOfOutdatedAURPackages) +
-                                     " (" + StrConstants::getForeignRepositoryName() + ")");
-      #endif
-    }
-  }*/
 
   if(m_outdatedStringList->count() > 0) //RED ICON!
   {

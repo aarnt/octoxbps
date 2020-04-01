@@ -64,10 +64,7 @@ private slots:
   void runOctoXBPSSysUpgrade();
 
   inline void startOctoXBPS() {
-    //if (m_numberOfOutdatedPackages == 0)
-      runOctoXBPS(ectn_NORMAL_EXEC_OPT);
-    //else
-    //  runOctoXBPS(ectn_SYSUPGRADE_EXEC_OPT);
+    runOctoXBPS(ectn_NORMAL_EXEC_OPT);
   }
 
   void aboutOctoXBPSNotifier();
@@ -83,7 +80,6 @@ private:
   TransactionDialog *m_transactionDialog;
   OptionsDialog *m_optionsDialog;
   int m_numberOfOutdatedPackages;
-  //int m_numberOfOutdatedAURPackages;
   bool m_systemUpgradeDialog;
   CommandExecuting m_commandExecuting;
   UnixCommand *m_unixCommand;
