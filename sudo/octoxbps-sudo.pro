@@ -15,6 +15,13 @@ INCLUDEPATH += .
 # deprecated API in order to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
 
+# Disable automatic string conversions
+DEFINES += QT_USE_QSTRINGBUILDER \
+           QT_NO_CAST_FROM_ASCII \
+           QT_NO_CAST_TO_ASCII \
+           QT_NO_URL_CAST_FROM_STRING \
+           QT_NO_CAST_FROM_BYTEARRAY
+
 # You can also make your code fail to compile if you use deprecated APIs.
 # In order to do so, uncomment the following line.
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
@@ -22,18 +29,17 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 # Input
 HEADERS += passworddialog.h \
-            sudo.h \
-            ../src/argumentlist.h
+            sudo.h
 
 SOURCES += main.cpp \
             passworddialog.cpp \
-            sudo.cpp \
-            ../src/argumentlist.cpp
+            sudo.cpp
 
 FORMS += passworddialog.ui
 
-TRANSLATIONS += translations/lxqt-sudo.ts \
+TRANSLATIONS += translations/lxqt-sudo_arn.ts \
                 translations/lxqt-sudo_ar.ts \
+                translations/lxqt-sudo_ast.ts \
                 translations/lxqt-sudo_ca.ts \
                 translations/lxqt-sudo_cs.ts \
                 translations/lxqt-sudo_cy.ts \
@@ -53,11 +59,13 @@ TRANSLATIONS += translations/lxqt-sudo.ts \
                 translations/lxqt-sudo_nb_NO.ts \
                 translations/lxqt-sudo_nl.ts \
                 translations/lxqt-sudo_pl.ts \
-                translations/lxqt-sudo_pt.ts \
                 translations/lxqt-sudo_pt_BR.ts \
+                translations/lxqt-sudo_pt.ts \
                 translations/lxqt-sudo_ru.ts \
                 translations/lxqt-sudo_sk.ts \
+                translations/lxqt-sudo_sl.ts \
                 translations/lxqt-sudo_tr.ts \
+                translations/lxqt-sudo.ts \
                 translations/lxqt-sudo_uk.ts \
                 translations/lxqt-sudo_vi.ts \
                 translations/lxqt-sudo_zh_CN.ts \
