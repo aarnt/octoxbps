@@ -39,6 +39,7 @@
 #include <QTextBrowser>
 #include <QStandardItem>
 #include <QFutureWatcher>
+#include <QElapsedTimer>
 #include <QMutableListIterator>
 #include <QtConcurrent/QtConcurrentRun>
 

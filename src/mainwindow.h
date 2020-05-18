@@ -37,7 +37,7 @@ class QTreeView;
 class QStandardItemModel;
 class QStandardItem;
 class QModelIndex;
-class QTimer;
+class QElapsedTimer;
 class QLabel;
 class QComboBox;
 class QListView;
@@ -178,7 +178,7 @@ private:
   QMenu *m_menuToolButtonPacman;
 
   //This is a means for measuring the program's speed at some tasks
-  QTime *m_time;
+  QElapsedTimer *m_time;
 
   QAction *m_dummyAction;
   QAction *m_actionInstallPacmanUpdates;
