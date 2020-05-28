@@ -58,6 +58,10 @@ class SettingsManager
     static int getPackageVersionColumnWidth();
     static int getConsoleFontSize();
 
+    static QString getTerminalColorScheme();
+    static QString getTerminalFontFamily();
+    static qreal getTerminalFontPointSize();
+
     //Notifier related
     static int getSyncDbHour();
     static int getSyncDbInterval();

@@ -191,6 +191,21 @@ bool SettingsManager::getShowGroupsPanel()
   return (instance()->getSYSsettings()->value( ctn_KEY_SHOW_GROUPS_PANEL, false).toInt() == 1);
 }
 
+QString SettingsManager::getTerminalColorScheme()
+{
+  return (instance()->getSYSsettings()->value(ctn_KEY_TERMINAL_COLOR_SCHEME, QStringLiteral("WhiteOnBlack"))).toString();
+}
+
+QString SettingsManager::getTerminalFontFamily()
+{
+  return (instance()->getSYSsettings()->value(ctn_KEY_TERMINAL_FONT_FAMILY, QStringLiteral("Monospace"))).toString();
+}
+
+qreal SettingsManager::getTerminalFontPointSize()
+{
+  return (instance()->getSYSsettings()->value(ctn_KEY_TERMINAL_FONT_POINT_SIZE, 10.0)).toReal();
+}
+
 QByteArray SettingsManager::getWindowSize(){
   return (instance()->getSYSsettings()->value( ctn_KEY_WINDOW_SIZE, 0).toByteArray());
 }
