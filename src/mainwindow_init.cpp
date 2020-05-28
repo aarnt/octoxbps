@@ -72,10 +72,10 @@ void MainWindow::loadPanelSettings(){
 
   switch(panelOrganizing){
     case ectn_MAXIMIZE_PACKAGES:
-      maximizePackagesTreeView(false);
+      maximizePackagesTreeView();
       break;
     case ectn_MAXIMIZE_PROPERTIES:
-      maximizePropertiesTabWidget(false);
+      maximizePropertiesTabWidget();
       break;
     case ectn_NORMAL:
       ui->splitterHorizontal->restoreState(SettingsManager::instance()->getSplitterHorizontalState());
@@ -377,6 +377,7 @@ void MainWindow::changeTabWidgetPropertiesIndex(const int newIndex)
  */
 void MainWindow::initTabWidgetPropertiesIndex()
 {
+  connect(ui->splitterHorizontal, SIGNAL(splitterMoved(int, int)), this, SLOT(horizontalSplitterMoved(int, int)));
   ui->twProperties->setCurrentIndex(SettingsManager::getCurrentTabIndex());
 }
 
