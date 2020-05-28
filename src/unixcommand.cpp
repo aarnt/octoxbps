@@ -1035,7 +1035,7 @@ LinuxDistro UnixCommand::getLinuxDistro()
 
   if (firstTime)
   {
-    if (QFile::exists("/boot/loader.conf.local") && QFile::exists("/etc/rc.conf.d/trident.conf"))
+    if (QFile::exists("/etc/trident-login.d"))
     {
       ret = ectn_TRIDENT;
     }

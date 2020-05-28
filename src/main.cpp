@@ -38,20 +38,20 @@ int main(int argc, char *argv[])
 
   if (app.isRunning())
   {    
-    if (argList->getSwitch("-sysupgrade"))
+    if (argList->getSwitch(QStringLiteral("-sysupgrade")))
     {
-      app.sendMessage("SYSUPGRADE");
+      app.sendMessage(QStringLiteral("SYSUPGRADE"));
     }
-    else if (argList->getSwitch("-close"))
+    else if (argList->getSwitch(QStringLiteral("-close")))
     {
-      app.sendMessage("CLOSE");
+      app.sendMessage(QStringLiteral("CLOSE"));
     }
-    else if (argList->getSwitch("-hide"))
+    else if (argList->getSwitch(QStringLiteral("-hide")))
     {
-      app.sendMessage("HIDE");
+      app.sendMessage(QStringLiteral("HIDE"));
     }
     else
-      app.sendMessage("RAISE");
+      app.sendMessage(QStringLiteral("RAISE"));
 
     return 0;
   }
@@ -61,32 +61,35 @@ int main(int argc, char *argv[])
     QMessageBox::critical( 0, StrConstants::getApplicationName(), StrConstants::getErrorBinaryXNotFound(ctn_OCTOXBPS_SUDO));
     return 1;
   }
-  if(!UnixCommand::hasTheExecutable("xbps-query"))
+  if(!QFile::exists(QStringLiteral("/usr/bin/xbps-query")))
   {
-    QMessageBox::critical( 0, StrConstants::getApplicationName(), StrConstants::getErrorBinaryXNotFound("xbps-query"));
+    QMessageBox::critical( 0, StrConstants::getApplicationName(), StrConstants::getErrorBinaryXNotFound(QStringLiteral("xbps-query")));
+    return 1;
   }
-  if(!UnixCommand::hasTheExecutable("curl"))
+  if(!QFile::exists(QStringLiteral("/usr/bin/curl")))
   {
-    QMessageBox::critical( 0, StrConstants::getApplicationName(), StrConstants::getErrorBinaryXNotFound("curl"));
+    QMessageBox::critical( 0, StrConstants::getApplicationName(), StrConstants::getErrorBinaryXNotFound(QStringLiteral("curl")));
+    return 1;
   }
-  if(!UnixCommand::hasTheExecutable("sh"))
+  if(!QFile::exists(QStringLiteral("/usr/bin/sh")))
   {
-    QMessageBox::critical( 0, StrConstants::getApplicationName(), StrConstants::getErrorBinaryXNotFound("sh"));
+    QMessageBox::critical( 0, StrConstants::getApplicationName(), StrConstants::getErrorBinaryXNotFound(QStringLiteral("sh")));
+    return 1;
   }
 
   //This sends a message just to enable the socket-based QtSingleApplication engine
   app.sendMessage("RAISE");
 
   QTranslator appTranslator;
-  appTranslator.load(":/resources/translations/octoxbps_" +
+  appTranslator.load(QStringLiteral(":/resources/translations/octoxbps_") +
                      QLocale::system().name());
   app.installTranslator(&appTranslator);
 
-  if (argList->getSwitch("-help")){
+  if (argList->getSwitch(QStringLiteral("-help"))){
     std::cout << StrConstants::getApplicationCliHelp().toLatin1().data() << std::endl;
     return(0);
   }
-  else if (argList->getSwitch("-version")){
+  else if (argList->getSwitch(QStringLiteral("-version"))){
     std::cout << "\n" << StrConstants::getApplicationName().toLatin1().data() <<
                  " " << StrConstants::getApplicationVersion().toLatin1().data() << "\n" << std::endl;
     return(0);
@@ -100,15 +103,12 @@ int main(int argc, char *argv[])
 
   setenv("COLORTERM", "truecolor", 1);
   setenv("TERM", "xterm-256color", 1);
+
   MainWindow w;
   app.setActivationWindow(&w);
   app.setQuitOnLastWindowClosed(false);
 
-  /*if (argList->getSwitch("-sysupgrade-noconfirm"))
-  {
-    w.setCallSystemUpgradeNoConfirm();
-  }*/
-  if (argList->getSwitch("-sysupgrade"))
+  if (argList->getSwitch(QStringLiteral("-sysupgrade")))
   {
     w.setCallSystemUpgrade();
   }
@@ -129,7 +129,7 @@ int main(int argc, char *argv[])
 
   w.show();
 
-  QResource::registerResource("./resources.qrc");
+  QResource::registerResource(QStringLiteral("./resources.qrc"));
 
   return app.exec();
 }
