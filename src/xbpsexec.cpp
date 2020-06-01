@@ -679,8 +679,8 @@ void XBPSExec::doRemoveInTerminal(const QString &listOfPackages)
  */
 void XBPSExec::doRemoveAndInstall(const QString &listOfPackagestoRemove, const QString &listOfPackagestoInstall)
 {
-  QString command = "/usr/bin/xbps-remove -R -y " + listOfPackagestoRemove +
-      "; /usr/bin/xbps-install " + listOfPackagestoInstall;
+  QString command = UnixCommand::getShell() + " -c \"" + "/usr/bin/xbps-remove -R -y " + listOfPackagestoRemove +
+      "; /usr/bin/xbps-install -y " + listOfPackagestoInstall + "\"";
 
   m_lastCommandList.clear();
   m_lastCommandList.append("/usr/bin/xbps-remove -R " + listOfPackagestoRemove + ";");
