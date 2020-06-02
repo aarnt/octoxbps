@@ -1,4 +1,4 @@
-0.3.0-dev
+0.3.0
   BugFix: Removed all xbps-install -f (force) commands.
   BugFix: Enable '*' char in the "Search/by file" option.
   BugFix: Void Linux RSS news page was outdated.
