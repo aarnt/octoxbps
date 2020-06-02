@@ -404,6 +404,10 @@ void MainWindow::searchForPkgPackages()
  */
 void MainWindow::metaBuildPackageList()
 {
+  static bool firstime = true;
+
+  if (!firstime) m_time->start();
+
   if (isSearchByFileSelected())
     m_leFilterPackage->setRefreshValidator(ectn_FILE_VALIDATOR);
   else if (isRemoteSearchSelected())
@@ -497,6 +501,8 @@ void MainWindow::metaBuildPackageList()
                  "Time elapsed building pkgs from '" << getSelectedCategory().toLatin1().data() << " group' list: " << m_time->elapsed() << " mili seconds." << std::endl << std::endl;
   }
   */
+
+  firstime = false;
 }
 
 /*
@@ -1465,32 +1471,11 @@ void MainWindow::selectedRepositoryMenu(QAction *actionRepoSelected)
  */
 void MainWindow::lightPackageFilter()
 {
-  /*if (isAURGroupSelected())
+  if (m_leFilterPackage->text() == "")
   {
-    if (m_leFilterPackage->text() == "")
-    {
-      if (UnixCommand::getLinuxDistro() != ectn_KAOS)
-      {
-        m_packageModel->applyFilter("ççç");
-        m_leFilterPackage->initStyleSheet();
-        refreshStatusBar();
-      }
-      else
-      {
-        m_packageModel->applyFilter("");
-        reapplyPackageFilter();
-        refreshStatusBar();
-      }
-    }
-  }
-  else if (!isAURGroupSelected())*/
-  {
-    if (m_leFilterPackage->text() == "")
-    {
-      CPUIntensiveComputing cic;
-      m_packageModel->applyFilter("");
-      reapplyPackageFilter();
-      refreshStatusBar();
-    }
+    CPUIntensiveComputing cic;
+    m_packageModel->applyFilter("");
+    reapplyPackageFilter();
+    refreshStatusBar();
   }
 }
