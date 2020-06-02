@@ -269,14 +269,18 @@ void MainWindow::aboutOctoXBPSNotifier()
   QScreen *sc = QGuiApplication::primaryScreen();
   fake->setGeometry(sc->geometry());
 
-  QString aboutText = "<b>OctoXBPS Notifier - " +
-      StrConstants::getApplicationVersion() + "</b>" + " (" + StrConstants::getQtVersion() + ")<br>";
-
-  aboutText += "<a href=\"https://github.com/aarnt/octoxbps/\">https://github.com/aarnt/octoxbps</a><br>";
-  aboutText += "&copy; Alexandre Albuquerque Arnt<br><br>";
-  aboutText += "<b>" + UnixCommand::getXBPSVersion() + "</b><br>";
-  aboutText += "<a href=\"https://github.com/voidlinux/xbps/\">https://github.com/voidlinux/xbps</a><br>";
-  aboutText += "&copy; Juan Romero Pardines & Void Linux team";
+  QString aboutText =
+      QLatin1String("<b>OctoXBPS Notifier</b><br>");
+  aboutText += StrConstants::getVersion() + QLatin1String(": ") + StrConstants::getApplicationVersion() + QLatin1String(" - ") + StrConstants::getQtVersion() + QLatin1String("<br>");
+  aboutText += StrConstants::getURL() + QLatin1String(": ") +
+    QStringLiteral("<a href=\"https://github.com/aarnt/octoxbps/\">https://github.com/aarnt/octoxbps</a><br>");
+  aboutText += StrConstants::getLicenses() + QLatin1String(": ") + QStringLiteral("<a href=\"http://www.gnu.org/licenses/gpl-2.0.html\">GPL v2</a><br>");
+  aboutText += QStringLiteral("&copy; Alexandre Albuquerque Arnt<br><br>");
+  aboutText += QStringLiteral("<b>XBPS</b><br>");
+  aboutText += StrConstants::getVersion() + QLatin1String(": ") + UnixCommand::getXBPSVersion() + QStringLiteral("<br>");
+  aboutText += StrConstants::getURL() + QLatin1String(": ") +
+    QStringLiteral("<a href=\"https://github.com/void-linux/xbps/\">https://github.com/void-linux/xbps</a><br>");
+  aboutText += QStringLiteral("&copy; Juan Romero Pardines & Void Linux team");
 
   QMessageBox::about(fake, StrConstants::getHelpAbout(), aboutText);
 

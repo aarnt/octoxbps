@@ -28,7 +28,7 @@ QString StrConstants::getApplicationName(){
 }
 
 QString StrConstants::getApplicationVersion(){
-  return "0.3.0-dev";
+  return "0.3.0";
 }
 
 QString StrConstants::getQtVersion(){
@@ -39,7 +39,6 @@ QString StrConstants::getApplicationCliHelp(){
   QString str =
       "\n" + QObject::tr("OctoXBPS usage help:") + "\n\n" +
       "-version: " + QObject::tr("show application version."); /*+ "\n" +
-        "-style <Qt4-style>: " + QObject::tr("use a different Qt4 style (ex: -style gtk).") + "\n" +
         //"-removecmd <Remove-command>: " + QObject::tr("use a different remove command (ex: -removecmd R).") + "\n" +
         "-sysupgrade: " + QObject::tr("force a system upgrade at startup.") + "\n";*/
 
