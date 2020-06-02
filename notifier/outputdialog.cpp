@@ -318,7 +318,7 @@ void OutputDialog::xbpsProcessFinished(int exitCode, QProcess::ExitStatus exitSt
  */
 void OutputDialog::cancelUpgrade()
 {
-  UnixCommand::execCommand("killall xbps-install");
+  UnixCommand::execCommand("killall octoxbps-sudo");
 }
 
 /*

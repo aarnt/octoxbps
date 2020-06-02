@@ -404,8 +404,6 @@ void MainWindow::searchForPkgPackages()
  */
 void MainWindow::metaBuildPackageList()
 {
-  m_time->start();
-
   if (isSearchByFileSelected())
     m_leFilterPackage->setRefreshValidator(ectn_FILE_VALIDATOR);
   else if (isRemoteSearchSelected())

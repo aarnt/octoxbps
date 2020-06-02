@@ -79,6 +79,7 @@ MainWindow::MainWindow(QWidget *parent) :
   //Here we try to speed up first pkg list build!
   //m_time->start();
 
+  m_time->start();
   retrieveUnrequiredPackageList();
   ui->setupUi(this);
   setAcceptDrops(true);
@@ -148,6 +149,10 @@ void MainWindow::dragEnterEvent(QDragEnterEvent *ev)
  */
 void MainWindow::show()
 {
+  if(m_debugInfo)
+    std::cout << m_packageModel->getPackageCount() << " pkgs => " <<
+               "Time elapsed at begining of show(): " << m_time->elapsed() << " mili seconds." << std::endl << std::endl;
+
   if(m_initializationCompleted == false)
   {
     restoreGeometry(SettingsManager::getWindowSize());
