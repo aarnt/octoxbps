@@ -382,7 +382,7 @@ bool MainWindow::isPackageInRemoveTransaction(const QString &pkgName)
 /*
  * Inserts all optional deps of the current select package into the Transaction Treeview
  */
-void MainWindow::insertIntoInstallPackageOptDeps(const QString &packageName)
+/*void MainWindow::insertIntoInstallPackageOptDeps(const QString &packageName)
 {
   CPUIntensiveComputing *cic = new CPUIntensiveComputing;
 
@@ -436,14 +436,14 @@ void MainWindow::insertIntoInstallPackageOptDeps(const QString &packageName)
   {
     delete cic;
   }
-}
+}*/
 
 /*
  * Inserts all remove dependencies of the current select package into the Transaction Treeview
  * Returns TRUE if the user click OK or ENTER and number of selected packages > 0.
  * Returns FALSE otherwise.
  */
-bool MainWindow::insertIntoRemovePackageDeps(const QStringList &dependencies)
+/*bool MainWindow::insertIntoRemovePackageDeps(const QStringList &dependencies)
 {
   QList<const PackageRepository::PackageData*> newDeps;
   foreach(QString dep, dependencies)
@@ -495,7 +495,7 @@ bool MainWindow::insertIntoRemovePackageDeps(const QStringList &dependencies)
     return (res == QMessageBox::Ok && selectedPackages.count() >= 0);
   }
   else return true;
-}
+}*/
 
 /*
  * Inserts the current selected group for removal into the Transaction Treeview

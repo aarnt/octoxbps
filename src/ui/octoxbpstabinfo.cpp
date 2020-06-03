@@ -18,7 +18,7 @@
 *
 */
 
-#include "octopitabinfo.h"
+#include "octoxbpstabinfo.h"
 #include "src/strconstants.h"
 #include "src/package.h"
 
@@ -28,22 +28,22 @@
 #include <QLocale>
 
 /*
- * The OctopiTabInfo class provides functionality for the Tab "Info"
+ * The OctoXBPSTabInfo class provides functionality for the Tab "Info"
  */
 
 /**
  * @brief OctopiTabInfo::anchorBegin for navigation
  */
-const QString OctopiTabInfo::anchorBegin("anchorBegin");
+const QString OctoXBPSTabInfo::anchorBegin("anchorBegin");
 
-OctopiTabInfo::OctopiTabInfo()
+OctoXBPSTabInfo::OctoXBPSTabInfo()
 {
 }
 
 /**
  * This function has been extracted from src/mainwindow_refresh.cpp void MainWindow::refreshTabInfo(QString pkgName)
  */
-QString OctopiTabInfo::formatTabInfo(const PackageRepository::PackageData& package,
+QString OctoXBPSTabInfo::formatTabInfo(const PackageRepository::PackageData& package,
                                      const QMap<QString, OutdatedPackageInfo>& outdatedPkgList)
 {
   PackageInfoData pid = Package::getInformation(package.name);

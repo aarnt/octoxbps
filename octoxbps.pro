@@ -7,7 +7,7 @@
 QT += core gui network xml widgets
 DEFINES += OCTOXBPS_EXTENSIONS UNIFIED_SEARCH
 CONFIG += qt warn_on debug
-QMAKE_CXXFLAGS += -std=c++11
+QMAKE_CXXFLAGS += -std=c++17
 TEMPLATE = app
 DESTDIR += bin
 OBJECTS_DIR += build
@@ -22,6 +22,7 @@ HEADERS += src/QtSolutions/qtsingleapplication.h \
         src/searchlineedit.h \
         src/argumentlist.h \
         src/settingsmanager.h \
+        src/ui/octoxbpstabinfo.h \
         src/uihelper.h \
         src/package.h \
         src/packagetreeview.h \
@@ -31,10 +32,8 @@ HEADERS += src/QtSolutions/qtsingleapplication.h \
         src/searchbar.h \
         src/transactiondialog.h \
         src/globals.h \
-        src/multiselectiondialog.h \
         src/packagerepository.h \
         src/model/packagemodel.h \
-        src/ui/octopitabinfo.h \
         src/utils.h \
         src/terminal.h \
         src/constants.h \
@@ -51,6 +50,7 @@ SOURCES += src/QtSolutions/qtsingleapplication.cpp \
         src/settingsmanager.cpp \
         src/package.cpp \
         src/packagetreeview.cpp \
+        src/ui/octoxbpstabinfo.cpp \
         src/unixcommand.cpp \
         src/wmhelper.cpp \
         src/treeviewpackagesitemdelegate.cpp \
@@ -64,18 +64,15 @@ SOURCES += src/QtSolutions/qtsingleapplication.cpp \
         src/mainwindow_news.cpp \
         src/mainwindow_refresh.cpp \
         src/globals.cpp \
-        src/multiselectiondialog.cpp \
         src/packagerepository.cpp \
         src/model/packagemodel.cpp \
-        src/ui/octopitabinfo.cpp \
         src/utils.cpp \
         src/terminal.cpp \
         src/xbpsexec.cpp \
         src/termwidget.cpp
 
 FORMS   += ui/mainwindow.ui \
-        ui/transactiondialog.ui \
-        ui/multiselectiondialog.ui
+        ui/transactiondialog.ui
 
 RESOURCES += resources.qrc
 

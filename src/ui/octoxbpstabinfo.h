@@ -18,8 +18,8 @@
 *
 */
 
-#ifndef OCTOPITABINFO_H
-#define OCTOPITABINFO_H
+#ifndef OCTOXBPSTABINFO_H
+#define OCTOXBPSTABINFO_H
 
 #include "src/packagerepository.h"
 #include "src/package.h"
@@ -44,10 +44,10 @@
  * Build    1.1.2000
  */
 
-class OctopiTabInfo
+class OctoXBPSTabInfo
 {
 public:
-  OctopiTabInfo();
+  OctoXBPSTabInfo();
   
   /**
    * @brief formats TabInfo as HTML
@@ -62,4 +62,4 @@ public:
   static const QString anchorBegin;
 };
 
-#endif // OCTOPITABINFO_H
+#endif // OCTOXBPSTABINFO_H

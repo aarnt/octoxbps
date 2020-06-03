@@ -401,8 +401,8 @@ private slots:
 
   void insertIntoRemovePackage();
   void insertIntoInstallPackage();
-  void insertIntoInstallPackageOptDeps(const QString &packageName);
-  bool insertIntoRemovePackageDeps(const QStringList &dependencies);
+  //void insertIntoInstallPackageOptDeps(const QString &packageName);
+  //bool insertIntoRemovePackageDeps(const QStringList &dependencies);
   void insertGroupIntoRemovePackage();
   void insertGroupIntoInstallPackage();
   void hideGroupsWidget(bool pSaveSettings = true);

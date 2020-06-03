@@ -28,21 +28,6 @@
  * Global functions related to OctoPkg's multithread code
  */
 
-QFutureWatcher<QString> g_fwToolTip;
-QFutureWatcher<QString> g_fwToolTipInfo;
-QFutureWatcher<QList<PackageListData> *> g_fwPacman;
-QFutureWatcher<QList<PackageListData> *> g_fwForeignPacman;
-QFutureWatcher<GroupMemberPair>          g_fwPacmanGroup;
-QFutureWatcher<QList<PackageListData> *> g_fwRemote;
-QFutureWatcher<QList<PackageListData> *> g_fwRemoteMeta;
-QFutureWatcher<AUROutdatedPackages *> g_fwOutdatedAURPackages;
-QFutureWatcher<QString> g_fwDistroNews;
-QFutureWatcher<QString> g_fwPackageOwnsFile;
-QFutureWatcher<QMap<QString, OutdatedPackageInfo> *> g_fwOutdatedList;
-QFutureWatcher<QList<PackageListData> *> g_fwMarkForeignPackages;
-QFutureWatcher<QSet<QString> *> g_fwUnrequiredPacman;
-QFutureWatcher<TransactionInfo> g_fwTargetUpgradeList;
-
 /*
  * Given a packageName, returns its description
  */
@@ -82,14 +67,6 @@ QList<PackageListData> * searchPkgPackages()
 {
   return Package::getPackageList("");
 }
-
-/*
- * Starts the non blocking search for Pacman Foreign packages...
- */
-/*QList<PackageListData> * searchForeignPackages()
-{
-  return Package::getForeignPackageList();
-}*/
 
 /*
  * Starts the non blocking search for Unrequired Pacman packages...

@@ -30,7 +30,7 @@
 #include "globals.h"
 #include <iostream>
 #include <cassert>
-#include "src/ui/octopitabinfo.h"
+#include "src/ui/octoxbpstabinfo.h"
 
 #include <QTimer>
 #include <QLabel>
@@ -1066,8 +1066,8 @@ void MainWindow::refreshTabInfo(QString pkgName)
   if (text)
   {
     text->clear();    
-    text->setHtml(OctopiTabInfo::formatTabInfo(*package, *m_outdatedList));
-    text->scrollToAnchor(OctopiTabInfo::anchorBegin);
+    text->setHtml(OctoXBPSTabInfo::formatTabInfo(*package, *m_outdatedList));
+    text->scrollToAnchor(OctoXBPSTabInfo::anchorBegin);
 
     //We have to clear the cached Info contents...
     m_cachedPackageInInfo = "";
@@ -1124,8 +1124,8 @@ void MainWindow::refreshTabInfo(bool clearContents, bool neverQuit)
   if (text)
   {
     text->clear();
-    text->setHtml(OctopiTabInfo::formatTabInfo(*package, *m_outdatedList));
-    text->scrollToAnchor(OctopiTabInfo::anchorBegin);
+    text->setHtml(OctoXBPSTabInfo::formatTabInfo(*package, *m_outdatedList));
+    text->scrollToAnchor(OctoXBPSTabInfo::anchorBegin);
   }
 
   m_cachedPackageInInfo = package->repository+"#"+package->name+"#"+package->version;

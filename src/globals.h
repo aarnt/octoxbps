@@ -35,19 +35,18 @@ struct AUROutdatedPackages
 
 typedef std::pair<QString, QStringList*> GroupMemberPair;
 
-extern QFutureWatcher<QString> g_fwToolTip;
-extern QFutureWatcher<QString> g_fwToolTipInfo;
-extern QFutureWatcher<QList<PackageListData> *> g_fwPacman;
-extern QFutureWatcher<QList<PackageListData> *> g_fwForeignPacman;
-extern QFutureWatcher<QSet<QString> *> g_fwUnrequiredPacman;
-extern QFutureWatcher<GroupMemberPair>          g_fwPacmanGroup;
-extern QFutureWatcher<QList<PackageListData> *> g_fwRemote;
-extern QFutureWatcher<QList<PackageListData> *> g_fwRemoteMeta;
-//extern QFutureWatcher<QList<PackageListData> *> g_fwMarkForeignPackages;
-extern QFutureWatcher<QMap<QString, OutdatedPackageInfo> *> g_fwOutdatedList;
-extern QFutureWatcher<QString> g_fwDistroNews;
-extern QFutureWatcher<QString> g_fwPackageOwnsFile;
-extern QFutureWatcher<TransactionInfo> g_fwTargetUpgradeList;
+inline QFutureWatcher<QString> g_fwToolTip;
+inline QFutureWatcher<QString> g_fwToolTipInfo;
+inline QFutureWatcher<QList<PackageListData> *> g_fwPacman;
+inline QFutureWatcher<QList<PackageListData> *> g_fwForeignPacman;
+inline QFutureWatcher<QSet<QString> *> g_fwUnrequiredPacman;
+inline QFutureWatcher<GroupMemberPair>          g_fwPacmanGroup;
+inline QFutureWatcher<QList<PackageListData> *> g_fwRemote;
+inline QFutureWatcher<QList<PackageListData> *> g_fwRemoteMeta;
+inline QFutureWatcher<QMap<QString, OutdatedPackageInfo> *> g_fwOutdatedList;
+inline QFutureWatcher<QString> g_fwDistroNews;
+inline QFutureWatcher<QString> g_fwPackageOwnsFile;
+inline QFutureWatcher<TransactionInfo> g_fwTargetUpgradeList;
 
 QString showPackageInformation(QString pkgName);
 TransactionInfo getTargetUpgradeList(const QString &pkgName);
