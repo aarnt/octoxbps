@@ -173,7 +173,6 @@ void PackageRepository::checkAndSetMembersOfGroup(const QString& groupName, cons
         }
       }
       std::for_each(m_dependingModels.begin(), m_dependingModels.end(), EndResetModel());
-
     }
   }
   else {
@@ -184,10 +183,15 @@ void PackageRepository::checkAndSetMembersOfGroup(const QString& groupName, cons
 
 void PackageRepository::markOutdatedPackages(const QStringList &outdatedStringList)
 {
+  std::for_each(m_dependingModels.begin(), m_dependingModels.end(), BeginResetModel());
+
   for (TListOfPackages::iterator it = m_listOfPackages.begin(); it != m_listOfPackages.end(); ++it)
   {
     if (outdatedStringList.contains((*it)->name)) (*it)->status = ectn_OUTDATED;
   }
+
+  std::sort(m_listOfPackages.begin(), m_listOfPackages.end(), TSort());
+  std::for_each(m_dependingModels.begin(), m_dependingModels.end(), EndResetModel());
 }
 
 const PackageRepository::TListOfPackages& PackageRepository::getPackageList() const

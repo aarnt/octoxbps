@@ -66,65 +66,6 @@ void MainWindow::refreshAppIcon()
 }
 
 /*
- * Reconfigure Tools menu according available tools in the system
- */
-/*void MainWindow::refreshMenuTools()
-{
-  static bool connectorPlv=false;
-  int availableTools=0;
-
-  if(UnixCommand::hasTheExecutable("plv"))
-  {
-    availableTools++;
-    ui->menuTools->menuAction()->setVisible(true);
-    ui->actionPacmanLogViewer->setVisible(true);
-    ui->actionPacmanLogViewer->setIcon(QIcon::fromTheme("plv"));
-
-    if (!connectorPlv)
-    {
-      connect(ui->actionPacmanLogViewer, SIGNAL(triggered()), this, SLOT(launchPLV()));
-      connectorPlv=true;
-    }
-  }
-  else
-    ui->actionPacmanLogViewer->setVisible(false);
-
-  foreach (QAction * act,  ui->menuBar->actions())
-  {
-    QString text = act->text();
-    text = text.remove("&");
-    act->setText(qApp->translate("MainWindow", text.toUtf8(), 0));
-  }
-}*/
-
-/*
- * Inserts the group names into the Groups treeView
- */
-void MainWindow::refreshGroupsWidget()
-{
-  /*
-  disconnect(ui->twGroups, SIGNAL(itemSelectionChanged()), this, SLOT(groupItemSelected()));
-
-  QList<QTreeWidgetItem *> items;
-  ui->twGroups->clear();
-
-  items.append(new QTreeWidgetItem((QTreeWidget*)0, QStringList("<" + StrConstants::getDisplayAllCategories() + ">")));
-  m_AllGroupsItem = items.at(0);
-  const QStringList*const packageGroups = Package::getPackageGroups();
-  foreach(QString group, *packageGroups)
-  {
-    items.append(new QTreeWidgetItem((QTreeWidget*)0, QStringList(group)));
-  }
-  m_packageRepo.checkAndSetGroups(*packageGroups); // update Package Repository as well
-  delete packageGroups;
-
-  ui->twGroups->insertTopLevelItems(0, items);
-  ui->twGroups->setCurrentItem(items.at(0));
-  connect(ui->twGroups, SIGNAL(itemSelectionChanged()), this, SLOT(groupItemSelected()));
-  */
-}
-
-/*
  * User clicked AUR tool button in the toolbar
  */
 void MainWindow::remoteSearchClicked()
@@ -244,7 +185,7 @@ void MainWindow::positionInPkgListSearchByFile()
 /*
  * Populates the list of available packages from the given groupName
  */
-void MainWindow::buildPackagesFromGroupList(const QString group)
+/*void MainWindow::buildPackagesFromGroupList(const QString group)
 {
   CPUIntensiveComputing cic;
   const QList<QString>*const list = m_listOfPackagesFromGroup.get();
@@ -292,26 +233,10 @@ void MainWindow::buildPackagesFromGroupList(const QString group)
   refreshTabFiles();
   ui->tvPackages->setFocus();
 
-  refreshToolBar();
+  //refreshToolBar();
   refreshStatusBarToolButtons();
 
   tvPackagesSelectionChanged(QItemSelection(),QItemSelection());
-}
-
-/*
- * Executes QFuture to retrive Outdated AUR list of packages
- */
-/*void MainWindow::retrieveForeignPackageList()
-{
-  QEventLoop el;
-  QFuture<QList<PackageListData> *> f;
-  f = QtConcurrent::run(searchForeignPackages);
-  connect(&g_fwForeignPacman, SIGNAL(finished()), this, SLOT(preBuildForeignPackageList()));
-  connect(&g_fwForeignPacman, SIGNAL(finished()), &el, SLOT(quit()));
-  g_fwForeignPacman.setFuture(f);
-  el.exec();
-
-  assert(m_foreignPackageList != NULL);
 }*/
 
 /*
@@ -328,17 +253,6 @@ void MainWindow::retrieveUnrequiredPackageList()
   el.exec();
   assert(m_unrequiredPackageList != NULL);
 }
-
-/*
- * Helper method to assign QFuture for list of outdated packages
- */
-/*void MainWindow::preBuildForeignPackageList()
-{
-  m_foreignPackageList = g_fwForeignPacman.result();
-
-  if(m_debugInfo)
-    std::cout << "Time elapsed obtaining Foreign pkgs from 'ALL group' list: " << m_time->elapsed() << " mili seconds." << std::endl << std::endl;
-}*/
 
 /*
  * Helper method to assign QFuture for Unrequired Pacman list of packages
@@ -373,21 +287,6 @@ void MainWindow::preBuildPackageList()
 }
 
 /*
- * Helper method to deal with the QFutureWatcher result before calling
- * Pacman packages from group list building method
- */
-/*void MainWindow::preBuildPackagesFromGroupList()
-{
-  GroupMemberPair result = g_fwPacmanGroup.result();
-  m_listOfPackagesFromGroup.reset(result.second);
-  buildPackagesFromGroupList(result.first);
-
-  toggleSystemActions(true);
-
-  emit buildPackagesFromGroupListDone();
-}*/
-
-/*
  * Slot to fire the search for all installed packages
  */
 void MainWindow::searchForPkgPackages()
@@ -416,92 +315,34 @@ void MainWindow::metaBuildPackageList()
     m_leFilterPackage->setRefreshValidator(ectn_DEFAULT_VALIDATOR);
 
   ui->tvPackages->setSelectionMode(QAbstractItemView::ExtendedSelection);
+  ui->actionSearchByFile->setEnabled(true);
+  ui->actionSearchByName->setChecked(true);
 
-  //if (ui->twGroups->topLevelItemCount() == 0 || isAllCategoriesSelected())
-  /*if (m_actionSwitchToRemoteSearch->isChecked())
-  {
-    ui->actionSearchByFile->setEnabled(false);
-    disconnect(m_leFilterPackage, SIGNAL(textChanged(QString)), this, SLOT(reapplyPackageFilter()));
-    clearStatusBar();
+  //toggleSystemActions(false);
+  disconnect(m_leFilterPackage, SIGNAL(textChanged(QString)), this, SLOT(reapplyPackageFilter()));
 
-    m_cic = new CPUIntensiveComputing();
-
-    if(!m_leFilterPackage->text().isEmpty())
-    {
-      m_toolButtonPacman->hide();
-      disconnect(&g_fwRemoteMeta, SIGNAL(finished()), this, SLOT(preBuildRemotePackageListMeta()));
-
-      QFuture<QList<PackageListData> *> f;
-      f = QtConcurrent::run(searchRemotePackages, m_leFilterPackage->text());
-      connect(&g_fwRemoteMeta, SIGNAL(finished()), this, SLOT(preBuildRemotePackageListMeta()));
-      g_fwRemoteMeta.setFuture(f);
-    }
-    else
-    {
-      m_listOfRemotePackages = new QList<PackageListData>();
-      buildRemotePackageList();
-      delete m_cic;
-      m_cic = 0;
-      m_leFilterPackage->setFocus();
-    }
-  }
-  else*/
-  {
-    ui->actionSearchByFile->setEnabled(true);
-    ui->actionSearchByName->setChecked(true);
-
-    //toggleSystemActions(false);
-    disconnect(m_leFilterPackage, SIGNAL(textChanged(QString)), this, SLOT(reapplyPackageFilter()));
-
-    if (ui->actionUseInstantSearch->isChecked())
-      connect(m_leFilterPackage, SIGNAL(textChanged(QString)), this, SLOT(reapplyPackageFilter()));
-
-    //reapplyPackageFilter();
-    disconnect(&g_fwXBPS, SIGNAL(finished()), this, SLOT(preBuildPackageList()));
-
-    if (m_refreshPackageLists)
-    {
-      QFuture<QMap<QString, OutdatedPackageInfo> *> f;
-      f = QtConcurrent::run(getOutdatedList);
-      disconnect(&g_fwOutdatedList, SIGNAL(finished()), this, SLOT(searchForPkgPackages()));
-      connect(&g_fwOutdatedList, SIGNAL(finished()), this, SLOT(searchForPkgPackages()));
-      g_fwOutdatedList.setFuture(f);
-    }
-    else
-    {
-      searchForPkgPackages();
-    }
-
-    if(m_debugInfo)
-      std::cout << m_packageModel->getPackageCount() << " pkgs => " <<
-                 "Time elapsed building pkgs from 'ALL group' list: " << m_time->elapsed() << " mili seconds." << std::endl << std::endl;
-  }
-  /*
-  else //pkg category clicked!
-  {
-    ui->actionSearchByFile->setEnabled(false);
-    toggleSystemActions(false);
-    disconnect(m_leFilterPackage, SIGNAL(textChanged(QString)), this, SLOT(reapplyPackageFilter()));
+  if (ui->actionUseInstantSearch->isChecked())
     connect(m_leFilterPackage, SIGNAL(textChanged(QString)), this, SLOT(reapplyPackageFilter()));
-    reapplyPackageFilter();
-    disconnect(&g_fwPacmanGroup, SIGNAL(finished()), this, SLOT(preBuildPackagesFromGroupList()));
 
-    QEventLoop el;
-    QFuture<GroupMemberPair> f;
-    f = QtConcurrent::run(searchPacmanPackagesFromGroup, getSelectedCategory());
-    connect(&g_fwPacmanGroup, SIGNAL(finished()), this, SLOT(preBuildPackagesFromGroupList()));
-    disconnect(this, SIGNAL(buildPackagesFromGroupListDone()), &el, SLOT(quit()));
-    connect(this, SIGNAL(buildPackagesFromGroupListDone()), &el, SLOT(quit()));
+  //reapplyPackageFilter();
+  disconnect(&g_fwXBPS, SIGNAL(finished()), this, SLOT(preBuildPackageList()));
 
-    g_fwPacmanGroup.setFuture(f);
-    el.exec();
-
-    if(m_debugInfo)
-      std::cout << m_packageModel->getPackageCount() << " pkgs => " <<
-                 "Time elapsed building pkgs from '" << getSelectedCategory().toLatin1().data() << " group' list: " << m_time->elapsed() << " mili seconds." << std::endl << std::endl;
+  if (m_refreshPackageLists)
+  {
+    QFuture<QMap<QString, OutdatedPackageInfo> *> f;
+    f = QtConcurrent::run(getOutdatedList);
+    disconnect(&g_fwOutdatedList, SIGNAL(finished()), this, SLOT(searchForPkgPackages()));
+    connect(&g_fwOutdatedList, SIGNAL(finished()), this, SLOT(searchForPkgPackages()));
+    g_fwOutdatedList.setFuture(f);
   }
-  */
+  else
+  {
+    searchForPkgPackages();
+  }
 
+  if(m_debugInfo)
+    std::cout << m_packageModel->getPackageCount() << " pkgs => " <<
+                 "Time elapsed building pkgs from 'ALL group' list: " << m_time->elapsed() << " mili seconds." << std::endl << std::endl;
   firstime = false;
 }
 
@@ -661,7 +502,7 @@ void MainWindow::buildRemotePackageList()
 
   //ui->tvPackages->setColumnHidden(PackageModel::ctn_PACKAGE_REPOSITORY_COLUMN, true);
 
-  refreshToolBar();
+  //refreshToolBar();
   refreshStatusBarToolButtons();
 
   //If we found no packages, let's make another search, this time 'by name'...
@@ -860,56 +701,12 @@ void MainWindow::buildPackageList()
   }
 
   ui->tvPackages->setColumnWidth(PackageModel::ctn_PACKAGE_SIZE_COLUMN, 10);
-  refreshToolBar();
+  //refreshToolBar();
   refreshStatusBarToolButtons();
   m_refreshPackageLists = true;  
 
   emit buildPackageListDone();
 }
-
-/*
- * Repopulates the list of available packages (installed [+ non-installed])
- */
-/*void MainWindow::refreshPackageList()
-{
-  CPUIntensiveComputing cic;
-  const std::unique_ptr<const QSet<QString> > unrequiredPackageList(Package::getUnrequiredPackageList());
-  QList<PackageListData> *list = Package::getPackageList();
-
-  // Fetch foreign package list
-  std::unique_ptr<QList<PackageListData> > listForeign(Package::getForeignPackageList());
-  PackageListData pld;
-  QList<PackageListData>::const_iterator itForeign = listForeign->begin();
-
-  if (!isSearchByFileSelected())
-  {
-    while (itForeign != listForeign->end())
-    {
-      if (!m_hasAURTool || !m_outdatedAURStringList->contains(itForeign->name))
-      {
-        pld = PackageListData(
-              itForeign->name, itForeign->repository, itForeign->version,
-              itForeign->name + " " + Package::getInformationDescription(itForeign->name, true),
-              ectn_FOREIGN);
-      }
-      else
-      {
-        pld = PackageListData(
-              itForeign->name, itForeign->repository, itForeign->version,
-              itForeign->name + " " + Package::getInformationDescription(itForeign->name, true),
-              ectn_FOREIGN_OUTDATED);
-      }
-
-      list->append(pld);
-      ++itForeign;
-    }
-  }
-
-  m_packageRepo.setData(list, *unrequiredPackageList);
-  delete list;
-  list = NULL;
-}
-*/
 
 /*
  * Whenever horizontal splitter handler is moved
@@ -931,41 +728,6 @@ void MainWindow::horizontalSplitterMoved(int pos, int index)
     ui->twProperties->tabBar()->show();
     //ui->mainToolBar->show();
   }
-}
-
-/*
- * Refreshes toolbar in order to insert/remove AUR tool button
- */
-void MainWindow::refreshToolBar()
-{
-  /*m_hasAURTool =
-      UnixCommand::hasTheExecutable(StrConstants::getForeignRepositoryToolName()) && !UnixCommand::isRootRunning();
-
-  if (m_hasAURTool)
-  {
-    if (!ui->mainToolBar->actions().contains(m_actionSwitchToPkgSearch))
-    {
-      ui->mainToolBar->insertAction(m_dummyAction, m_actionSwitchToPkgSearch);
-      m_separatorForActionPkgSearch = ui->mainToolBar->insertSeparator(m_actionSwitchToPkgSearch);
-    }
-  }
-  else
-  {
-    if (ui->mainToolBar->actions().contains(m_actionSwitchToPkgSearch))
-    {
-      bool wasChecked = (m_actionSwitchToPkgSearch->isChecked());
-
-      ui->mainToolBar->removeAction(m_actionSwitchToPkgSearch);
-      ui->mainToolBar->removeAction(m_separatorForActionPkgSearch);
-
-      if (wasChecked)
-      {
-        m_actionSwitchToPkgSearch->setChecked(false);
-        ui->twGroups->setEnabled(true);
-        groupItemSelected();
-      }
-    }
-  }*/
 }
 
 /*

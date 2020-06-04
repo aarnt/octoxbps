@@ -114,6 +114,7 @@ void MainWindow::getOutdatedPackageListThreaded()
 
 void MainWindow::deferredInitAppIcon()
 {
+  disconnect(&g_fwOutdatedList, SIGNAL(finished()), this, SLOT(deferredInitAppIcon()));
   m_outdatedList = g_fwOutdatedList.result();
 
   for(QString k: m_outdatedList->keys())
@@ -216,10 +217,10 @@ void MainWindow::show()
     initTabWidgetPropertiesIndex();
     refreshDistroNews(false);
 
-    if (Package::hasXBPSDatabase())
+    /*if (Package::hasXBPSDatabase())
     {
       refreshGroupsWidget();
-    }
+    }*/
 
     QMainWindow::show();
 

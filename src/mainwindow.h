@@ -295,7 +295,7 @@ private:
   void showDistroNews(QString distroRSSXML, bool searchForLatestNews = true);
   void initTabNews();
   void initTabHelpUsage();
-  void refreshToolBar();
+  //void refreshToolBar();
   void refreshStatusBarToolButtons();
 
   void getOutdatedPackageListThreaded();
@@ -337,7 +337,7 @@ private slots:
   void tvTransactionRowsInserted(const QModelIndex& parent, int, int);
   void tvTransactionRowsRemoved(const QModelIndex& parent, int, int);
 
-  void buildPackagesFromGroupList(const QString group);
+  //void buildPackagesFromGroupList(const QString group);
   void buildPackageList();
   void horizontalSplitterMoved(int pos, int index);
   void buildRemotePackageList();
