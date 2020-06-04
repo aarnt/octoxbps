@@ -79,6 +79,8 @@ MainWindow::MainWindow(QWidget *parent) :
   //Here we try to speed up first pkg list build!
   //m_time->start();
 
+  getOutdatedPackageListThreaded();
+
   m_time->start();
   retrieveUnrequiredPackageList();
   ui->setupUi(this);
@@ -96,6 +98,37 @@ MainWindow::~MainWindow()
   //Let's garbage collect transaction files...
   m_unixCommand->removeTemporaryFiles();
   delete ui;
+}
+
+/*
+ * Retrieves outdated pkg list on another thread
+ */
+void MainWindow::getOutdatedPackageListThreaded()
+{
+  QFuture<QMap<QString, OutdatedPackageInfo> *> f;
+  f = QtConcurrent::run(getOutdatedList);
+  disconnect(&g_fwOutdatedList, SIGNAL(finished()), this, SLOT(searchForPkgPackages()));
+  connect(&g_fwOutdatedList, SIGNAL(finished()), this, SLOT(deferredInitAppIcon()));
+  g_fwOutdatedList.setFuture(f);
+}
+
+void MainWindow::deferredInitAppIcon()
+{
+  m_outdatedList = g_fwOutdatedList.result();
+
+  for(QString k: m_outdatedList->keys())
+  {
+    m_outdatedStringList->append(k);
+  }
+
+  m_numberOfOutdatedPackages = m_outdatedStringList->count();
+  refreshAppIcon();
+  refreshStatusBar();
+
+  if (m_numberOfOutdatedPackages > 0)
+  {
+    m_packageRepo.markOutdatedPackages(*m_outdatedStringList);
+  }
 }
 
 /*
@@ -176,7 +209,7 @@ void MainWindow::show()
     loadPanelSettings();
     initStatusBar();
     initToolButtonPacman();
-    initAppIcon();
+    //initAppIcon();
     initMenuBar();
     initToolBar();
     initTabTerminal();

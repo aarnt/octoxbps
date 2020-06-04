@@ -182,6 +182,14 @@ void PackageRepository::checkAndSetMembersOfGroup(const QString& groupName, cons
   }
 }
 
+void PackageRepository::markOutdatedPackages(const QStringList &outdatedStringList)
+{
+  for (TListOfPackages::iterator it = m_listOfPackages.begin(); it != m_listOfPackages.end(); ++it)
+  {
+    if (outdatedStringList.contains((*it)->name)) (*it)->status = ectn_OUTDATED;
+  }
+}
+
 const PackageRepository::TListOfPackages& PackageRepository::getPackageList() const
 {
   return m_listOfPackages;

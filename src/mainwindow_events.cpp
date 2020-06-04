@@ -150,7 +150,7 @@ void MainWindow::keyPressEvent(QKeyEvent* ke)
       QFuture<QString> f;
       disconnect(&g_fwPackageOwnsFile, SIGNAL(finished()), this, SLOT(positionInPkgListSearchByFile()));
       m_cic = new CPUIntensiveComputing();
-      f = QtConcurrent::run(searchPacmanPackagesByFile, m_leFilterPackage->text());
+      f = QtConcurrent::run(searchXBPSPackagesByFile, m_leFilterPackage->text());
       g_fwPackageOwnsFile.setFuture(f);
       connect(&g_fwPackageOwnsFile, SIGNAL(finished()), this, SLOT(positionInPkgListSearchByFile()));
     }

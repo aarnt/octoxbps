@@ -321,10 +321,10 @@ void MainWindow::retrieveUnrequiredPackageList()
 {
   QEventLoop el;
   QFuture<QSet<QString> *> f;
-  f = QtConcurrent::run(searchUnrequiredPacmanPackages);
-  connect(&g_fwUnrequiredPacman, SIGNAL(finished()), this, SLOT(preBuildUnrequiredPackageList()));
-  connect(&g_fwUnrequiredPacman, SIGNAL(finished()), &el, SLOT(quit()));
-  g_fwUnrequiredPacman.setFuture(f);
+  f = QtConcurrent::run(searchUnrequiredXBPSPackages);
+  connect(&g_fwUnrequiredXBPS, SIGNAL(finished()), this, SLOT(preBuildUnrequiredPackageList()));
+  connect(&g_fwUnrequiredXBPS, SIGNAL(finished()), &el, SLOT(quit()));
+  g_fwUnrequiredXBPS.setFuture(f);
   el.exec();
   assert(m_unrequiredPackageList != NULL);
 }
@@ -345,7 +345,7 @@ void MainWindow::retrieveUnrequiredPackageList()
  */
 void MainWindow::preBuildUnrequiredPackageList()
 {
-  m_unrequiredPackageList = g_fwUnrequiredPacman.result();
+  m_unrequiredPackageList = g_fwUnrequiredXBPS.result();
 
   if(m_debugInfo)
     std::cout << "Time elapsed obtaining Unrequired pkgs from 'ALL group' list: " << m_time->elapsed() << " mili seconds." << std::endl << std::endl;
@@ -357,7 +357,7 @@ void MainWindow::preBuildUnrequiredPackageList()
  */
 void MainWindow::preBuildPackageList()
 {
-  m_listOfPackages.reset(g_fwPacman.result());
+  m_listOfPackages.reset(g_fwXBPS.result());
 
   if(m_debugInfo)
     std::cout << "Time elapsed obtaining pkgs from 'ALL group' list: " << m_time->elapsed() << " mili seconds." << std::endl;
@@ -376,7 +376,7 @@ void MainWindow::preBuildPackageList()
  * Helper method to deal with the QFutureWatcher result before calling
  * Pacman packages from group list building method
  */
-void MainWindow::preBuildPackagesFromGroupList()
+/*void MainWindow::preBuildPackagesFromGroupList()
 {
   GroupMemberPair result = g_fwPacmanGroup.result();
   m_listOfPackagesFromGroup.reset(result.second);
@@ -385,7 +385,7 @@ void MainWindow::preBuildPackagesFromGroupList()
   toggleSystemActions(true);
 
   emit buildPackagesFromGroupListDone();
-}
+}*/
 
 /*
  * Slot to fire the search for all installed packages
@@ -394,9 +394,9 @@ void MainWindow::searchForPkgPackages()
 {
   QFuture<QList<PackageListData> *> f;
   f = QtConcurrent::run(searchPkgPackages);
-  disconnect(&g_fwPacman, SIGNAL(finished()), this, SLOT(preBuildPackageList()));
-  connect(&g_fwPacman, SIGNAL(finished()), this, SLOT(preBuildPackageList()));
-  g_fwPacman.setFuture(f);
+  disconnect(&g_fwXBPS, SIGNAL(finished()), this, SLOT(preBuildPackageList()));
+  connect(&g_fwXBPS, SIGNAL(finished()), this, SLOT(preBuildPackageList()));
+  g_fwXBPS.setFuture(f);
 }
 
 /*
@@ -457,7 +457,7 @@ void MainWindow::metaBuildPackageList()
       connect(m_leFilterPackage, SIGNAL(textChanged(QString)), this, SLOT(reapplyPackageFilter()));
 
     //reapplyPackageFilter();
-    disconnect(&g_fwPacman, SIGNAL(finished()), this, SLOT(preBuildPackageList()));
+    disconnect(&g_fwXBPS, SIGNAL(finished()), this, SLOT(preBuildPackageList()));
 
     if (m_refreshPackageLists)
     {
@@ -790,14 +790,17 @@ void MainWindow::buildPackageList()
   delete list;
   list = NULL;
 
-  foreach(QString k, m_outdatedList->keys())
+  if(g_fwOutdatedList.isFinished())
   {
-    OutdatedPackageInfo opi = m_outdatedList->value(k);
-    PackageRepository::PackageData* package = m_packageRepo.getFirstPackageByNameEx(k);
-    if (package != NULL)
+    for(QString k: m_outdatedList->keys())
     {
-      package->status = ectn_OUTDATED;
-      package->outdatedVersion = opi.oldVersion;
+      OutdatedPackageInfo opi = m_outdatedList->value(k);
+      PackageRepository::PackageData* package = m_packageRepo.getFirstPackageByNameEx(k);
+      if (package != NULL)
+      {
+        package->status = ectn_OUTDATED;
+        package->outdatedVersion = opi.oldVersion;
+      }
     }
   }
 
@@ -1016,7 +1019,7 @@ void MainWindow::refreshStatusBar()
   m_lblTotalCounters->setText(text);
   ui->statusBar->addWidget(m_lblTotalCounters);
 
-  if (m_numberOfOutdatedPackages > 0)
+  if (g_fwOutdatedList.isFinished() && m_numberOfOutdatedPackages > 0)
   {
     m_toolButtonPacman->show();
 

@@ -80,7 +80,7 @@ public:
   static QString runCurlCommand(const QString& commandToRun);
   static QString discoverBinaryPath(const QString&);
 
-  static bool cleanPacmanCache();
+  static bool cleanXBPSCache();
 
   static QByteArray performQuery(const QStringList args);
   static QByteArray performQuery(const QString &args);

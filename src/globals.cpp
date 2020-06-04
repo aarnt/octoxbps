@@ -71,7 +71,7 @@ QList<PackageListData> * searchPkgPackages()
 /*
  * Starts the non blocking search for Unrequired Pacman packages...
  */
-QSet<QString> *searchUnrequiredPacmanPackages()
+QSet<QString> *searchUnrequiredXBPSPackages()
 {
   return Package::getUnrequiredPackageList();
 }
@@ -79,7 +79,7 @@ QSet<QString> *searchUnrequiredPacmanPackages()
 /*
  * Starts the non blocking search for a Pacman package that owns the given file...
  */
-QString searchPacmanPackagesByFile(const QString &file)
+QString searchXBPSPackagesByFile(const QString &file)
 {
   QString result;
 
@@ -96,10 +96,10 @@ QString searchPacmanPackagesByFile(const QString &file)
 /*
  * Starts the non blocking search for Pacman packages...
  */
-GroupMemberPair searchPacmanPackagesFromGroup(QString groupName)
+/*GroupMemberPair searchPacmanPackagesFromGroup(QString groupName)
 {
   return std::make_pair(groupName, Package::getPackagesOfGroup(groupName));
-}
+}*/
 
 /*
  * Starts the non blocking search for AUR packages...

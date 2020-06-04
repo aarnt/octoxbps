@@ -114,6 +114,7 @@ public:
   void setData(const QList<PackageListData>*const listOfPackages, const QSet<QString>& unrequiredPackages);
   void checkAndSetGroups(const QStringList& listOfGroups);
   void checkAndSetMembersOfGroup(const QString& group, const QStringList& members);
+  void markOutdatedPackages(const QStringList& outdatedStringList);
 
   const TListOfPackages& getPackageList() const;
   const TListOfPackages& getPackageList(const QString& group) const;

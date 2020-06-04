@@ -298,12 +298,14 @@ private:
   void refreshToolBar();
   void refreshStatusBarToolButtons();
 
+  void getOutdatedPackageListThreaded();
   void switchToViewAllPackages();
 
   //void retrieveForeignPackageList();
   void retrieveUnrequiredPackageList();
 
 private slots:
+  void deferredInitAppIcon();
   void initToolButtonPacman();
 
   //TreeView methods
@@ -352,7 +354,7 @@ private slots:
   //void preBuildForeignPackageList();
   void preBuildUnrequiredPackageList();
   void preBuildPackageList();
-  void preBuildPackagesFromGroupList();
+  //void preBuildPackagesFromGroupList();
   void toggleInstantSearch();
   void lightPackageFilter();
 

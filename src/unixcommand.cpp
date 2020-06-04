@@ -158,7 +158,7 @@ QString UnixCommand::discoverBinaryPath(const QString& binary){
  * Cleans Pacman's package cache.
  * Returns true if finished OK
  */
-bool UnixCommand::cleanPacmanCache()
+bool UnixCommand::cleanXBPSCache()
 {
   QProcess pacman;
   QString commandStr = "/usr/bin/xbps-remove -O";
