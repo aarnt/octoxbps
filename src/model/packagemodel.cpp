@@ -279,8 +279,6 @@ void PackageModel::applyFilter(ViewOptions pkgViewOptions, const QString& repo, 
 
 void PackageModel::applyFilter(bool packagesNotInstalled, const QString& group)
 {
-//  std::cout << "apply new group filter " << (packagesNotInstalled ? "true" : "false") << ", " << group.toStdString() << std::endl;
-
   beginResetRepository();
   m_filterPackagesNotInstalled   = packagesNotInstalled;
   m_filterPackagesNotInThisGroup = group;
@@ -368,16 +366,14 @@ const QIcon& PackageModel::getIconFor(const PackageRepository::PackageData& pack
 struct TSort0 {
   bool operator()(const PackageRepository::PackageData* a, const PackageRepository::PackageData* b) const {
     if (a->status < b->status) return true;
-    else if (a->status == b->status) {
-
-      if (a->required < b->required) return true;
-
-      if (a->required == b->required)
+    if (a->status == b->status)
+    {
+      /*if (a->origin == b->origin)
       {
         return (a->name < b->name);
-      }
+      }*/
 
-      /*if (a->outdated() == true && b->outdated() == true)
+      if (a->outdated() == true && b->outdated() == true)
       {
         return (a->name < b->name);
       }
@@ -388,7 +384,7 @@ struct TSort0 {
       {
         int cmp = QString::localeAwareCompare(a->name, b->name);
         if (cmp < 0) return true;
-      }*/
+      }
     }
     return false;
   }
