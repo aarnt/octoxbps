@@ -122,6 +122,9 @@ void MainWindow::deferredInitAppIcon()
     m_outdatedStringList->append(k);
   }
 
+  disconnect(ui->tvPackages->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+          this, SLOT(invalidateTabs()));
+
   m_numberOfOutdatedPackages = m_outdatedStringList->count();
   refreshAppIcon();
   refreshStatusBar();
@@ -129,7 +132,14 @@ void MainWindow::deferredInitAppIcon()
   if (m_numberOfOutdatedPackages > 0)
   {
     m_packageRepo.markOutdatedPackages(*m_outdatedStringList);
+    QModelIndex maux = m_packageModel->index(0, 0, QModelIndex());
+    ui->tvPackages->setCurrentIndex(maux);
+    ui->tvPackages->scrollTo(maux, QAbstractItemView::PositionAtCenter);
+    ui->tvPackages->setCurrentIndex(maux);
   }
+
+  connect(ui->tvPackages->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+          this, SLOT(invalidateTabs()));
 }
 
 /*
