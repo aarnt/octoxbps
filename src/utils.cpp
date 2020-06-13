@@ -117,6 +117,7 @@ QString utils::retrieveDistroNews(bool searchForLatestNews)
   QString tmpRssPath = QDir::homePath() + QDir::separator() + ".config/octoxbps/.tmp_distro_rss.xml";
   QString rssPath = QDir::homePath() + QDir::separator() + ".config/octoxbps/distro_rss.xml";
   QString contentsRss;
+  QStringList sl;
 
   QFile fileRss(rssPath);
   if (fileRss.exists())
@@ -129,18 +130,24 @@ QString utils::retrieveDistroNews(bool searchForLatestNews)
 
   if(searchForLatestNews && UnixCommand::hasInternetConnection() && distro != ectn_UNKNOWN)
   {
-    QString curlCommand = "curl %1 -o %2";
+    //QString curlCommand = "curl %1 -o %2";
 
     if (distro == ectn_TRIDENT)
     {
-      curlCommand = curlCommand.arg(ctn_TRIDENT_RSS_URL).arg(tmpRssPath);
+      //curlCommand = curlCommand.arg(ctn_TRIDENT_RSS_URL).arg(tmpRssPath);
+      sl << ctn_TRIDENT_RSS_URL;
+      sl << QStringLiteral("-o");
+      sl << tmpRssPath;
     }
     else if (distro == ectn_VOID)
     {
-      curlCommand = curlCommand.arg(ctn_VOID_RSS_URL).arg(tmpRssPath);
+      //curlCommand = curlCommand.arg(ctn_VOID_RSS_URL).arg(tmpRssPath);
+      sl << ctn_VOID_RSS_URL;
+      sl << QStringLiteral("-o");
+      sl << tmpRssPath;
     }
 
-    if (UnixCommand::runCurlCommand(curlCommand).isEmpty())
+    if (UnixCommand::runCurlCommand(sl).isEmpty())
     {
       QFile fileTmpRss(tmpRssPath);
       QFile fileRss(rssPath);

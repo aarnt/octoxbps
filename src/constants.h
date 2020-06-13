@@ -104,6 +104,7 @@ const int ctn_RUN_IN_TERMINAL(328);
 //WMHelper related
 const QString ctn_NO_SU_COMMAND(QStringLiteral("none"));
 const QString ctn_OCTOXBPS_SUDO(QStringLiteral("/usr/lib/octoxbps/octoxbps-sudo"));
+const QString ctn_OCTOXBPS_SUDO_PARAMS(QStringLiteral("-d"));
 const QString ctn_ROOT_SH(QStringLiteral("/bin/sh -c "));
 
 const QString ctn_LXQTSU(QStringLiteral("lxqt-sudo"));

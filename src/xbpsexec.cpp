@@ -36,7 +36,6 @@
 XBPSExec::XBPSExec(QObject *parent) : QObject(parent)
 {
   m_unixCommand = new UnixCommand(parent);
-  m_iLoveCandy = UnixCommand::isILoveCandyEnabled();
   m_debugMode = false;
 
   QObject::connect(m_unixCommand, SIGNAL( started() ), this, SLOT( onStarted()));
@@ -744,7 +743,6 @@ void XBPSExec::doSystemUpgradeInTerminal(bool upgradeXBPS)
 
   m_lastCommandList.append("echo -e;");
   m_lastCommandList.append("read -n 1 -p \"" + StrConstants::getPressAnyKey() + "\"");
-
   m_commandExecuting = ectn_RUN_SYSTEM_UPGRADE_IN_TERMINAL;
   m_unixCommand->runCommandInTerminal(m_lastCommandList);
 }

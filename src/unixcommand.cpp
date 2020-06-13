@@ -32,6 +32,7 @@
 #include <QtNetwork/QNetworkInterface>
 #include <QRegularExpression>
 #include <QDebug>
+#include <QTcpSocket>
 
 /*
  * Collection of methods to execute many Unix commands
@@ -82,37 +83,15 @@ UnixCommand::UnixCommand(QObject *parent): QObject()
 }
 
 /*
- * Executes given command and returns the StandardError Output.
- */
-QString UnixCommand::runCommand(const QString& commandToRun)
-{
-  QProcess proc;
-  QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-  env.remove("LANG");
-  env.remove("LC_MESSAGES");
-  env.insert("LANG", "C");
-  env.insert("LC_MESSAGES", "C");
-  proc.setProcessEnvironment(env);
-  proc.start(commandToRun);
-  proc.waitForStarted();
-  proc.waitForFinished(-1);
-
-  QString res = proc.readAllStandardError();
-  proc.close();
-
-  return res;
-}
-
-/*
  * Executes the CURL command and returns the StandardError Output, if result code <> 0.
  */
-QString UnixCommand::runCurlCommand(const QString& commandToRun){
+QString UnixCommand::runCurlCommand(QStringList& params){
   QProcess proc;
   QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
   env.insert("LANG", "C");
   env.insert("LC_MESSAGES", "C");
   proc.setProcessEnvironment(env);
-  proc.start(commandToRun);
+  proc.start(QStringLiteral("curl"), params);
   proc.waitForStarted();
   proc.waitForFinished(-1);
 
@@ -128,43 +107,18 @@ QString UnixCommand::runCurlCommand(const QString& commandToRun){
 }
 
 /*
- * Returns the path of given executable
- */
-QString UnixCommand::discoverBinaryPath(const QString& binary){
-  QProcess proc;
-  QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-  env.insert("LANG", "C");
-  env.insert("LC_MESSAGES", "C");
-  proc.setProcessEnvironment(env);
-  proc.start("/usr/bin/sh -c \"which " + binary + "\"");
-  proc.waitForFinished();
-  QString res = proc.readAllStandardOutput();
-
-  proc.close();
-  res = res.remove('\n');
-
-  //If it still didn't find it, try "/sbin" dir...
-  if (res.isEmpty()){
-    QFile fbin("/sbin/" + binary);
-    if (fbin.exists()){
-      res = "/sbin/" + binary;
-    }
-  }
-
-  return res;
-}
-
-/*
  * Cleans Pacman's package cache.
  * Returns true if finished OK
  */
 bool UnixCommand::cleanXBPSCache()
 {
   QProcess pacman;
-  QString commandStr = "/usr/bin/xbps-remove -O";
-
-  QString command = WMHelper::getSUCommand() + commandStr;
-  pacman.start(command);
+  //QString commandStr = "/usr/bin/xbps-remove -O";
+  QStringList sl;
+  sl << ctn_OCTOXBPS_SUDO_PARAMS;
+  sl << QStringLiteral("/usr/bin/xbps-remove");
+  sl << QStringLiteral("-O");
+  pacman.start(WMHelper::getSUCommand(), sl);
   pacman.waitForFinished();
 
   return (pacman.exitCode() == 0);
@@ -206,31 +160,13 @@ QByteArray UnixCommand::performQuery(const QString &args)
   env.insert("LC_ALL", "C");
   pacman.setProcessEnvironment(env);
 
-  pacman.start("/usr/bin/xbps-" + args);
+  QStringList sl = args.split(QStringLiteral(" "), QString::SkipEmptyParts);
+  QString command=sl.at(0);
+  sl.removeFirst();
+  pacman.start("/usr/bin/xbps-" + command, sl);
   pacman.waitForFinished();
   result = pacman.readAllStandardOutput();
   pacman.close();
-  return result;
-}
-
-/*
- * Performs a yourt command
- */
-QByteArray UnixCommand::performAURCommand(const QString &args)
-{
-  QByteArray result("");
-  QProcess aur;
-
-  QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-  env.insert("LANG", "C");
-  env.insert("LC_MESSAGES", "C");
-  aur.setProcessEnvironment(env);
-
-  aur.start(StrConstants::getForeignRepositoryToolName() + " " + args);
-  aur.waitForFinished(-1);
-  result = aur.readAllStandardOutput();
-
-  aur.close();
   return result;
 }
 
@@ -265,35 +201,6 @@ QByteArray UnixCommand::getOutdatedPackageList()
 {
   //QByteArray result = "qt5-x11extras-5.5.0_2 update x86_64 http://repo.voidlinux.eu/current\nqtchooser-52_1 update x86_64 http://repo.voidlinux.eu/current\nrtkit-0.11_12 update x86_64 http://repo.voidlinux.eu/current\nsudo-1.8.14p3_1 update x86_64 http://repo.voidlinux.eu/current";
   QByteArray result = performQuery("install -un");
-  return result;
-}
-
-/*
- * Returns a string containing all AUR outdated packages
- */
-QByteArray UnixCommand::getOutdatedAURPackageList()
-{
-  QByteArray result;
-
-  if (StrConstants::getForeignRepositoryToolName() == "kcp")
-  {
-    result = performAURCommand("-lO");
-  }
-  else if (StrConstants::getForeignRepositoryToolName() != "kcp")
-  {
-    result = performAURCommand("-Qua");
-  }
-
-  return result;
-}
-
-/*
- * Returns a string containing all packages that are not contained in any repository
- * (probably the ones installed by a tool such as yaourt)
- */
-QByteArray UnixCommand::getForeignPackageList()
-{
-  QByteArray result = performQuery(QStringList("-Qm"));
   return result;
 }
 
@@ -355,30 +262,7 @@ QByteArray UnixCommand::getPackageInformation(const QString &pkgName, bool forei
     args = "query -R " + pkgName;
   }
 
-  //if (pkgName.isEmpty() == false) // enables get for all ("")
-  //  args << pkgName;
-
   QByteArray result = performQuery(args);
-  return result;
-}
-
-/*
- * Given an AUR package name, returns a string containing all of its information fields
- * (ex: name, description, version, dependsOn...)
- */
-QByteArray UnixCommand::getAURPackageVersionInformation()
-{
-  QByteArray result;
-
-  if (StrConstants::getForeignRepositoryToolName() == "kcp")
-  {
-    result = performAURCommand("-lO");
-  }
-  else if (StrConstants::getForeignRepositoryToolName() != "kcp")
-  {
-    result = performAURCommand("-Qua");
-  }
-
   return result;
 }
 
@@ -430,41 +314,15 @@ QStringList UnixCommand::getFilePathSuggestions(const QString &file)
   env.insert("LANG", "C");
   env.insert("LC_MESSAGES", "C");
   slocate.setProcessEnvironment(env);
-  slocate.start("slocate -l 8 " + file);
+  QStringList sl;
+  sl << QStringLiteral("-l");
+  sl << QStringLiteral("8");
+  sl << file;
+  slocate.start(QStringLiteral("slocate"), sl);
   slocate.waitForFinished();
 
   QString ba = slocate.readAllStandardOutput();
   return ba.split("\n", QString::SkipEmptyParts);
-}
-
-/*
- * Retrives the list of package groups
- */
-QByteArray UnixCommand::getPackageGroups()
-{
-  QByteArray res = performQuery(QStringList("-Sg"));
-  return res;
-}
-
-/*
- * Given a group name, returns a string containing all packages from it
- */
-QByteArray UnixCommand::getPackagesFromGroup(const QString &groupName)
-{
-  QByteArray res =
-      performQuery(QString("--print-format \"%r %n\" -Spg " ) + groupName);
-
-  return res;
-}
-
-/*
- * Retrieves the list of installed packages in a special format for TargetList
- */
-QByteArray UnixCommand::getInstalledPackages()
-{
-  QString args = "query '%n-%v %n#%v";
-  QByteArray res = performQuery(args);
-  return res;
 }
 
 /*
@@ -525,28 +383,6 @@ QByteArray UnixCommand::getFieldFromRemotePackage(const QString &field, const QS
 }
 
 /*
- * Retrieves the system arch
- */
-QString UnixCommand::getSystemArchitecture()
-{
-  QStringList slParam;
-  QProcess proc;
-  QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-  env.insert("LANG", "C");
-  env.insert("LC_MESSAGES", "C");
-  proc.setProcessEnvironment(env);
-
-  slParam << "-m";
-  proc.start("uname", slParam);
-  proc.waitForFinished();
-
-  QString out = proc.readAllStandardOutput();
-  proc.close();
-
-  return out;
-}
-
-/*
  * Checks if we have internet access!
  */
 bool UnixCommand::hasInternetConnection()
@@ -587,19 +423,21 @@ bool UnixCommand::hasInternetConnection()
  */
 bool UnixCommand::doInternetPingTest()
 {
-  QProcess ping;
-  QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-  env.insert("LANG", "C");
-  env.insert("LC_MESSAGES", "C");
-  ping.setProcessEnvironment(env);
-  ping.start("ping -c 1 -W 3 www.google.com");
+  QTcpSocket socket;
+  QString hostname = QStringLiteral("www.google.com");
 
-  ping.waitForFinished();
-
-  int res = ping.exitCode();
-  ping.close();
-
-  return (res == 0);
+  socket.connectToHost(hostname, 80);
+  if (socket.waitForConnected(5000))
+    return true;
+  else
+  {
+    hostname = QStringLiteral("www.baidu.com");
+    socket.connectToHost(hostname, 80);
+    if (socket.waitForConnected(5000))
+      return true;
+    else
+      return false;
+  }
 }
 
 /*
@@ -607,19 +445,21 @@ bool UnixCommand::doInternetPingTest()
  */
 bool UnixCommand::hasTheExecutable( const QString& exeName )
 {
-  //std::cout << "Searching for the executable: " << exeName.toLatin1().data() << std::endl;
-
   QProcess proc;
   proc.setProcessChannelMode(QProcess::MergedChannels);
-  QString sParam = "\"which " + exeName + "\"";
+  QString sParam = QLatin1String("which ") + exeName;
 
-  proc.start("/bin/sh -c " + sParam);
+  QStringList sl;
+  sl << QLatin1String("-c");
+  sl << sParam;
+
+  proc.start(QLatin1String("/bin/sh"), sl);
   proc.waitForFinished();
 
-  QString out = proc.readAllStandardOutput();
+  QString out = QString::fromUtf8(proc.readAllStandardOutput());
   proc.close();
 
-  if (out.isEmpty() || out.count("which") > 0) return false;
+  if (out.isEmpty() || out.count(QStringLiteral("which")) > 0) return false;
   else return true;
 }
 
@@ -658,46 +498,6 @@ void UnixCommand::removeTemporaryFiles()
 }
 
 /*
- * Runs a command AS NORMAL USER externaly with QProcess!
- */
-void UnixCommand::execCommandAsNormalUser(const QString &pCommand)
-{
-  QProcess::startDetached(pCommand);
-}
-
-/*
- * Runs a command with a QProcess blocking object!
- */
-void UnixCommand::execCommand(const QString &pCommand)
-{
-  QProcess p;
-  QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-  env.insert("LANG", "C");
-  env.insert("LC_MESSAGES", "C");
-  p.setProcessEnvironment(env);
-
-  p.start(WMHelper::getSUCommand() + pCommand);
-  p.waitForFinished(-1);
-  p.close();
-}
-
-/*
- * Runs a command with a QProcess blocking object and returns its output!
- */
-QByteArray UnixCommand::getCommandOutput(const QString &pCommand)
-{
-  QProcess p;
-  /*QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-  env.insert("LANG", "C");
-  env.insert("LC_MESSAGES", "C");
-  p.setProcessEnvironment(env);*/
-
-  p.start(pCommand);
-  p.waitForFinished(-1);
-  return p.readAllStandardOutput();
-}
-
-/*
  * Given a filename, checks if it is a text file
  */
 bool UnixCommand::isTextFile(const QString& fileName)
@@ -709,7 +509,7 @@ bool UnixCommand::isTextFile(const QString& fileName)
   p->setProcessEnvironment(env);
 
   QStringList s(fileName);
-  p->start( "file", s );
+  p->start("file", s);
   p->waitForFinished();
 
   QByteArray output = p->readAllStandardOutput();
@@ -731,13 +531,6 @@ QString UnixCommand::getXBPSVersion()
 {
   QString v = performQuery("query -V");
   return v;
-}
-
-/*
- * Opens a root terminal
- */
-void UnixCommand::openRootTerminal(){
-  //m_terminal->openRootTerminal();
 }
 
 /*
@@ -764,14 +557,6 @@ void UnixCommand::runCommandInTerminal(const QStringList& commandList){
 }
 
 /*
- * Executes given commandToRun inside a terminal, as the current user!
- */
-void UnixCommand::runCommandInTerminalAsNormalUser(const QStringList &commandList)
-{
-  m_terminal->runCommandInTerminalAsNormalUser(commandList);
-}
-
-/*
  * Executes the given command using QProcess async technology with ROOT credentials
  */
 void UnixCommand::executeCommand(const QString &pCommand, Language lang)
@@ -788,31 +573,11 @@ void UnixCommand::executeCommand(const QString &pCommand, Language lang)
     m_process->setProcessEnvironment(env);
   }
 
-  if(isRootRunning())
-  {
-    command += "dbus-launch " + pCommand;
-  }
-  else
-  {
-    if (WMHelper::getSUCommand() == ctn_KDESU)
-    {
-      command = WMHelper::getSUCommand() + pCommand;
-    }
-    else
-    {
-      command = WMHelper::getSUCommand() + pCommand;
-    }
-  }
+  QStringList sl;
+  sl = pCommand.split(QStringLiteral(" "), QString::SkipEmptyParts);
+  sl.insert(0, ctn_OCTOXBPS_SUDO_PARAMS);
 
-  m_process->start(command);
-}
-
-/*
- * Executes the given command using QProcess async technology as a normal user
- */
-void UnixCommand::executeCommandAsNormalUser(const QString &pCommand)
-{
-  m_process->start(pCommand);
+  m_process->start(WMHelper::getSUCommand(), sl);
 }
 
 /*
@@ -901,127 +666,12 @@ bool UnixCommand::isAppRunning(const QString &appName, bool justOneInstance)
 bool UnixCommand::isPackageInstalled(const QString &pkgName)
 {
   QProcess xbps;
-  QString command = "/usr/bin/xbps-query -S " + pkgName;
-  xbps.start(command);
+  QStringList sl;
+  sl << QStringLiteral("-S");
+  sl << pkgName;
+  xbps.start(QStringLiteral("/usr/bin/xbps-query"), sl);
   xbps.waitForFinished();
   return (xbps.exitCode() == 0);
-}
-
-/*
- * Searches "/etc/pacman.conf" to see if ILoveCandy is enabled
- */
-bool UnixCommand::isILoveCandyEnabled()
-{
-  bool res=false;
-  QFile file("/etc/pacman.conf");
-
-  if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-    return false;
-
-  QString contents = file.readAll();
-  int end = contents.indexOf("ILoveCandy");
-  int start=0;
-
-  if (end != -1)
-  {
-    //Does it contains a # before it???
-    start = end;
-    do{
-      start--;
-    }while (contents.at(start) != '\n');
-
-    QString str = contents.mid(start+1, (end-start-1)).trimmed();
-
-    if (str.isEmpty()) res = true;
-    else res = false;
-  }
-
-  file.close();
-
-  return res;
-}
-
-/*
- * Returns the list of strings after "fieldName" in Pacman.conf;
- */
-QStringList UnixCommand::getFieldFromPacmanConf(const QString &fieldName)
-{
-  QStringList result;
-  QFile file("/etc/pacman.conf");
-  if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-    return result;
-
-  QString contents = file.readAll();
-  int from = 0;
-  const int ctn_FIELD_LENGTH = fieldName.length();
-
-  do
-  {
-    int end = contents.indexOf(fieldName, from, Qt::CaseInsensitive);
-    int start=0;
-
-    if (end != -1)
-    {
-      //Does it contains a # before it???
-      start = end;
-      do{
-        start--;
-      }while (contents.at(start) != '\n');
-
-      QString str = contents.mid(start+1, (end-start-1)).trimmed();
-
-      if (str.isEmpty())
-      {
-        QString ignorePkg = contents.mid(end);
-        int equal = ignorePkg.indexOf("=");
-        int newLine = ignorePkg.indexOf("\n");
-
-        ignorePkg = ignorePkg.mid(equal+1, newLine-(equal+1)).trimmed();
-        result = ignorePkg.split(QRegularExpression("\\s+"), QString::SkipEmptyParts);
-        break;
-      }
-      else if (str != "#")
-        from += end + ctn_FIELD_LENGTH;
-      else
-        from += ctn_FIELD_LENGTH;
-    }
-    else break;
-  }
-  while(true);
-
-  file.close();
-  return result;
-}
-
-/*
- * Searches "/etc/pacman.conf" to retrive IgnorePkg items (if any)
- */
-QStringList UnixCommand::getIgnorePkgsFromPacmanConf()
-{
-  QStringList resPkgs;
-  QStringList resGroups;
-
-  resPkgs = getFieldFromPacmanConf("IgnorePkg");
-  resGroups = getFieldFromPacmanConf("IgnoreGroup");
-
-  if (!resGroups.isEmpty())
-  {
-    //Let's retrieve all pkgs that live inside each group
-    foreach (QString group, resGroups)
-    {
-      QStringList *packagesOfGroup = Package::getPackagesOfGroup(group);
-      if (!packagesOfGroup->isEmpty())
-      {
-        foreach (QString pkg, *packagesOfGroup)
-        {
-          resPkgs.append(pkg);
-        }
-      }
-    }
-  }
-
-  resPkgs.removeDuplicates();
-  return resPkgs;
 }
 
 /*

@@ -268,47 +268,6 @@ QMap<QString, OutdatedPackageInfo> *Package::getOutdatedStringList()
 }
 
 /*
- * Retrieves the list of all package groups available
- */
-QStringList *Package::getPackageGroups()
-{
-  QString packagesFromGroup = UnixCommand::getPackageGroups();
-  QStringList packageTuples = packagesFromGroup.split(QRegularExpression("\\n"), QString::SkipEmptyParts);
-  QStringList * res = new QStringList();
-
-  foreach(QString packageTuple, packageTuples)
-  {
-    packageTuple = packageTuple.trimmed();
-    if (!packageTuple.isEmpty())
-    {
-      res->append(packageTuple); //We only need the package name!
-    }
-  }
-
-  res->removeDuplicates();
-  res->sort();
-  return res;
-}
-
-/*
- * Retrieves the list of packages from a given group name
- */
-QStringList *Package::getPackagesOfGroup(const QString &groupName)
-{
-  QString packagesFromGroup = UnixCommand::getPackagesFromGroup(groupName);
-  QStringList packageTuples = packagesFromGroup.split(QRegularExpression("\\n"), QString::SkipEmptyParts);
-  QStringList * res = new QStringList();
-
-  foreach(QString packageTuple, packageTuples)
-  {
-    QStringList parts = packageTuple.split(' ');
-    res->append(parts[1]); //We only need the package name!
-  }
-
-  return res;
-}
-
-/*
  * Retrieves the list of targets needed to upgrade the entire system OR
  * to install/reinstall/upgrade a given package
  */

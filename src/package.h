@@ -170,8 +170,6 @@ class Package{
     static int rpmvercmp(const char *a, const char *b);
     static QSet<QString>* getUnrequiredPackageList();
     static QMap<QString, OutdatedPackageInfo> *getOutdatedStringList();
-    static QStringList * getPackageGroups();
-    static QStringList * getPackagesOfGroup(const QString &groupName);
     static TransactionInfo getTargetUpgradeList(const QString &pkgName = "");
     static QStringList * getTargetRemovalList(const QString &pkgName);
     //static QList<PackageListData> *getForeignPackageList();

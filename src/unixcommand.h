@@ -29,18 +29,6 @@
 #include "package.h"
 #include "utils.h"
 
-/*const QString ctn_MIRROR_CHECK_APP("mirror-check");
-
-enum CommandExecuting { ectn_NONE, ectn_MIRROR_CHECK, ectn_SYNC_DATABASE,
-                        ectn_SYSTEM_UPGRADE, ectn_INSTALL,
-                        ectn_REMOVE, ectn_REMOVE_INSTALL,
-                        ectn_RUN_SYSTEM_UPGRADE_IN_TERMINAL,
-                        ectn_RUN_IN_TERMINAL, ectn_LOCAL_PKG_REFRESH };
-
-enum LinuxDistro { ectn_VOID, ectn_UNKNOWN };
-
-enum Language { ectn_LANG_ENGLISH, ectn_LANG_USER_DEFINED };*/
-
 //Forward class declarations.
 class QString;
 class QStringList;
@@ -61,52 +49,33 @@ public:
   UnixCommand(QObject *parent);
 
   inline QProcess * getProcess(){ return m_process; }
-
   static QString getShell();
-
-  //Returns true if ILoveCandy is enabled in "/etc/pacman.conf"
-  static bool isILoveCandyEnabled();
-
-  //Returns "fieldName" strings from "/etc/pacman.conf"
-  static QStringList getFieldFromPacmanConf(const QString &fieldName);
-  //Returns the list of ignored packages in "/etc/pacman.conf"
-  static QStringList getIgnorePkgsFromPacmanConf();
 
   //Returns the BSD Flavour where OctoPkg is running on
   static LinuxDistro getLinuxDistro();
 
   //Delegations from Package class (due to QProcess use)
-  static QString runCommand(const QString& commandToRun);
-  static QString runCurlCommand(const QString& commandToRun);
-  static QString discoverBinaryPath(const QString&);
+  static QString runCurlCommand(QStringList &params);
 
   static bool cleanXBPSCache();
 
   static QByteArray performQuery(const QStringList args);
   static QByteArray performQuery(const QString &args);
-  static QByteArray performAURCommand(const QString &args);
   static QByteArray getRemotePackageList(const QString &searchString, bool useCommentSearch = true);
   static QByteArray getUnrequiredPackageList();
   static QByteArray getOutdatedPackageList();
-  static QByteArray getOutdatedAURPackageList();
-  static QByteArray getForeignPackageList();
   static QByteArray getDependenciesList(const QString &pkgName);
   static QByteArray getPackageList(const QString &pkgName = "");
   static QByteArray getPackageInformation(const QString &pkgName, bool foreignPackage);
-  static QByteArray getAURPackageVersionInformation();
   static QByteArray getPackageContentsUsingXBPS(const QString &pkgName, bool isInstalled);
   static QString getPackageByFilePath(const QString &filePath);
   static QStringList getFilePathSuggestions(const QString &file);
-  static QByteArray getPackageGroups();
-  static QByteArray getPackagesFromGroup(const QString &groupName);
 
-  static QByteArray getInstalledPackages();
   static QByteArray getTargetUpgradeList(const QString &pkgName = "");
   static QByteArray getTargetRemovalList(const QString &pkgName);
   static QByteArray getFieldFromLocalPackage(const QString &field, const QString &pkgName);
   static QByteArray getFieldFromRemotePackage(const QString &field, const QString &pkgName);
 
-  static QString getSystemArchitecture();
   static bool hasInternetConnection();
   static bool doInternetPingTest();
   static bool isTextFile( const QString& fileName ); //fileName is Path + Name
@@ -144,16 +113,8 @@ public:
 
   static void removeTemporaryFiles();
 
-  void openRootTerminal();
   void runCommandInTerminal(const QStringList& commandList);
-  void runCommandInTerminalAsNormalUser(const QStringList& commandList);
-
-  static void execCommandAsNormalUser(const QString &pCommand);
-  static void execCommand(const QString &pCommand);
-  static QByteArray getCommandOutput(const QString &pCommand);
-
   void executeCommand(const QString &pCommand, Language lang=ectn_LANG_ENGLISH);
-  void executeCommandAsNormalUser(const QString &pCommand);
 
   QString readAllStandardOutput();
   QString readAllStandardError();
@@ -169,10 +130,6 @@ signals:
   void finished ( int, QProcess::ExitStatus );
   void readyReadStandardError();
   void commandToExecInQTermWidget(QString);
-
-  //ProcessWrapper signals
-  void startedTerminal();
-  void finishedTerminal(int, QProcess::ExitStatus);
 };
 
 #endif // UNIXCOMMAND_H
