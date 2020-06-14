@@ -84,7 +84,7 @@ void OutputDialog::initAsTextBrowser()
   m_progressBar = new QProgressBar(this);
   m_textBrowser->setGeometry(QRect(0, 0, 650, 500));
   m_textBrowser->setFrameShape(QFrame::NoFrame);
-
+  m_console = nullptr;
   m_mainLayout->addWidget(m_textBrowser);
 
   m_searchBar = new SearchBar(this);
@@ -101,6 +101,8 @@ void OutputDialog::initAsTextBrowser()
   m_progressBar->setMaximum(100);
   m_progressBar->setValue(0);
   m_progressBar->close();
+
+  installEventFilter(this);
   m_searchBar->show();
 }
 
@@ -318,7 +320,7 @@ void OutputDialog::xbpsProcessFinished(int exitCode, QProcess::ExitStatus exitSt
  */
 void OutputDialog::cancelUpgrade()
 {
-  UnixCommand::execCommand("killall octoxbps-sudo");
+  UnixCommand::execCommand(QStringLiteral("killall"), QStringList() << QStringLiteral("octoxbps-sudo"));
 }
 
 /*
@@ -437,7 +439,7 @@ bool OutputDialog::eventFilter(QObject *, QEvent *event)
         return true;
       }
     }
-    else if(ke->key() == Qt::Key_F && ke->modifiers() == Qt::ControlModifier)
+    else if(m_console != nullptr && ke->key() == Qt::Key_F && ke->modifiers() == Qt::ControlModifier)
     {
       m_console->toggleShowSearchBar();
     }

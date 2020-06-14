@@ -581,6 +581,18 @@ void UnixCommand::executeCommand(const QString &pCommand, Language lang)
 }
 
 /*
+ * Executes given pCommand without the need to create an UnixCommand obj
+ */
+void UnixCommand::execCommand(const QString &pCommand, const QStringList &params)
+{
+  QProcess p;
+  p.start(pCommand, params);
+  p.waitForStarted(-1);
+  p.waitForFinished(-1);
+  p.close();
+}
+
+/*
  * Puts all Standard output of the member process into a member string
  */
 void UnixCommand::processReadyReadStandardOutput()

@@ -46,13 +46,11 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-
   explicit MainWindow(QWidget *parent = 0);
   virtual ~MainWindow();
   inline void turnDebugInfoOn() { m_debugInfo = true;}
 
 private slots:
-
   void notifierTimerTimeout();
   void finishedPkexec(int);
   void execSystemTrayActivated(QSystemTrayIcon::ActivationReason);
@@ -76,7 +74,6 @@ private slots:
   void showOptionsDialog();
 
 private:
-
   TransactionDialog *m_transactionDialog;
   OptionsDialog *m_optionsDialog;
   int m_numberOfOutdatedPackages;
@@ -107,7 +104,6 @@ private:
 
   bool _isSUAvailable();
   void initSystemTrayIcon();
-  void sendNotification(const QString &msg);
   void setUpgradingTooltip();
   void startPkexec();
 };

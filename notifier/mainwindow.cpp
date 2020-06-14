@@ -293,7 +293,7 @@ void MainWindow::aboutOctoXBPSNotifier()
  */
 void MainWindow::hideOctoXBPS()
 {  
-  QProcess::startDetached("octoxbps -hide");
+  QProcess::startDetached(QStringLiteral("octoxbps"), QStringList() << QStringLiteral("-hide"));
 }
 
 /*
@@ -566,26 +566,14 @@ void MainWindow::syncDatabase()
   startPkexec();
 }
 
-/*
- * Uses notify-send to send a notification to the systray area
- */
-void MainWindow::sendNotification(const QString &msg)
-{
-  QString processToExec("notify-send");
-
-  if (UnixCommand::hasTheExecutable(processToExec))
-  {
-    processToExec += " -i /usr/share/icons/OctoXBPS_red.png -t 5000 \"" +
-        StrConstants::getApplicationName() + "\"  \"" + msg + "\"";
-    QProcess::startDetached(processToExec);
-  }
-}
-
 void MainWindow::startPkexec()
 {
   QProcess *xbps = new QProcess();
   connect(xbps, SIGNAL(finished(int)), this, SLOT(finishedPkexec(int)));
-  xbps->start("pkexec /usr/bin/xbps-install -Sy");
+  QStringList sl;
+  sl << QStringLiteral("/usr/bin/xbps-install");
+  sl << QStringLiteral("-Sy");
+  xbps->start(QStringLiteral("pkexec"), sl);
 }
 
 /*
@@ -741,11 +729,11 @@ void MainWindow::runOctoXBPS(ExecOpt execOptions)
 {
   if (execOptions == ectn_SYSUPGRADE_EXEC_OPT && m_outdatedStringList->count() > 0)
   {
-    QProcess::startDetached("octoxbps -sysupgrade");
+    QProcess::startDetached(QStringLiteral("octoxbps"), QStringList() << QStringLiteral("-sysupgrade"));
   }
   else if (execOptions == ectn_NORMAL_EXEC_OPT)
   {
-    QProcess::startDetached("octoxbps");
+    QProcess::startDetached(QStringLiteral("octoxbps"), QStringList());
   }
 }
 

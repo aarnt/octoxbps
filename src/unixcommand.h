@@ -115,6 +115,7 @@ public:
 
   void runCommandInTerminal(const QStringList& commandList);
   void executeCommand(const QString &pCommand, Language lang=ectn_LANG_ENGLISH);
+  static void execCommand(const QString &pCommand, const QStringList &params);
 
   QString readAllStandardOutput();
   QString readAllStandardError();
