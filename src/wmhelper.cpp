@@ -212,51 +212,6 @@ QString WMHelper::getXFCEEditor(){
 }
 
 /*
- * Retrieves the KDESU command...
- */
-QString WMHelper::getKDESUCommand(){
-  QString result = ctn_KDESU;
-
-  result += " -d ";
-  result += " -t ";
-  result += " --noignorebutton ";
-  result += " -c";
-
-  return result;
-}
-
-/*
- * Retrieves the QSUDO command...
- */
-QString WMHelper::getQSUDOCommand()
-{
-  QString result = ctn_QSUDO;
-  return result;
-}
-
-/*
- * Retrieves the TDESU command...
- */
-QString WMHelper::getTDESUCommand(){
-  QString result = ctn_TDESU;
-  result += " -d ";
-  result += " -t ";
-  result += " --noignorebutton ";
-
-  return result;
-}
-
-/*
- * Retrieves the LXQTSU command...
- */
-QString WMHelper::getLXQTSUCommand(){
-  QString result = ctn_LXQTSU;
-  result += " -s ";
-
-  return result;
-}
-
-/*
  * The generic SU get method. It retrieves the SU you have installed in your system!
  */
 QString WMHelper::getSUCommand(){
