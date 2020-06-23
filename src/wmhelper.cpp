@@ -302,6 +302,10 @@ void WMHelper::openFile(const QString& fileName){
     s << fileToOpen;
     p->startDetached( ctn_LXDE_FILE_MANAGER, s );
   }
+  else if (UnixCommand::hasTheExecutable(ctn_XDG_OPEN)){
+    s << fileToOpen;
+    p->startDetached( ctn_XDG_OPEN, s );
+  }
 }
 
 /*

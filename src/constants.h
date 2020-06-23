@@ -147,6 +147,8 @@ const QString ctn_LXDE_DESKTOP(QStringLiteral("lxsession"));
 const QString ctn_LXDE_TERMINAL(QStringLiteral("lxterminal"));
 const QString ctn_LXDE_FILE_MANAGER(QStringLiteral("pcmanfm"));
 
+const QString ctn_XDG_OPEN(QStringLiteral("xdg-open"));
+
 const QString ctn_LUMINA_DESKTOP(QStringLiteral("lumina-desktop"));
 const QString ctn_LUMINA_EDITOR(QStringLiteral("lumina-textedit"));
 const QString ctn_LUMINA_FILE_MANAGER(QStringLiteral("lumina-fm"));
