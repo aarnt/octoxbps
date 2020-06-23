@@ -389,7 +389,7 @@ int Sudo::parent()
       }
       QTextStream{stderr, QIODevice::WriteOnly} << line;
       //assuming text oriented output
-      QStringList lines = line.split(nl, QString::SkipEmptyParts);
+      QStringList lines = line.split(nl, Qt::SkipEmptyParts);
       last_line = lines.isEmpty() ? QString() : lines.back();
     }
 
