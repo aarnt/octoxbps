@@ -858,7 +858,7 @@ void MainWindow::doRemoveAndInstall()
   TransactionDialog question(this);
   QString dialogText;
 
-  QStringList removeTargets = listOfRemoveTargets.split(" ", QString::SkipEmptyParts);
+  QStringList removeTargets = listOfRemoveTargets.split(" ", Qt::SkipEmptyParts);
   foreach(QString target, removeTargets)
   {
     removeList = removeList + StrConstants::getRemove() + " "  + target + "\n";

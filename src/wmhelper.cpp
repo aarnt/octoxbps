@@ -260,11 +260,11 @@ void WMHelper::openFile(const QString& fileName){
   else if (UnixCommand::hasTheExecutable(ctn_KDE4_FILE_MANAGER)){
     s << fileToOpen;
 
-    if (UnixCommand::isRootRunning())
+    /*if (UnixCommand::isRootRunning())
     {
       p->startDetached( "dbus-launch " + getKDEOpenHelper() + " " + fileToOpen );
     }
-    else
+    else*/
     {
       p->startDetached( getKDEOpenHelper(), s );
     }
@@ -348,11 +348,16 @@ void WMHelper::editFile( const QString& fileName, EditOptions opt ){
 
   if (opt == ectn_EDIT_AS_NORMAL_USER)
   {
-    process->startDetached("/bin/sh -c \"" + p + "\"");
+    QStringList sl;
+    sl << QStringLiteral("-c");
+    QStringList params = p.split(QStringLiteral(" "), Qt::SkipEmptyParts);
+    sl << params;
+    process->startDetached(UnixCommand::getShell(), sl);
   }
   else
   {
-    process->startDetached(getSUCommand() + p);
+    QStringList params = p.split(QStringLiteral(" "), Qt::SkipEmptyParts);
+    process->startDetached(getSUCommand(), params);
   }
 }
 
@@ -390,11 +395,11 @@ void WMHelper::openDirectory( const QString& dirName ){
       {
         s << dir;
 
-        if (UnixCommand::isRootRunning())
+        /*if (UnixCommand::isRootRunning())
         {
           p->startDetached( "dbus-launch " + ctn_KDE4_FILE_MANAGER + " " + dir);
         }
-        else
+        else*/
         {
           p->startDetached( ctn_KDE4_FILE_MANAGER, s);
         }

@@ -160,7 +160,7 @@ QByteArray UnixCommand::performQuery(const QString &args)
   env.insert("LC_ALL", "C");
   pacman.setProcessEnvironment(env);
 
-  QStringList sl = args.split(QStringLiteral(" "), QString::SkipEmptyParts);
+  QStringList sl = args.split(QStringLiteral(" "), Qt::SkipEmptyParts);
   QString command=sl.at(0);
   sl.removeFirst();
   pacman.start("/usr/bin/xbps-" + command, sl);
@@ -322,7 +322,7 @@ QStringList UnixCommand::getFilePathSuggestions(const QString &file)
   slocate.waitForFinished();
 
   QString ba = slocate.readAllStandardOutput();
-  return ba.split("\n", QString::SkipEmptyParts);
+  return ba.split("\n", Qt::SkipEmptyParts);
 }
 
 /*
@@ -574,7 +574,7 @@ void UnixCommand::executeCommand(const QString &pCommand, Language lang)
   }
 
   QStringList sl;
-  sl = pCommand.split(QStringLiteral(" "), QString::SkipEmptyParts);
+  sl = pCommand.split(QStringLiteral(" "), Qt::SkipEmptyParts);
   sl.insert(0, ctn_OCTOXBPS_SUDO_PARAMS);
 
   m_process->start(WMHelper::getSUCommand(), sl);

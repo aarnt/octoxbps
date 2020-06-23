@@ -122,7 +122,7 @@ int main(int argc, char *argv[])
   if (!packagesToInstall.isEmpty())
   {
     QStringList packagesToInstallList =
-        packagesToInstall.split(",", QString::SkipEmptyParts);
+        packagesToInstall.split(",", Qt::SkipEmptyParts);
 
     w.setPackagesToInstallList(packagesToInstallList);
   }

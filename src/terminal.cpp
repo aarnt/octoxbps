@@ -55,7 +55,7 @@ void Terminal::runCommandInTerminalWithSudo(const QString& command)
 /*
  * Opens a terminal in the given directory
  */
-void Terminal::openTerminal(const QString &dirName)
+/*void Terminal::openTerminal(const QString &dirName)
 {
   QStringList s;
 
@@ -187,12 +187,12 @@ void Terminal::openTerminal(const QString &dirName)
       m_process->startDetached( cmd );
     }
   }
-}
+}*/
 
 /*
  * Opens a terminal with root credentials
  */
-void Terminal::openRootTerminal()
+/*void Terminal::openRootTerminal()
 {
   if (m_selectedTerminal == ctn_AUTOMATIC)
   {
@@ -314,7 +314,7 @@ void Terminal::openRootTerminal()
       m_process->startDetached(cmd);
     }
   }
-}
+}*/
 
 /*
  * Executes the given command list with root credentials

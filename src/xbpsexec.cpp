@@ -102,16 +102,16 @@ bool XBPSExec::splitOutputStrings(QString output)
 {
   bool res = true;
   QString msg = output.trimmed();
-  QStringList msgs = msg.split(QRegExp("\\n"), QString::SkipEmptyParts);
+  QStringList msgs = msg.split(QRegExp("\\n"), Qt::SkipEmptyParts);
 
   foreach (QString m, msgs)
   {
-    QStringList m2 = m.split(QRegExp("\\(\\s{0,3}[0-9]{1,4}/[0-9]{1,4}\\) "), QString::SkipEmptyParts);
+    QStringList m2 = m.split(QRegExp("\\(\\s{0,3}[0-9]{1,4}/[0-9]{1,4}\\) "), Qt::SkipEmptyParts);
 
     if (m2.count() == 1)
     {
       //Let's try another test... if it doesn't work, we give up.
-      QStringList maux = m.split(QRegExp("%"), QString::SkipEmptyParts);
+      QStringList maux = m.split(QRegExp("%"), Qt::SkipEmptyParts);
       if (maux.count() > 1)
       {
         foreach (QString aux, maux)

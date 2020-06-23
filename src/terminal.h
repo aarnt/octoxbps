@@ -42,8 +42,8 @@ public:
   //Executes the given command using sudo
   void runCommandInTerminalWithSudo(const QString& command);
 
-  void openTerminal(const QString& dirName);
-  void openRootTerminal();
+  //void openTerminal(const QString& dirName);
+  //void openRootTerminal();
   void runCommandInTerminal(const QStringList& commandList);
   void runCommandInTerminalAsNormalUser(const QStringList& commandList);
   static QStringList getListOfAvailableTerminals();
