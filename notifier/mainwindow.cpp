@@ -115,7 +115,7 @@ void MainWindow::initSystemTrayIcon()
   connect(m_actionAbout, SIGNAL(triggered()), this, SLOT(aboutOctoXBPSNotifier()));
 
   m_actionOctoXBPS = new QAction(this);
-  m_actionOctoXBPS->setText("OctoXBPS ...");
+  m_actionOctoXBPS->setText("OctoXBPS...");
   connect(m_actionOctoXBPS, SIGNAL(triggered()), this, SLOT(startOctoXBPS()));
 
   m_actionOptions = new QAction(this);
