@@ -7,6 +7,7 @@
   BugFix: Enable user close OctoXBPS and notifier's upgrade window during a transaction.
   Faster startup time thanks to deferred retrieval of outdated packages.
   Added Project Trident support.
+  Added GNOME desktop support.
   Added Lumina desktop support.
   Added new sudo tool called "octoxbps-sudo". It's based on "lxqt-sudo" code 
 	(without LXQt libs) and its use is mandatory in OctoXBPS.
