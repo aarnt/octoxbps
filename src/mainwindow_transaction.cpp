@@ -1327,8 +1327,17 @@ void MainWindow::toggleTransactionActions(const bool value)
   ui->actionHelpUsage->setEnabled(value);
   ui->actionDonate->setEnabled(value);
   ui->actionHelpAbout->setEnabled(value);
-  //ui->actionExit->setEnabled(value);
   ui->actionInstallLocalPackage->setEnabled(value);
+
+  //Search menu
+  ui->actionSearchByFile->setEnabled(value);
+  ui->actionSearchByName->setEnabled(value);
+  ui->actionSearchByDescription->setEnabled(value);
+  ui->actionUseInstantSearch->setEnabled(value);
+
+  m_actionPackageInfo->setEnabled(value);
+  ui->actionFindFileInPackage->setEnabled(value);
+  m_leFilterPackage->setEnabled(value);
 
   //We have to toggle the combobox groups as well
   if (m_initializationCompleted) ui->twGroups->setEnabled(value);

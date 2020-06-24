@@ -709,7 +709,7 @@ void MainWindow::execContextMenuPackages(QPoint point)
         menu->addAction(m_actionPackageInfo);
       }
 
-      if (package) {
+      if (package){
         menu->addAction(ui->actionFindFileInPackage);
         menu->addSeparator();
       }
