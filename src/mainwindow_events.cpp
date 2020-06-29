@@ -119,24 +119,6 @@ void MainWindow::keyPressEvent(QKeyEvent* ke)
 {
   if (ke->key() == Qt::Key_Return || ke->key() == Qt::Key_Enter)
   {
-    //We are searching for AUR foreign packages...
-    /*if (isRemoteSearchSelected() && m_leFilterPackage->hasFocus() && m_cic == NULL)
-    {
-      if (m_leFilterPackage->text().size() < 2)
-      {
-        QMessageBox::information(this, StrConstants::getWarning(), StrConstants::getSearchStringIsShort(), QMessageBox::Ok);
-        return;
-      }
-
-      //ui->twGroups->setEnabled(false);
-
-      QFuture<QList<PackageListData> *> f;
-      disconnect(&g_fwRemote, SIGNAL(finished()), this, SLOT(preBuildRemotePackageList()));
-      m_cic = new CPUIntensiveComputing();
-      f = QtConcurrent::run(searchRemotePackages, m_leFilterPackage->text());
-      g_fwRemote.setFuture(f);
-      connect(&g_fwRemote, SIGNAL(finished()), this, SLOT(preBuildRemotePackageList()));
-    }*/
     //We are searching for packages that own some file typed by user...
     if (!isSearchByFileSelected() && m_leFilterPackage->hasFocus() && !ui->actionUseInstantSearch->isChecked())
     {
@@ -146,7 +128,6 @@ void MainWindow::keyPressEvent(QKeyEvent* ke)
     else if (isSearchByFileSelected() && m_leFilterPackage->hasFocus() && m_cic == NULL)
     {
       //ui->twGroups->setEnabled(false);
-
       QFuture<QString> f;
       disconnect(&g_fwPackageOwnsFile, SIGNAL(finished()), this, SLOT(positionInPkgListSearchByFile()));
       m_cic = new CPUIntensiveComputing();
@@ -237,6 +218,11 @@ void MainWindow::keyPressEvent(QKeyEvent* ke)
   {
     m_leFilterPackage->setFocus();
     m_leFilterPackage->selectAll();
+  }
+  else if (ke->key() == Qt::Key_P && ke->modifiers() == Qt::ControlModifier)
+  {
+    if (!ui->tvPackages->hasFocus())
+      ui->tvPackages->setFocus();
   }
   else if(ke->key() == Qt::Key_F && ke->modifiers() == Qt::ControlModifier)
   {
