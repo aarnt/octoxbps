@@ -13,7 +13,7 @@ The project is compatible with [Void Linux](https://voidlinux.org/) and [Project
 # xbps-install -S octoxbps
 ```
 
-### Follow the steps bellow to compile the latest source code (you'll need "curl", "git" and "qt5" packages):
+### Follow the steps bellow to compile the latest source code (you'll need curl, git and qt5 packages):
 
 ```
 $ git clone https://github.com/aarnt/octoxbps
