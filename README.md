@@ -1,10 +1,19 @@
-## This is OctoXBPS, a powerful XBPS front-end using Qt libs. 
+## This is OctoXBPS, a powerful XBPS front end using Qt libs. 
 
 ![Main window](https://raw.githubusercontent.com/aarnt/octoxbps/master/octoxbps-mainwindow.png)
 
-You'll need "git" and "qt5" packages in order to get latest dev version!
+OctoXBPS is a Qt based GUI front end to the [XBPS](https://github.com/void-linux/xbps) package manager, derived from [OctoPkg](http://tintaescura.com/projects/octopkg).
+It consists of a lxqt-sudo clone called [octoxbps-sudo](https://github.com/aarnt/octoxbps/tree/master/sudo) used to gain root privileges, a package browser application used 
+to search, install, remove and update packages and a system tray icon [notifier](https://github.com/aarnt/octoxbps/tree/master/notifier) to notify the user about package changes.
+The project is compatible with [Void Linux](https://voidlinux.org/) and [Project Trident](https://project-trident.org/).
 
-To download and build the source code, type:
+You can use XBPS to install the latest OctoXBPS version available in your distro:
+
+```
+$ xbps-install -S octoxbps
+```
+
+Or follow the steps bellow to compile the latest source code (you'll need "git" and "qt5" packages):
 
 ```
 $ git clone https://github.com/aarnt/octoxbps
@@ -22,12 +31,19 @@ $ make
 # make install
 ```
 
-To run it:
+In order to run OctoXBPS main package browser:
 
+```
 $ octoxbps
+```
 
-You'll need "curl" and "sudo" installed and your user to be a member of the wheel group.
+To execute OctoXBPS system tray notifier:
 
-OctoXBPS is compatible with [Void Linux](https://voidlinux.org/) and [Project Trident](https://project-trident.org/).
+```
+$ octoxbps-notifier
+```
+
+You'll also need "curl" and "sudo" packages installed and your user to be a member of the wheel group.
+
 
 Enjoy!
