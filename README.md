@@ -2,18 +2,18 @@
 
 ![Main window](https://raw.githubusercontent.com/aarnt/octoxbps/master/octoxbps-mainwindow.png)
 
-OctoXBPS is a Qt based GUI front end to the [XBPS](https://github.com/void-linux/xbps) package manager, derived from [OctoPkg](http://tintaescura.com/projects/octopkg).
+**OctoXBPS** is a Qt based GUI front end to the [XBPS](https://github.com/void-linux/xbps) package manager, derived from [OctoPkg](http://tintaescura.com/projects/octopkg).
 It consists of a lxqt-sudo clone called [octoxbps-sudo](https://github.com/aarnt/octoxbps/tree/master/sudo) used to gain root privileges, a package browser application used 
 to search, install, remove and update packages and a system tray icon [notifier](https://github.com/aarnt/octoxbps/tree/master/notifier) to notify the user about package changes.
 The project is compatible with [Void Linux](https://voidlinux.org/) and [Project Trident](https://project-trident.org/).
 
-You can use XBPS to install the latest OctoXBPS version available in your distro:
+### You can use XBPS to install the latest OctoXBPS version available in your distro:
 
 ```
 $ xbps-install -S octoxbps
 ```
 
-Or follow the steps bellow to compile the latest source code (you'll need "git" and "qt5" packages):
+### Follow the steps bellow to compile the latest source code (you'll need "git" and "qt5" packages):
 
 ```
 $ git clone https://github.com/aarnt/octoxbps
@@ -31,13 +31,13 @@ $ make
 # make install
 ```
 
-In order to run OctoXBPS main package browser:
+### In order to run OctoXBPS main package browser:
 
 ```
 $ octoxbps
 ```
 
-To execute OctoXBPS system tray notifier:
+### To execute OctoXBPS system tray notifier:
 
 ```
 $ octoxbps-notifier
