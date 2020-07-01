@@ -10,10 +10,10 @@ The project is compatible with [Void Linux](https://voidlinux.org/) and [Project
 ### You can use XBPS to install the latest OctoXBPS version available in your distro:
 
 ```
-$ xbps-install -S octoxbps
+# xbps-install -S octoxbps
 ```
 
-### Follow the steps bellow to compile the latest source code (you'll need "git" and "qt5" packages):
+### Follow the steps bellow to compile the latest source code (you'll need "curl", "git" and "qt5" packages):
 
 ```
 $ git clone https://github.com/aarnt/octoxbps
