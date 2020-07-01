@@ -28,4 +28,6 @@ $ octoxbps
 
 You'll need "curl" and "sudo" installed and your user to be a member of the wheel group.
 
+OctoXBPS is compatible with [Void Linux](https://voidlinux.org/) and [Project Trident](https://project-trident.org/).
+
 Enjoy!
