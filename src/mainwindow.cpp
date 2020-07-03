@@ -126,8 +126,6 @@ void MainWindow::deferredInitAppIcon()
           this, SLOT(invalidateTabs()));
 
   m_numberOfOutdatedPackages = m_outdatedStringList->count();
-  refreshAppIcon();
-  refreshStatusBar();
 
   if (m_numberOfOutdatedPackages > 0)
   {
@@ -137,6 +135,8 @@ void MainWindow::deferredInitAppIcon()
     ui->tvPackages->scrollTo(maux, QAbstractItemView::PositionAtCenter);
     ui->tvPackages->setCurrentIndex(maux);
   }
+
+  invalidateTabs();
 
   connect(ui->tvPackages->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
           this, SLOT(invalidateTabs()));

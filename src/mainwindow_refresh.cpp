@@ -279,11 +279,11 @@ void MainWindow::preBuildPackageList()
   buildPackageList();
   toggleSystemActions(true);
 
-  /*if (!m_initializationCompleted)
+  if (!m_initializationCompleted)
   {
-    remoteSearchClicked();
+    //remoteSearchClicked();
     m_initializationCompleted = true;
-  }*/
+  }
 }
 
 /*
@@ -649,13 +649,15 @@ void MainWindow::buildPackageList()
 
   reapplyPackageFilter();
 
-  /*QModelIndex maux = m_packageModel->index(0, 0, QModelIndex());
+  QModelIndex maux = m_packageModel->index(0, 0, QModelIndex());
   ui->tvPackages->setCurrentIndex(maux);
   ui->tvPackages->scrollTo(maux, QAbstractItemView::PositionAtCenter);
   ui->tvPackages->setCurrentIndex(maux);
 
-  refreshTabInfo();
-  refreshTabFiles();*/
+  if (m_initializationCompleted)
+  {
+    invalidateTabs();
+  }
 
   if (isPackageTreeViewVisible())
   {
@@ -675,7 +677,7 @@ void MainWindow::buildPackageList()
       m_leFilterPackage->setFocus();
     }
 
-    m_initializationCompleted = true;
+    //m_initializationCompleted = true;
     //testSpecialDependencies(); //TEST!!!
 
     firstTime = false;
@@ -699,13 +701,6 @@ void MainWindow::buildPackageList()
       doInstallLocalPackages();
     }*/
   }
-
-  QModelIndex maux = m_packageModel->index(0, 0, QModelIndex());
-  ui->tvPackages->setCurrentIndex(maux);
-  ui->tvPackages->scrollTo(maux, QAbstractItemView::PositionAtCenter);
-  ui->tvPackages->setCurrentIndex(maux);
-  refreshTabInfo();
-  refreshTabFiles();
 
   ui->tvPackages->setColumnWidth(PackageModel::ctn_PACKAGE_SIZE_COLUMN, 10);
   //refreshToolBar();
@@ -852,7 +847,7 @@ void MainWindow::refreshTabInfo(QString pkgName)
 void MainWindow::refreshTabInfo(bool clearContents, bool neverQuit)
 {
   if(neverQuit == false &&
-     (ui->twProperties->currentIndex() != ctn_TABINDEX_INFORMATION || !isPropertiesTabWidgetVisible())) return;
+     (ui->twProperties->currentIndex() != ctn_TABINDEX_INFORMATION || !isPropertiesTabWidgetVisible() || !m_initializationCompleted)) return;
 
   QItemSelectionModel*const selectionModel = ui->tvPackages->selectionModel();
   if (clearContents || selectionModel == NULL ||
