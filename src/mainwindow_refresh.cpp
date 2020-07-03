@@ -649,13 +649,13 @@ void MainWindow::buildPackageList()
 
   reapplyPackageFilter();
 
-  QModelIndex maux = m_packageModel->index(0, 0, QModelIndex());
+  /*QModelIndex maux = m_packageModel->index(0, 0, QModelIndex());
   ui->tvPackages->setCurrentIndex(maux);
   ui->tvPackages->scrollTo(maux, QAbstractItemView::PositionAtCenter);
   ui->tvPackages->setCurrentIndex(maux);
 
   refreshTabInfo();
-  refreshTabFiles();
+  refreshTabFiles();*/
 
   if (isPackageTreeViewVisible())
   {
@@ -699,6 +699,13 @@ void MainWindow::buildPackageList()
       doInstallLocalPackages();
     }*/
   }
+
+  QModelIndex maux = m_packageModel->index(0, 0, QModelIndex());
+  ui->tvPackages->setCurrentIndex(maux);
+  ui->tvPackages->scrollTo(maux, QAbstractItemView::PositionAtCenter);
+  ui->tvPackages->setCurrentIndex(maux);
+  refreshTabInfo();
+  refreshTabFiles();
 
   ui->tvPackages->setColumnWidth(PackageModel::ctn_PACKAGE_SIZE_COLUMN, 10);
   //refreshToolBar();
@@ -906,7 +913,7 @@ void MainWindow::refreshTabInfo(bool clearContents, bool neverQuit)
  */
 void MainWindow::refreshTabFiles(bool clearContents, bool neverQuit)
 {  
-  if (m_progressWidget->isVisible()) return;
+  if (m_progressWidget->isVisible() || !m_initializationCompleted) return;
 
   if(neverQuit == false &&
      (ui->twProperties->currentIndex() != ctn_TABINDEX_FILES || !isPropertiesTabWidgetVisible()))
