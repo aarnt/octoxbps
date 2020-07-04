@@ -295,7 +295,7 @@ void MainWindow::keyReleaseEvent(QKeyEvent* ke)
 {
   //qDebug() << "StringList: " << m_listOfVisitedPackages;
 
-  if ((ui->tvPackages->hasFocus()) && (
+  /*if ((ui->tvPackages->hasFocus()) && (
       ke->key() == Qt::Key_Up || ke->key() == Qt::Key_Down ||
       ke->key() == Qt::Key_Home || ke->key() == Qt::Key_End ||
       ke->key() == Qt::Key_PageUp || ke->key() == Qt::Key_PageDown))
@@ -305,6 +305,11 @@ void MainWindow::keyReleaseEvent(QKeyEvent* ke)
       refreshTabInfo(false, true);
       ui->tvPackages->setFocus();
     }
+  }*/
+  if (ui->tvPackages->hasFocus() && ke->key() == Qt::Key_Space)
+  {
+    invalidateTabs();
+    ui->tvPackages->setFocus();
   }
   else if(ke->key() == Qt::Key_Home && ke->modifiers() == Qt::AltModifier)
   {
