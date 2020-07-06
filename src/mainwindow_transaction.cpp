@@ -1339,8 +1339,10 @@ void MainWindow::toggleTransactionActions(const bool value)
   ui->actionFindFileInPackage->setEnabled(value);
   m_leFilterPackage->setEnabled(value);
 
+  disconnect(ui->twProperties, SIGNAL(currentChanged(int)), this, SLOT(changedTabIndex()));
   ui->twProperties->setTabEnabled(ctn_TABINDEX_INFORMATION, value);
   ui->twProperties->setTabEnabled(ctn_TABINDEX_FILES, value);
+  connect(ui->twProperties, SIGNAL(currentChanged(int)), this, SLOT(changedTabIndex()));
 
   //We have to toggle the combobox groups as well
   if (m_initializationCompleted) ui->twGroups->setEnabled(value);
