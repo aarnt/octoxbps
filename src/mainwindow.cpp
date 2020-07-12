@@ -79,7 +79,7 @@ MainWindow::MainWindow(QWidget *parent) :
   //Here we try to speed up first pkg list build!
   //m_time->start();
 
-  getOutdatedPackageListThreaded();
+  //getOutdatedPackageListThreaded();
 
   m_time->start();
   retrieveUnrequiredPackageList();
