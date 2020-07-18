@@ -70,6 +70,7 @@ MainWindow::MainWindow(QWidget *parent) :
   m_selectedViewOption = ectn_ALL_PKGS;
   m_selectedRepository = "";
   m_numberOfInstalledPackages = 0;
+  m_numberOfOutdatedPackages = 0;
   m_debugInfo = false;
   m_time = new QElapsedTimer();
   m_unrequiredPackageList = NULL;
