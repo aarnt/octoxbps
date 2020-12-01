@@ -1,4 +1,4 @@
-0.3.0
+0.3.0 (2020/07/18)
   BugFix: Removed all xbps-install -f (force) commands.
   BugFix: Enable '*' char in the "Search/by file" option.
   BugFix: Void Linux RSS news page was outdated.
@@ -23,15 +23,15 @@
   Added new context menu option "Info" on pkg list.
   Added more information about packages on Info tab.
 
-0.2.2
+0.2.2 (2016/11/23)
   BugFix: Reset ProgressWidget range value to 100, so transactions could update 
 	percentages once again.
 
-0.2.1
+0.2.1 (2016/06/17)
   BugFix: Clicking notifier hides OctoXBPS when it's running.
   BugFix: Notifier was not starting OctoXBPS when action was triggered.
 
-0.2.0
+0.2.0 (2016/05/29)
   BugFix: Block some events while executing a transaction.
   BugFix in parser code.
   BugFix in Files tab retrieve.
@@ -46,5 +46,5 @@
   Added Search by description option in menu.
   Added support for lxqt-sudo (but it removes "run in terminal mode").
 
-0.1.0 
+0.1.0 (2015/08/02)
   Initial Proof of Concept release.
