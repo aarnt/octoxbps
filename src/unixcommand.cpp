@@ -538,15 +538,14 @@ QString UnixCommand::getXBPSVersion()
  */
 QString UnixCommand::getShell()
 {
+  if (QFile::exists("/usr/bin/bash"))
+    return "bash";
+
   QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
   QString shell = env.value("SHELL", "/bin/bash");
 
   QFileInfo fi(shell);
-
-  if (fi.fileName() == "fish")
-    return "bash";
-  else
-    return fi.fileName();
+  return fi.fileName();
 }
 
 /*

@@ -375,6 +375,7 @@ private slots:
   void refreshTabFiles(bool clearContents=false, bool neverQuit=false);
   void onDoubleClickPackageList();
   void changedTabIndex();
+  void clearTabsInfoOrFiles();
   void invalidateTabs(); //This method clears the current information showed on tab.
 
   void doPreRemoveAndInstall();
