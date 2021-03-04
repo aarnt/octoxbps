@@ -5,7 +5,8 @@
 #-------------------------------------------------
 
 QT += core xml gui network widgets
-CONFIG += qt console warn_on debug
+CONFIG += qt console warn_on debug lrelease embed_translations
+QM_FILES_RESOURCE_PREFIX=/translations
 QMAKE_CXXFLAGS += -std=c++11
 TARGET = octoxbps-notifier
 TEMPLATE = app
@@ -56,6 +57,8 @@ FORMS += ../ui/transactiondialog.ui \
 
 RESOURCES += \
     ../resources.qrc
+
+TRANSLATIONS += ../translations/octoxbps_de_DE.ts
 
 # install
 isEmpty(PREFIX) {

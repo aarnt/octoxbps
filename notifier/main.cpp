@@ -58,11 +58,9 @@ int main(int argc, char *argv[])
 
   QApplication a(argc, argv);
 
-  /*QTranslator appTranslator;
-  appTranslator.load(":/resources/translations/octoxbps_" +
-                     QLocale::system().name());
-
-  a.installTranslator(&appTranslator);*/
+  QTranslator appTranslator;
+  appTranslator.load(QLocale(), QStringLiteral("octoxbps"), QStringLiteral("_"), QStringLiteral(":/translations"));
+  a.installTranslator(&appTranslator);
   a.setQuitOnLastWindowClosed(false);
 
   setenv("COLORTERM", "truecolor", 1);

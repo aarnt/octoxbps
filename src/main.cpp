@@ -81,8 +81,7 @@ int main(int argc, char *argv[])
   app.sendMessage("RAISE");
 
   QTranslator appTranslator;
-  appTranslator.load(QStringLiteral(":/resources/translations/octoxbps_") +
-                     QLocale::system().name());
+  appTranslator.load(QLocale(), QStringLiteral("octoxbps"), QStringLiteral("_"), QStringLiteral(":/translations"));
   app.installTranslator(&appTranslator);
 
   if (argList->getSwitch(QStringLiteral("-help"))){
