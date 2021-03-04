@@ -58,7 +58,7 @@ FORMS += ../ui/transactiondialog.ui \
 RESOURCES += \
     ../resources.qrc
 
-TRANSLATIONS += ../translations/octoxbps_de_DE.ts
+TRANSLATIONS += ../translations/octoxbps_de.ts
 
 # install
 isEmpty(PREFIX) {
