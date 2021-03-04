@@ -1167,12 +1167,12 @@ Möchten Sie sie wirklich öffnen?</translation>
     <message>
         <location filename="src/strconstants.cpp" line="592"/>
         <source>remove</source>
-        <translation>entfernen</translation>
+        <translation>entferne</translation>
     </message>
     <message>
         <location filename="src/strconstants.cpp" line="596"/>
         <source>install</source>
-        <translation>installieren</translation>
+        <translation>installiere</translation>
     </message>
     <message>
         <location filename="src/strconstants.cpp" line="600"/>
