@@ -6,7 +6,8 @@
 
 QT += core gui network xml widgets
 DEFINES += OCTOXBPS_EXTENSIONS UNIFIED_SEARCH
-CONFIG += qt warn_on debug
+CONFIG += qt warn_on debug lrelease embed_translations
+QM_FILES_RESOURCE_PREFIX=/translations
 QMAKE_CXXFLAGS += -std=c++17
 TEMPLATE = app
 DESTDIR += bin
@@ -76,7 +77,7 @@ FORMS   += ui/mainwindow.ui \
 
 RESOURCES += resources.qrc
 
-#TRANSLATIONS += resources/translations/octoxbps_pt_BR.ts
+TRANSLATIONS += translations/octoxbps_de.ts
 
 # install
 isEmpty(PREFIX) {
