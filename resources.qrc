@@ -48,6 +48,5 @@
         <file>resources/images/show_groups.png</file>
         <file>resources/images/mirror-check.png</file>
         <file>resources/images/cachecleaner.png</file>
-        <file>resources/qml/chooseterminal.qml</file>
     </qresource>
 </RCC>
