@@ -27,6 +27,7 @@
 
 #include "passworddialog.h"
 #include "ui_passworddialog.h"
+#include <QFile>
 #include <QIcon>
 #include <QClipboard>
 #include <QToolButton>
@@ -49,6 +50,12 @@ PasswordDialog::PasswordDialog(const QString & cmd
   ui->backendL->setText(backendName);
   ui->iconL->setPixmap(QIcon::fromTheme(QStringLiteral("dialog-password")).pixmap(64, 64));
   setWindowIcon(QIcon::fromTheme(QStringLiteral("security-high")));
+
+  if (QFile::exists(QStringLiteral("/usr/bin/doas")) &&
+      QFile::exists(QStringLiteral("/etc/doas.conf")))
+    setWindowTitle(QString::fromUtf8("octoxbps-doas"));
+  else
+    setWindowTitle(QString::fromUtf8("octoxbps-sudo"));
 }
 
 PasswordDialog::~PasswordDialog()
