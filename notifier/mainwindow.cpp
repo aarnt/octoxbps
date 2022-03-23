@@ -264,7 +264,7 @@ void MainWindow::aboutOctoXBPSNotifier()
   //First we create a fake window to act as about dialog's parent
   //Otherwise the dialog appears at a random screen point!
   QMainWindow *fake = new QMainWindow();
-  fake->setWindowIcon(m_icon);
+  fake->setWindowIcon(IconHelper::getIconOctopi());
   fake->setVisible(false);
   QScreen *sc = QGuiApplication::primaryScreen();
   fake->setGeometry(sc->geometry());
