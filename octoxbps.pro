@@ -77,7 +77,8 @@ FORMS   += ui/mainwindow.ui \
 
 RESOURCES += resources.qrc
 
-TRANSLATIONS += translations/octoxbps_de.ts
+TRANSLATIONS += translations/octoxbps_de.ts\
+             translations/octoxbps_nl.ts
 
 # install
 isEmpty(PREFIX) {
