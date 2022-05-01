@@ -709,7 +709,7 @@ LinuxDistro UnixCommand::getLinuxDistro()
 
       QString contents = file.readAll();
 
-      if (contents.contains("PRETTY_NAME=\"void\""))
+      if (contents.contains("ID=\"void\""))
       {
         ret = ectn_VOID;
       }
