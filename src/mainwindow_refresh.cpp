@@ -59,7 +59,7 @@ void MainWindow::refreshAppIcon()
   }
   else
   {
-    setWindowIcon(IconHelper::getIconOctopiGreen());
+    setWindowIcon(IconHelper::getIconOctopi());
   }
 
   ui->actionSystemUpgrade->setEnabled(enableSystemUpgrade);

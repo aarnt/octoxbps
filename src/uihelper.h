@@ -35,10 +35,6 @@
 
 class IconHelper{
 public:
-  static QIcon getIconOctopiTransparent(){ return QIcon(":/resources/images/octopi_transparent.png"); }
-  static QIcon getIconOctopiRed(){ return QIcon(":/resources/images/octopi_red.png"); }
-  static QIcon getIconOctopiYellow(){ return QIcon(":/resources/images/octopi_yellow.png"); }
-  static QIcon getIconOctopiGreen(){ return QIcon(":/resources/images/octopi_green.png"); }
   static QIcon getIconInstalled(){ return QIcon(":/resources/images/installed.png"); }
   static QIcon getIconNonInstalled(){ return QIcon(":/resources/images/noninstalled.png"); }
   static QIcon getIconOutdated(){ return QIcon(":/resources/images/outdated.png"); }
@@ -46,6 +42,41 @@ public:
   static QIcon getIconUnrequired(){ return QIcon(":/resources/images/unrequired.png"); }
   static QIcon getIconForeignGreen(){ return QIcon(":/resources/images/foreign_green.png"); }
   static QIcon getIconForeignRed(){ return QIcon(":/resources/images/foreign_red.png"); }
+
+  static QIcon getIconOctopiTransparent(){
+    if (WMHelper::isKDERunning())
+      return QIcon::fromTheme("update-low", QIcon(":/resources/images/octopi_transparent.png"));
+    else
+      return QIcon(":/resources/images/octopi_transparent.png");
+  }
+
+  static QIcon getIconOctopiYellow(){
+    if (WMHelper::isKDERunning())
+      return QIcon::fromTheme("update-medium", QIcon(":/resources/images/octopi_yellow.png"));
+    else
+      return QIcon(":/resources/images/octopi_yellow.png");
+  }
+
+  static QIcon getIconOctopiRed(){
+    if (WMHelper::isKDERunning())
+      return QIcon::fromTheme("update-high", QIcon(":/resources/images/octopi_red.png"));
+    else
+      return QIcon(":/resources/images/octopi_red.png");
+  }
+
+  static QIcon getIconOctopiGreen(){
+    if (WMHelper::isKDERunning())
+      return QIcon::fromTheme("update-none", QIcon(":/resources/images/octopi_green.png"));
+    else
+      return QIcon(":/resources/images/octopi_green.png");
+  }
+
+  static QIcon getIconOctopi(){
+    if (WMHelper::isKDERunning())
+      return QIcon::fromTheme("octopi", QIcon(":/resources/images/octopi.png"));
+    else
+      return QIcon(":/resources/images/octopi.png");
+  }
 
   static QIcon getIconHardDrive(){
     if (WMHelper::isKDERunning())
