@@ -1,58 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="hu">
+<TS version="2.1" language="et">
 <context>
     <name>PasswordDialog</name>
     <message>
         <location filename="../passworddialog.ui" line="6"/>
         <source>LXQt sudo</source>
-        <translation></translation>
+        <translation>LXQt sudo</translation>
     </message>
     <message>
         <location filename="../passworddialog.ui" line="42"/>
         <source>Copy command to clipboard</source>
-        <translation>Parancs másolása vágólapra</translation>
+        <translation>Kopeeri käsk lõikelauale</translation>
     </message>
     <message>
         <location filename="../passworddialog.ui" line="45"/>
         <source>&amp;Copy</source>
-        <translation>&amp;Másolás</translation>
+        <translation>&amp;Kopeeri</translation>
     </message>
     <message>
         <location filename="../passworddialog.ui" line="83"/>
         <source>The requested action needs administrative privileges.&lt;br&gt;Please enter your password.</source>
-        <translation>A kért művelethez adminisztrátori jogosultság szükséges. &lt;br&gt;Írja be a jelszavát.</translation>
+        <translation>Järgnev tegevus eeldab administraatori õigusi.&lt;br&gt;Palun sisesta oma salasõna.</translation>
     </message>
     <message>
         <location filename="../passworddialog.ui" line="106"/>
         <source>LXQt sudo backend</source>
-        <translation>LXQt sudo backend</translation>
+        <translation>LXQt sudo-liidestus</translation>
     </message>
     <message>
         <location filename="../passworddialog.ui" line="109"/>
         <source>A program LXQt sudo calls in background to elevate privileges.</source>
-        <translation>Az LXQt sudo program a háttérben megszerzi a jogosultságokat.</translation>
+        <translation>Rakendus, mille LXQt sudo suuremate õiguste saamiseks taustal käivitab.</translation>
     </message>
     <message>
         <location filename="../passworddialog.ui" line="119"/>
         <source>Command:</source>
-        <translation>Parancs:</translation>
+        <translation>Käsk:</translation>
     </message>
     <message>
         <location filename="../passworddialog.ui" line="126"/>
         <source>Password:</source>
-        <translation>Jelszó:</translation>
+        <translation>Salasõna:</translation>
     </message>
     <message>
         <location filename="../passworddialog.ui" line="133"/>
         <source>Enter password</source>
-        <translation>Adjon meg jelszót</translation>
+        <translation>Sisesta salasõna</translation>
     </message>
     <message>
         <location filename="../passworddialog.cpp" line="60"/>
         <source>Attempt #%1</source>
-        <translatorcomment>Próba #%1</translatorcomment>
-        <translation>%1. próbálkozás</translation>
+        <translation>%1. katse</translation>
     </message>
 </context>
 <context>
@@ -73,18 +72,18 @@ Arguments:
   arguments        Optional arguments for command.
 
 </source>
-        <translation>Használat: %1 opció [parancs [paraméterek...]]
+        <translation>Kasutus: %1 suvand [käsk [argumendid...]]
 
-A %2/%3 grafikus felhasználói felülete
+Graafiline liides %2/%3 jaoks
 
-paraméterek:
-  Opciók:
-    -h|--help      Kiírja ezt a szöveget..
-    -v|--version   Kiírja a verziószámot..
-    -s|--su        %3(1) használata backendként.
-    -d|--sudo      %2(8) használata backendként.
-  parancs           A végrehajtandó parancs.
-  argumentumok        Választható argumentumok a parancshoz.
+Argumendid:
+  suvand:
+    -h|--help      Kuva see abiteave.
+    -v|--version   Kuva versiooniteave.
+    -s|--su        Kasuta taustarakendust %3(1).
+    -d|--sudo      Kasuta taustarakendust %2(8).
+  command          Käivitatav käsk.
+  arguments        Käsu võimalikud argumendid.
 
 </translation>
     </message>
@@ -92,7 +91,7 @@ paraméterek:
         <location filename="../sudo.cpp" line="92"/>
         <source>%1 version %2
 </source>
-        <translation>%1 verzió %2
+        <translation>%1 versioon %2
 </translation>
     </message>
 </context>
@@ -101,53 +100,53 @@ paraméterek:
     <message>
         <location filename="../sudo.cpp" line="195"/>
         <source>%1: no command to run provided!</source>
-        <translation>%1: nincs végrehajtandó parancs!</translation>
+        <translation>%1: ei leidunud käsku, mida käivitada!</translation>
     </message>
     <message>
         <location filename="../sudo.cpp" line="202"/>
         <source>%1: no backend chosen!</source>
-        <translation>%1: nincs backend kiválasztva!</translation>
+        <translation>%1: taustarakendus on valimata!</translation>
     </message>
     <message>
         <location filename="../sudo.cpp" line="219"/>
         <source>Syscall error, failed to fork: %1</source>
-        <translation>Rendszerhívás hiba, nem sikerült forkot létrehozni: %1</translation>
+        <translation>Süteemiviga protsessi kõrvalharu loomisel: %1</translation>
     </message>
     <message>
         <location filename="../sudo.cpp" line="246"/>
         <source>unset</source>
         <extracomment>shouldn&apos;t be actually used but keep as short as possible in translations just in case.</extracomment>
-        <translation type="unfinished">nincs</translation>
+        <translation>määratlemata</translation>
     </message>
     <message>
         <location filename="../sudo.cpp" line="295"/>
         <source>%1: Detected attempt to inject privileged command via LC_ALL env(%2). Exiting!
 </source>
-        <translation>%1: Észlelt próbálkozás, hogy egy kiemelt parancsot próbált futtatni ezzel: LC_ALL env(%2). Bezárás!
+        <translation>%1: Tuvastasin katse käivitada suuremate õigustega käsku LC_ALL env(%2) kaudu. Lõpetan töö!
 </translation>
     </message>
     <message>
         <location filename="../sudo.cpp" line="337"/>
         <source>Syscall error, failed to bring pty to non-block mode: %1</source>
-        <translation type="unfinished">Rendszerhívás hiba, nem sikerült megnyitni a pszeudoterminált non-block módban: %1</translation>
+        <translation>Süsteemiviga, kus ei õnnestunud pty&apos;d seadistada mitteblokeerivasse olekusse: %1</translation>
     </message>
     <message>
         <location filename="../sudo.cpp" line="345"/>
         <source>Syscall error, failed to fdopen pty: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Süsteemiviga, kus ei teha „fdopen pty“: %1</translation>
     </message>
     <message>
         <location filename="../sudo.cpp" line="314"/>
         <source>%1: Failed to exec &apos;%2&apos;: %3
 </source>
-        <translation>%1: A(z) &apos;%2&apos;:%3 végrehajtása sikertelen
+        <translation>%1: „%2“ käivitamine ei õnnestunud: %3
 </translation>
     </message>
     <message>
         <location filename="../sudo.cpp" line="376"/>
         <source>Child &apos;%1&apos; process failed!
 %2</source>
-        <translation>A(z) &apos;%1&apos; gyermekfolyamat végrehajtása nem sikerült!
+        <translation>„%1“ järglasprotsessi tegevus ei õnnestunud!
 %2</translation>
     </message>
 </context>

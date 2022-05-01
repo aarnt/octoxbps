@@ -56,7 +56,7 @@
 namespace
 {
 const QString app_master{QStringLiteral("octoxbps-sudo")};
-const QString app_version{QStringLiteral("0.15.0")};
+const QString app_version{QStringLiteral("1.1.0")};
 const QString app_lxsu{QStringLiteral("su")};
 const QString app_lxsudo{QStringLiteral("sudo")};
 const QString su_prog{QStringLiteral("su")};
