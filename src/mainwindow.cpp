@@ -75,6 +75,7 @@ MainWindow::MainWindow(QWidget *parent) :
   m_time = new QElapsedTimer();
   m_unrequiredPackageList = NULL;
   m_foreignPackageList = NULL;
+  m_unixCommand = nullptr;
   m_console = nullptr;
 
   //Here we try to speed up first pkg list build!

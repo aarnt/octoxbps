@@ -407,7 +407,7 @@ void MainWindow::initTabTransaction()
   tvTransaction->header()->setSectionResizeMode(QHeaderView::Fixed);
   tvTransaction->setFrameShape(QFrame::NoFrame);
   tvTransaction->setFrameShadow(QFrame::Plain);
-  tvTransaction->setStyleSheet(StrConstants::getTreeViewCSS());
+  //tvTransaction->setStyleSheet(StrConstants::getTreeViewCSS());
   tvTransaction->expandAll();
 
   m_modelTransaction->setSortRole(0);
@@ -570,7 +570,7 @@ void MainWindow::initTabFiles()
   tvPkgFileList->setFrameShape(QFrame::NoFrame);
   tvPkgFileList->setFrameShadow(QFrame::Plain);
   tvPkgFileList->setObjectName("tvPkgFileList");
-  tvPkgFileList->setStyleSheet(StrConstants::getTreeViewCSS());
+  //tvPkgFileList->setStyleSheet(StrConstants::getTreeViewCSS());
 
   modelPkgFileList->setSortRole(0);
   modelPkgFileList->setColumnCount(0);

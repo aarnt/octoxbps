@@ -155,7 +155,7 @@ void MainWindow::insertRemovePackageIntoTransaction(const QString &pkgName)
     siRemoveParent->appendRow(siPackageToRemove);
   }
 
-  ui->twProperties->setCurrentIndex(ctn_TABINDEX_TRANSACTION);
+  //ui->twProperties->setCurrentIndex(ctn_TABINDEX_TRANSACTION);
   tvTransaction->expandAll();
   changeTransactionActionsState();
 }
@@ -188,7 +188,7 @@ void MainWindow::insertInstallPackageIntoTransaction(const QString &pkgName)
     siInstallParent->appendRow(siPackageToInstall);
   }
 
-  ui->twProperties->setCurrentIndex(ctn_TABINDEX_TRANSACTION);
+  //ui->twProperties->setCurrentIndex(ctn_TABINDEX_TRANSACTION);
   tvTransaction->expandAll();
   changeTransactionActionsState();
 }
@@ -266,7 +266,7 @@ void MainWindow::insertIntoRemovePackage()
   //bool checkDependencies=false;
   //QStringList dependencies;
 
-  ensureTabVisible(ctn_TABINDEX_TRANSACTION);
+  //ensureTabVisible(ctn_TABINDEX_TRANSACTION);
   QModelIndexList selectedRows = ui->tvPackages->selectionModel()->selectedRows();
 
   //First, let's see if we are dealing with a package group
@@ -324,7 +324,7 @@ void MainWindow::insertIntoRemovePackage()
  */
 void MainWindow::insertGroupIntoRemovePackage()
 {
-  ensureTabVisible(ctn_TABINDEX_TRANSACTION);
+  //ensureTabVisible(ctn_TABINDEX_TRANSACTION);
   insertRemovePackageIntoTransaction(getSelectedCategory());
 }
 
@@ -335,7 +335,7 @@ void MainWindow::insertGroupIntoRemovePackage()
 void MainWindow::insertIntoInstallPackage()
 {
   qApp->processEvents();
-  ensureTabVisible(ctn_TABINDEX_TRANSACTION);
+  //ensureTabVisible(ctn_TABINDEX_TRANSACTION);
   QModelIndexList selectedRows = ui->tvPackages->selectionModel()->selectedRows();
 
   foreach(QModelIndex item, selectedRows)
@@ -502,7 +502,7 @@ bool MainWindow::isPackageInRemoveTransaction(const QString &pkgName)
  */
 void MainWindow::insertGroupIntoInstallPackage()
 {
-  ensureTabVisible(ctn_TABINDEX_TRANSACTION);
+  //ensureTabVisible(ctn_TABINDEX_TRANSACTION);
   insertInstallPackageIntoTransaction(getSelectedCategory());
 }
 
@@ -575,6 +575,26 @@ void MainWindow::tvTransactionRowsChanged(const QModelIndex& parent)
       tvTransactionAdjustItemText(itemInstall);
     }
     else itemInstall->setText(StrConstants::getTransactionInstallText());
+  }
+
+  int lToInstall=itemInstall->rowCount();
+  int lToRemove=itemRemove->rowCount();
+
+  if (lToInstall > 0 || lToRemove > 0)
+  {
+    QString newText=StrConstants::getTabTransactionName() + QLatin1String(" (");
+
+    if (lToInstall > 0)
+      newText += QLatin1String("+") + QString::number(lToInstall);
+    if (lToRemove > 0)
+      newText += QLatin1String("-") + QString::number(lToRemove);
+
+    newText += QLatin1String(")");
+    ui->twProperties->setTabText(ctn_TABINDEX_TRANSACTION, newText);
+  }
+  else
+  {
+    ui->twProperties->setTabText(ctn_TABINDEX_TRANSACTION, StrConstants::getTabTransactionName());
   }
 }
 
@@ -1568,6 +1588,14 @@ void MainWindow::resetTransaction()
   {
     delete m_xbpsExec;
   }
+
+  if (m_unixCommand != nullptr)
+  {
+    m_unixCommand->removeTemporaryFile();
+    delete m_unixCommand;
+    m_unixCommand = nullptr;
+  }
+
   m_commandExecuting = ectn_NONE;
   disconnect(this, SIGNAL(buildPackageListDone()), this, SLOT(resetTransaction()));
 }

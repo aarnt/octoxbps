@@ -384,10 +384,8 @@ void XBPSExec::prepareTextToPrint(QString str, TreatString ts, TreatURLLinks tl)
   }
   else
   {
-    if(/*newStr.contains(QRegularExpression("removed")) ||*/
-       newStr.contains(QRegularExpression("removing ")) ||
+    if(newStr.contains(QRegularExpression("removing ")) ||
        newStr.contains(QRegularExpression("could not ")) ||
-       newStr.contains(QRegularExpression("error")) ||
        newStr.contains(QRegularExpression("failed")) ||
        newStr.contains(QRegularExpression("is not synced")) ||
        newStr.contains(QRegularExpression("[Rr]emoving")) ||
@@ -396,11 +394,7 @@ void XBPSExec::prepareTextToPrint(QString str, TreatString ts, TreatURLLinks tl)
     {
       newStr = "<b><font color=\"#E55451\">" + newStr + "&nbsp;</font></b>"; //RED
     }
-    else if(/*newStr.contains(QRegularExpression("reinstalled")) ||
-            newStr.contains(QRegularExpression("installed")) ||
-            newStr.contains(QRegularExpression("upgraded")) ||
-            newStr.contains(QRegularExpression("updated")) ||*/
-            newStr.contains(QRegularExpression("Verifying")) ||
+    else if(newStr.contains(QRegularExpression("Verifying")) ||
             newStr.contains(QRegularExpression("Building")) ||
             newStr.contains(QRegularExpression("Checking")) ||
             newStr.contains(QRegularExpression("Configuring")) ||
@@ -430,12 +424,6 @@ void XBPSExec::prepareTextToPrint(QString str, TreatString ts, TreatURLLinks tl)
     {
       newStr = "<b><font color=\"#B4AB58\">" + newStr + "</font></b>"; //IT'S A PKGNAME!
     }
-    /*else if (newMsg.contains(":") &&
-               (!newMsg.contains(QRegularExpression("\\):"))) &&
-               (!newMsg.contains(QRegularExpression(":$"))))
-      {
-        newMsg = "<b><font color=\"#FF8040\">" + newMsg + "</font></b>"; //IT'S A PKGNAME!
-      }*/
   }
 
   if (newStr.contains("::"))
