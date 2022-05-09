@@ -98,7 +98,7 @@ target.path = $$BINDIR
 desktop.path = $$DATADIR/applications
 desktop.files += octoxbps.desktop
 
-icon.path = $$DATADIR/icons
+icon.path = $$DATADIR/icons/hicolor/48x48/apps
 icon.files += resources/images/octopi.png
 
 INSTALLS += target desktop icon
