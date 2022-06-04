@@ -353,27 +353,27 @@
     <message>
         <location filename="src/mainwindow_help.cpp" line="96"/>
         <source>Alt+1 to switch to &apos;Info&apos; tab</source>
-        <translation>Alt+1 tuşu ile &apos;Bilgi&apos;-sekmesine geçer</translation>
+        <translation>Alt+1 tuşu ile &apos;Bilgi&apos; sekmesine geçer</translation>
     </message>
     <message>
         <location filename="src/mainwindow_help.cpp" line="98"/>
         <source>Alt+2 to switch to &apos;Files&apos; tab</source>
-        <translation>Alt+2 tuşu ile &apos;Dosyalar&apos;-sekmesine geçer</translation>
+        <translation>Alt+2 tuşu ile &apos;Dosyalar&apos; sekmesine geçer</translation>
     </message>
     <message>
         <location filename="src/mainwindow_help.cpp" line="100"/>
         <source>Alt+3 to switch to &apos;Transaction&apos; tab</source>
-        <translation>Alt+3 tuşu ile &apos;İşlem&apos;-sekmesine geçer</translation>
+        <translation>Alt+3 tuşu ile &apos;İşlem&apos; sekmesine geçer</translation>
     </message>
     <message>
         <location filename="src/mainwindow_help.cpp" line="102"/>
         <source>Alt+4 to switch to &apos;Output&apos; tab</source>
-        <translation>Alt+4 tuşu ile &apos;Çıktı&apos;-sekmesine geçer</translation>
+        <translation>Alt+4 tuşu ile &apos;Çıktı&apos; sekmesine geçer</translation>
     </message>
     <message>
         <location filename="src/mainwindow_help.cpp" line="104"/>
         <source>Alt+5 to switch to &apos;News&apos; tab</source>
-        <translation>Alt+5 tuşu ile &apos;Haberler&apos;-sekmesine geçer</translation>
+        <translation>Alt+5 tuşu ile &apos;Haberler&apos; sekmesine geçer</translation>
     </message>
     <message>
         <location filename="src/mainwindow_help.cpp" line="106"/>
@@ -383,7 +383,7 @@
     <message>
         <location filename="src/mainwindow_help.cpp" line="108"/>
         <source>Alt+7 to switch to &apos;Terminal&apos; tab</source>
-        <translation>Alt+7 tuşu ile &apos;Uçbirim&apos;-sekmesine geçer</translation>
+        <translation>Alt+7 tuşu ile &apos;Uçbirim&apos; sekmesine geçer</translation>
     </message>
     <message>
         <location filename="src/mainwindow_help.cpp" line="110"/>
