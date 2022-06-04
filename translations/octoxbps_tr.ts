@@ -1253,6 +1253,16 @@ Are you sure you want to open it?</source>
         <source>Upgrading...</source>
         <translation>Güncelleniyor...</translation>
     </message>
+    <message>
+        <location filename="src/strconstants.cpp" line="731"/>
+        <source>System upgrade</source>
+        <translation>Sistemi güncelle</translation>
+    </message>
+    <message>
+        <location filename="src/strconstants.cpp" line="736"/>
+        <source>Exit</source>
+        <translation>Çıkış</translation>
+    </message>
 </context>
 <context>
     <name>SearchBar</name>
