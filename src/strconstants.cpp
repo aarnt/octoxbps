@@ -725,3 +725,13 @@ QString StrConstants::getTreeViewCSS(){
                  "       border-image: none;"
                  "       image: url(:/resources/styles/branch-open_BW.png);}");
 }
+
+QString StrConstants::getSysUpgrade()
+{
+  return QObject::tr("System upgrade");
+}
+
+QString StrConstants::getExit()
+{
+  return QObject::tr("Exit");
+}

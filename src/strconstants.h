@@ -184,6 +184,8 @@ public:
   static QString getNever();
   static QString getSetInterval();
   static QString getUpgrading();
+  static QString getSysUpgrade();
+  static QString getExit();
 
   //Style Sheets ---------------------------------
 
