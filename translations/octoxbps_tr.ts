@@ -1221,7 +1221,7 @@ Are you sure you want to open it?</source>
     <message>
         <location filename="src/strconstants.cpp" line="644"/>
         <source>Once a day, at</source>
-        <translation>Günde bir, saati</translation>
+        <translation>Günde bir, saat</translation>
     </message>
     <message>
         <location filename="src/strconstants.cpp" line="648"/>

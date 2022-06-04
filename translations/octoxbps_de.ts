@@ -1254,6 +1254,16 @@ Möchten Sie sie wirklich öffnen?</translation>
         <source>Upgrading...</source>
         <translation>Updated...</translation>
     </message>
+    <message>
+        <location filename="src/strconstants.cpp" line="731"/>
+        <source>System upgrade</source>
+        <translation>System-Upgrade</translation>
+    </message>
+    <message>
+        <location filename="src/strconstants.cpp" line="736"/>
+        <source>Exit</source>
+        <translation>Beenden</translation>
+    </message>
 </context>
 <context>
     <name>SearchBar</name>
