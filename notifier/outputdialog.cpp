@@ -76,7 +76,7 @@ void OutputDialog::initAsTextBrowser()
 {
   this->resize(650, 500);
 
-  setWindowTitle(QCoreApplication::translate("MainWindow", StrConstants::getSysUpgrade()));
+  setWindowTitle(QCoreApplication::translate("MainWindow",  "System upgrade"));
   setWindowIcon(IconHelper::getIconSystemUpgrade());
 
   m_mainLayout = new QVBoxLayout(this);
@@ -112,7 +112,7 @@ void OutputDialog::initAsTextBrowser()
 void OutputDialog::initAsTermWidget()
 {
   this->resize(650, 500);
-  setWindowTitle(QCoreApplication::translate("MainWindow", StrConstants::getSysUpgrade()));
+  setWindowTitle(QCoreApplication::translate("MainWindow",  "System upgrade"));
   setWindowIcon(IconHelper::getIconSystemUpgrade());
 
   m_mainLayout = new QVBoxLayout(this);
