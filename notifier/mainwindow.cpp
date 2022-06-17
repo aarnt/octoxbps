@@ -107,7 +107,7 @@ void MainWindow::initSystemTrayIcon()
   m_systemTrayIcon->setIcon(m_icon); 
 #endif
 
-  m_actionExit = new QAction(IconHelper::getIconExit(), tr("Exit"), this);
+  m_actionExit = new QAction(IconHelper::getIconExit(), StrConstants::getExit(), this);
   connect(m_actionExit, SIGNAL(triggered()), this, SLOT(exitNotifier()));
 
   m_actionAbout = new QAction(StrConstants::getHelpAbout(), this);
@@ -130,7 +130,7 @@ void MainWindow::initSystemTrayIcon()
 
   m_actionSystemUpgrade = new QAction(this);
   m_actionSystemUpgrade->setIconVisibleInMenu(true);
-  m_actionSystemUpgrade->setText(tr("System upgrade"));
+  m_actionSystemUpgrade->setText(StrConstants::getSysUpgrade());
   m_actionSystemUpgrade->setIcon(IconHelper::getIconSystemUpgrade());
   connect(m_actionSystemUpgrade, SIGNAL(triggered()), this, SLOT(runOctoXBPSSysUpgrade()));
 
