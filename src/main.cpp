@@ -26,6 +26,7 @@
 #include <iostream>
 
 #include "QtSolutions/qtsingleapplication.h"
+#include <QLibraryInfo>
 #include <QMessageBox>
 #include <QTranslator>
 #include <QResource>
@@ -83,6 +84,9 @@ int main(int argc, char *argv[])
   QTranslator appTranslator;
   appTranslator.load(QLocale(), QStringLiteral("octoxbps"), QStringLiteral("_"), QStringLiteral(":/translations"));
   app.installTranslator(&appTranslator);
+  QTranslator qtTranslator;
+  qtTranslator.load(QLocale(), QStringLiteral("qt"), QStringLiteral("_"), QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+  app.installTranslator(&qtTranslator);
 
   if (argList->getSwitch(QStringLiteral("-help"))){
     std::cout << StrConstants::getApplicationCliHelp().toLatin1().data() << std::endl;

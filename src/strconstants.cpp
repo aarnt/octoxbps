@@ -92,9 +92,9 @@ QString StrConstants::getInternetUnavailableError(){
   return QObject::tr("Internet seems unavailable!");
 }
 
-QString StrConstants::getDisplayAllCategories(){
+/*QString StrConstants::getDisplayAllCategories(){
   return QObject::tr("Display all categories");
-}
+}*/
 
 QString StrConstants::getForeignToolGroup(){
   /*QString StrConstants::tool = getForeignRepositoryToolName();
@@ -161,7 +161,7 @@ QString StrConstants::getDependencies(){
   return QObject::tr("Dependencies");
 }
 
-QString StrConstants::getDependsOn(){
+/*QString StrConstants::getDependsOn(){
   return QObject::tr("Depends On");
 }
 
@@ -187,15 +187,15 @@ QString StrConstants::getReplaces(){
 
 QString StrConstants::getPopularityHeader(){
   return QObject::tr("Popularity");
-}
+}*/
 
 QString StrConstants::getOptions(){
   return QObject::tr("Options");
 }
 
-QString StrConstants::getVotes(){
+/*QString StrConstants::getVotes(){
   return QObject::tr("votes");
-}
+}*/
 
 QString StrConstants::getSize(){
   return QObject::tr("Size");
@@ -342,9 +342,9 @@ QString StrConstants::getCleaningPackageCache(){
   return QObject::tr("Cleaning package cache...");
 }
 
-QString StrConstants::getRemovingPacmanTransactionLockFile(){
+/*QString StrConstants::getRemovingPacmanTransactionLockFile(){
   return QObject::tr("Removing Pacman's transaction lock file...");
-}
+}*/
 
 #ifdef UNIFIED_SEARCH
 QString StrConstants::getLineEditTextLocal(){
@@ -440,9 +440,9 @@ QString StrConstants::getRemovePackages(int removePackagesCount){
   return QObject::tr("The following %n packages will be removed", 0, removePackagesCount);
 }
 
-QString StrConstants::getWarnHoldPkgFound() {
+/*QString StrConstants::getWarnHoldPkgFound() {
   return QObject::tr("There are forbidden packages in the removal list!");
-}
+}*/
 
 QString StrConstants::getWarnTransactionAborted() {
   return QObject::tr("Transaction aborted due to unresolved dependencies.");
@@ -484,9 +484,9 @@ QString StrConstants::getCleanCacheConfirmation(){
   return QObject::tr("Do you really want to clean the package cache?");
 }
 
-QString StrConstants::getRemovePacmanTransactionLockFileConfirmation(){
+/*QString StrConstants::getRemovePacmanTransactionLockFileConfirmation(){
   return QObject::tr("Do you really want to remove Pacman's transaction lock file?");
-}
+}*/
 
 QString StrConstants::getCancelTransactionConfirmation(){
   return QObject::tr("Do you really want to cancel the actions?");
@@ -563,13 +563,13 @@ QString StrConstants::getPaste()
   return QObject::tr("Paste");
 }
 
-QString StrConstants::getNeedsAppRestart(){
+/*QString StrConstants::getNeedsAppRestart(){
   return QObject::tr("Needs application restart to take effect");
 }
 
 QString StrConstants::getWarnNeedsAppRestart(){
   return QObject::tr("These changes need application restart to take effect!");
-}
+}*/
 
 QString StrConstants::getFileChooserTitle(){
   return QObject::tr("Select the packages you want to install");
@@ -604,13 +604,13 @@ QString StrConstants::getRemoveItems(){
   return QObject::tr("Remove items");
 }
 
-QString StrConstants::getPressCtrlAToSelectAll(){
+/*QString StrConstants::getPressCtrlAToSelectAll(){
   return QObject::tr("Press Ctrl+A to select/deselect all");
-}
+}*/
 
-QString StrConstants::getUseAURTool(){
+/*QString StrConstants::getUseAURTool(){
   return QObject::tr("Use \"%1\" tool").arg(getForeignRepositoryToolName());
-}
+}*/
 
 QString StrConstants::getFilterLocalPackages(){
   return QObject::tr("Filter installed packages");
