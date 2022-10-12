@@ -1109,6 +1109,7 @@ QString Package::parseSearchString(QString searchStr, bool exactMatch)
   }
 
   searchStr.replace("?", ".");
+  searchStr.replace("+", "\\+");
   return searchStr;
 }
 
