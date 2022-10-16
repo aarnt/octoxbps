@@ -1071,10 +1071,30 @@ void MainWindow::onDoubleClickPackageList()
 }
 
 /*
+ * Whenever user selects a package in the pkg list
+ */
+void MainWindow::refreshInfoAndFileTabs()
+{
+  disconnect(ui->tvPackages->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+          this, SLOT(invalidateTabs()));
+
+  if(ui->twProperties->currentIndex() == ctn_TABINDEX_INFORMATION)
+    refreshTabInfo();
+  else if (ui->twProperties->currentIndex() == ctn_TABINDEX_FILES)
+    refreshTabFiles();
+
+  if(m_initializationCompleted)
+    saveSettings(ectn_CURRENTTABINDEX);
+}
+
+/*
  * When the user changes the current selected tab, we must take care of data refresh.
  */
 void MainWindow::changedTabIndex()
 {
+  disconnect(ui->tvPackages->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+          this, SLOT(invalidateTabs()));
+
   if(ui->twProperties->currentIndex() == ctn_TABINDEX_INFORMATION)
     refreshTabInfo();
   else if (ui->twProperties->currentIndex() == ctn_TABINDEX_FILES)
@@ -1085,7 +1105,7 @@ void MainWindow::changedTabIndex()
   }
 
   if(m_initializationCompleted)
-    saveSettings(ectn_CurrentTabIndex);
+    saveSettings(ectn_CURRENTTABINDEX);
 }
 
 /*
@@ -1093,8 +1113,8 @@ void MainWindow::changedTabIndex()
  */
 void MainWindow::clearTabsInfoOrFiles()
 {
-  disconnect(ui->tvPackages->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
-          this, SLOT(invalidateTabs()));
+  //disconnect(ui->tvPackages->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+  //        this, SLOT(invalidateTabs()));
 
   if(ui->twProperties->currentIndex() == ctn_TABINDEX_INFORMATION) //This is TabInfo
   {
@@ -1107,8 +1127,8 @@ void MainWindow::clearTabsInfoOrFiles()
     return;
   }
 
-  connect(ui->tvPackages->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
-          this, SLOT(invalidateTabs()));
+  //connect(ui->tvPackages->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+  //        this, SLOT(invalidateTabs()));
 }
 
 /*
@@ -1116,6 +1136,9 @@ void MainWindow::clearTabsInfoOrFiles()
  */
 void MainWindow::invalidateTabs()
 {
+  disconnect(ui->tvPackages->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+          this, SLOT(invalidateTabs()));
+
   if(ui->twProperties->currentIndex() == ctn_TABINDEX_INFORMATION) //This is TabInfo
   {
     refreshTabInfo(false, false);
@@ -1126,6 +1149,9 @@ void MainWindow::invalidateTabs()
     refreshTabFiles();
     return;
   }
+
+  connect(ui->tvPackages->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+          this, SLOT(invalidateTabs()));
 }
 
 /*
@@ -1284,7 +1310,7 @@ void MainWindow::headerViewPackageListSortIndicatorClicked( int col, Qt::SortOrd
   connect(ui->tvPackages->header(), SIGNAL(sortIndicatorChanged(int,Qt::SortOrder)), this,
           SLOT(headerViewPackageListSortIndicatorClicked(int,Qt::SortOrder)));
 
-  saveSettings(ectn_PackageList);
+  saveSettings(ectn_PACKAGELIST);
 }
 
 /*

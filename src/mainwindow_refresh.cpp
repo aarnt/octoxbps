@@ -559,6 +559,11 @@ void MainWindow::showPackagesWithNoDescription()
  */
 void MainWindow::buildPackageList()
 {
+  disconnect(ui->tvPackages->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+            this, SLOT(invalidateTabs()));
+  connect(ui->tvPackages->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+            this, SLOT(invalidateTabs()));
+
   CPUIntensiveComputing cic;
   static bool firstTime = true;
 
@@ -615,6 +620,9 @@ void MainWindow::buildPackageList()
   m_progressWidget->setValue(counter);
   m_progressWidget->close();
   m_packageRepo.setData(list, *m_unrequiredPackageList);
+
+  removePackageTreeViewConnections();
+  initPackageTreeView();
 
   if(m_debugInfo)
     std::cout << "Time elapsed setting the list to the treeview: " << m_time->elapsed() << " mili seconds." << std::endl;
@@ -680,7 +688,6 @@ void MainWindow::buildPackageList()
     }
 
     //m_initializationCompleted = true;
-    //testSpecialDependencies(); //TEST!!!
 
     firstTime = false;
 
@@ -1148,6 +1155,8 @@ void MainWindow::refreshTabFiles(bool clearContents, bool neverQuit)
  */
 void MainWindow::reapplyPackageFilter()
 {
+  clearTabsInfoOrFiles();
+
   if (!isSearchByFileSelected())
   {
     bool isFilterPackageSelected = m_leFilterPackage->hasFocus();
@@ -1177,7 +1186,7 @@ void MainWindow::reapplyPackageFilter()
     QModelIndex mi = m_packageModel->index(0, PackageModel::ctn_PACKAGE_NAME_COLUMN, QModelIndex());
     ui->tvPackages->setCurrentIndex(mi);
     ui->tvPackages->scrollTo(mi);
-    clearTabsInfoOrFiles();
+    //clearTabsInfoOrFiles();
   }
   //If we are using "Search By file...
   else

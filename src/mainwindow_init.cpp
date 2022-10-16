@@ -96,7 +96,7 @@ void MainWindow::saveSettings(SaveSettingsReason saveSettingsReason){
     case ectn_CONSOLE_FONT_SIZE:
       break;
 
-    case ectn_CurrentTabIndex:
+    case ectn_CURRENTTABINDEX:
       SettingsManager::instance()->setCurrentTabIndex(ui->twProperties->currentIndex());
       break;
 
@@ -114,7 +114,7 @@ void MainWindow::saveSettings(SaveSettingsReason saveSettingsReason){
       SettingsManager::instance()->setShowGroupsPanel(1); //And also show Groups panel!
       break;
 
-    case ectn_PackageList:
+    case ectn_PACKAGELIST:
       SettingsManager::instance()->setPackageListOrderedCol(ui->tvPackages->header()->sortIndicatorSection());
       SettingsManager::instance()->setPackageListSortOrder(ui->tvPackages->header()->sortIndicatorOrder());
       break;
@@ -461,13 +461,28 @@ void MainWindow::initPackageTreeView()
 
   connect(ui->tvPackages->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
           this, SLOT(tvPackagesSelectionChanged(QItemSelection,QItemSelection)));
-  //connect(ui->tvPackages, SIGNAL(activated(QModelIndex)), this, SLOT(changedTabIndex()));
-  //connect(ui->tvPackages, SIGNAL(clicked(QModelIndex)), this, SLOT(changedTabIndex()));
+  connect(ui->tvPackages, SIGNAL(clicked(QModelIndex)), this, SLOT(refreshInfoAndFileTabs()));
   connect(ui->tvPackages->header(), SIGNAL(sortIndicatorChanged(int,Qt::SortOrder)), this,
           SLOT(headerViewPackageListSortIndicatorClicked(int,Qt::SortOrder)));
   connect(ui->tvPackages, SIGNAL(customContextMenuRequested(QPoint)), this,
           SLOT(execContextMenuPackages(QPoint)));
   connect(ui->tvPackages, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(onDoubleClickPackageList()));
+}
+
+/*
+ * Remove all Package TreeView "connect" calls
+ */
+void MainWindow::removePackageTreeViewConnections()
+{
+  disconnect(ui->tvPackages->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+          this, SLOT(tvPackagesSelectionChanged(QItemSelection,QItemSelection)));
+  disconnect(ui->tvPackages, SIGNAL(activated(QModelIndex)), this, SLOT(refreshInfoAndFileTabs()));
+  disconnect(ui->tvPackages, SIGNAL(clicked(QModelIndex)), this, SLOT(refreshInfoAndFileTabs()));
+  disconnect(ui->tvPackages->header(), SIGNAL(sortIndicatorChanged(int,Qt::SortOrder)), this,
+          SLOT(headerViewPackageListSortIndicatorClicked(int,Qt::SortOrder)));
+  disconnect(ui->tvPackages, SIGNAL(customContextMenuRequested(QPoint)), this,
+          SLOT(execContextMenuPackages(QPoint)));
+  disconnect(ui->tvPackages, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(onDoubleClickPackageList()));
 }
 
 /*
@@ -761,7 +776,6 @@ void MainWindow::initActions()
   ui->actionRemoveTransactionItem->setIcon(IconHelper::getIconClose());
   ui->actionRemoveTransactionItems->setIcon(IconHelper::getIconClose());
   ui->actionFindFileInPackage->setIcon(IconHelper::getIconFindFileInPackage());
-  //ui->actionOpenRootTerminal->setIcon(IconHelper::getIconTerminal());
 
   //Actions for the View menu
   connect(ui->actionViewAllPackages, SIGNAL(triggered()), this, SLOT(selectedAllPackagesMenu()));

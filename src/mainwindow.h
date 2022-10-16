@@ -236,6 +236,7 @@ private:
   bool isPackageInstalled(const QString &pkgName);
   bool isPackageTreeViewVisible();
   void initPackageTreeView();
+  void removePackageTreeViewConnections();
   void changeTabWidgetPropertiesIndex(const int newIndex);
   void initTabWidgetPropertiesIndex();
   void initTabInfo();
@@ -375,6 +376,7 @@ private slots:
   void refreshTabFiles(bool clearContents=false, bool neverQuit=false);
   void onDoubleClickPackageList();
   void changedTabIndex();
+  void refreshInfoAndFileTabs();
   void clearTabsInfoOrFiles();
   void invalidateTabs(); //This method clears the current information showed on tab.
 

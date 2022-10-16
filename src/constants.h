@@ -49,7 +49,7 @@ enum TreatString { ectn_TREAT_STRING, ectn_DONT_TREAT_STRING };
 enum TreatURLLinks { ectn_TREAT_URL_LINK, ectn_DONT_TREAT_URL_LINK };
 
 //SettingsManager related
-enum SaveSettingsReason { ectn_PackageList, ectn_CurrentTabIndex, ectn_NORMAL=30,
+enum SaveSettingsReason { ectn_PACKAGELIST, ectn_CURRENTTABINDEX, ectn_NORMAL=30,
                           ectn_MAXIMIZE_PACKAGES=40, ectn_MAXIMIZE_PROPERTIES=50, ectn_GROUPS=5,
                           ectn_CONSOLE_FONT_SIZE };
 
