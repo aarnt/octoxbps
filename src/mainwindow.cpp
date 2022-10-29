@@ -1150,8 +1150,8 @@ void MainWindow::invalidateTabs()
     return;
   }
 
-  connect(ui->tvPackages->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
-          this, SLOT(invalidateTabs()));
+  //connect(ui->tvPackages->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+  //        this, SLOT(invalidateTabs()));
 }
 
 /*

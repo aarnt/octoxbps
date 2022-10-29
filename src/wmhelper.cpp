@@ -250,9 +250,21 @@ void WMHelper::openFile(const QString& fileName){
   QProcess *p = new QProcess(qApp->activeWindow());
   QStringList s;
 
-  if (isXFCERunning() && UnixCommand::hasTheExecutable(ctn_XFCE_FILE_MANAGER)){
-    s << fileToOpen;
-    p->startDetached( ctn_XFCE_FILE_MANAGER, s );
+  if (isXFCERunning() && UnixCommand::hasTheExecutable(ctn_XFCE_FILE_MANAGER))
+  {
+    if (isTextFile)
+    {
+      s << fileToOpen;
+      if (UnixCommand::hasTheExecutable(ctn_XFCE_EDITOR))
+        p->startDetached(ctn_XFCE_EDITOR, s);
+      else if (UnixCommand::hasTheExecutable(ctn_XFCE_EDITOR_ALT))
+        p->startDetached(ctn_XFCE_EDITOR_ALT, s);
+    }
+    else
+    {
+      s << fileToOpen;
+      p->startDetached(ctn_XFCE_FILE_MANAGER, s);
+    }
   }
   else if (isKDERunning() && UnixCommand::hasTheExecutable(ctn_KDE_FILE_MANAGER)){
     s << "exec";
@@ -261,15 +273,7 @@ void WMHelper::openFile(const QString& fileName){
   }
   else if (UnixCommand::hasTheExecutable(ctn_KDE4_FILE_MANAGER)){
     s << fileToOpen;
-
-    /*if (UnixCommand::isRootRunning())
-    {
-      p->startDetached( "dbus-launch " + getKDEOpenHelper() + " " + fileToOpen );
-    }
-    else*/
-    {
-      p->startDetached( getKDEOpenHelper(), s );
-    }
+    p->startDetached( getKDEOpenHelper(), s );
   }
   else if (isTDERunning() && UnixCommand::hasTheExecutable(ctn_TDE_FILE_MANAGER)){
     s << "exec";
@@ -304,9 +308,21 @@ void WMHelper::openFile(const QString& fileName){
     s << fileToOpen;
     p->startDetached( ctn_LXDE_FILE_MANAGER, s );
   }
-  else if (UnixCommand::hasTheExecutable(ctn_XFCE_FILE_MANAGER)){
-    s << fileToOpen;
-    p->startDetached( ctn_XFCE_FILE_MANAGER, s );
+  else if (UnixCommand::hasTheExecutable(ctn_XFCE_FILE_MANAGER))
+  {
+    if (isTextFile)
+    {
+      s << fileToOpen;
+      if (UnixCommand::hasTheExecutable(ctn_XFCE_EDITOR))
+        p->startDetached(ctn_XFCE_EDITOR, s);
+      else if (UnixCommand::hasTheExecutable(ctn_XFCE_EDITOR_ALT))
+        p->startDetached(ctn_XFCE_EDITOR_ALT, s);
+    }
+    else
+    {
+      s << fileToOpen;
+      p->startDetached( ctn_XFCE_FILE_MANAGER, s );
+    }
   }
   else if (UnixCommand::hasTheExecutable(ctn_GNOME_FILE_MANAGER)){
     s << fileToOpen;
@@ -411,15 +427,7 @@ void WMHelper::openDirectory( const QString& dirName ){
       if (UnixCommand::hasTheExecutable(ctn_KDE4_FILE_MANAGER))
       {
         s << dir;
-
-        /*if (UnixCommand::isRootRunning())
-        {
-          p->startDetached( "dbus-launch " + ctn_KDE4_FILE_MANAGER + " " + dir);
-        }
-        else*/
-        {
-          p->startDetached( ctn_KDE4_FILE_MANAGER, s);
-        }
+        p->startDetached( ctn_KDE4_FILE_MANAGER, s);
       }
       else if (UnixCommand::hasTheExecutable(ctn_KDE_FILE_MANAGER))
       {

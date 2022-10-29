@@ -11,6 +11,7 @@
   BugFix: Prefer bash shell when running actions.
   BugFix: Disable Info/Files tab refresh while typing in filter/search line edit.
   BugFix: Package search did not work correctly when query string contained a "+" sign.
+  BugFix: Better keyboard navigation in package list.
 
 0.3.0 (2020/07/18)
   BugFix: Removed all xbps-install -f (force) commands.

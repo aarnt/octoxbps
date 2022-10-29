@@ -36,6 +36,7 @@ SearchLineEdit::SearchLineEdit(QWidget *parent, bool hasSLocate) :
 
   // Create the search button and set its icon, cursor, and stylesheet
   this->m_SearchButton = new QToolButton(this);
+  this->m_SearchButton->setFocusPolicy(Qt::NoFocus);
 
   // Increase button size a bit for kde
   if (WMHelper::isKDERunning()) //&& UnixCommand::getLinuxDistro() == ectn_CHAKRA)

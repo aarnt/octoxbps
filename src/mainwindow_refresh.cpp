@@ -251,6 +251,7 @@ void MainWindow::retrieveUnrequiredPackageList()
   connect(&g_fwUnrequiredXBPS, SIGNAL(finished()), &el, SLOT(quit()));
   g_fwUnrequiredXBPS.setFuture(f);
   el.exec();
+
   assert(m_unrequiredPackageList != NULL);
 }
 
@@ -709,14 +710,16 @@ void MainWindow::buildPackageList()
       QApplication::restoreOverrideCursor();
       doInstallLocalPackages();
     }*/
-  }
+
+  } //end of firstTime
 
   ui->tvPackages->setColumnWidth(PackageModel::ctn_PACKAGE_SIZE_COLUMN, 10);
   //refreshToolBar();
-  refreshStatusBarToolButtons();
+  //refreshStatusBarToolButtons();
   m_refreshPackageLists = true;  
 
   emit buildPackageListDone();
+  m_leFilterPackage->setFocus();
 }
 
 /*
@@ -1186,7 +1189,6 @@ void MainWindow::reapplyPackageFilter()
     QModelIndex mi = m_packageModel->index(0, PackageModel::ctn_PACKAGE_NAME_COLUMN, QModelIndex());
     ui->tvPackages->setCurrentIndex(mi);
     ui->tvPackages->scrollTo(mi);
-    //clearTabsInfoOrFiles();
   }
   //If we are using "Search By file...
   else

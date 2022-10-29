@@ -79,7 +79,6 @@ void MainWindow::closeEvent(QCloseEvent *event)
       SettingsManager::setWindowSize(windowSize);
       SettingsManager::setSplitterHorizontalState(ui->splitterHorizontal->saveState());
       event->accept();
-
       qApp->quit();
     }
     else
@@ -150,7 +149,7 @@ void MainWindow::keyPressEvent(QKeyEvent* ke)
       }
     }
   }
-  else if(ke->key() == Qt::Key_Escape)
+  else if (ke->key() == Qt::Key_Escape)
   {
     if(m_leFilterPackage->hasFocus())
     {
@@ -222,7 +221,12 @@ void MainWindow::keyPressEvent(QKeyEvent* ke)
   else if (ke->key() == Qt::Key_P && ke->modifiers() == Qt::ControlModifier)
   {
     if (!ui->tvPackages->hasFocus())
+    {
       ui->tvPackages->setFocus();
+      QModelIndex mi = m_packageModel->index(ui->tvPackages->currentIndex().row(), PackageModel::ctn_PACKAGE_NAME_COLUMN, QModelIndex());
+      ui->tvPackages->setCurrentIndex(mi);
+      ui->tvPackages->scrollTo(mi);
+    }
   }
   else if(ke->key() == Qt::Key_F && ke->modifiers() == Qt::ControlModifier)
   {
@@ -257,6 +261,12 @@ void MainWindow::keyPressEvent(QKeyEvent* ke)
   {
     //The user wants to know which packages have no description!
     showPackagesWithNoDescription();
+  }
+  else if (ke->key() == Qt::Key_U && ke->modifiers() == Qt::ControlModifier)
+  {
+    if (m_commandExecuting != ectn_NONE) return;
+
+    if (ui->actionSystemUpgrade->isEnabled()) doPreSystemUpgrade();
   }
   else if(ke->key() == Qt::Key_G && ke->modifiers() == (Qt::ShiftModifier|Qt::ControlModifier))
   {
@@ -303,10 +313,20 @@ void MainWindow::keyReleaseEvent(QKeyEvent* ke)
     clearTabsInfoOrFiles();
     ui->tvPackages->setFocus();
   }
-  if (ui->tvPackages->hasFocus() && ke->key() == Qt::Key_Space)
+  else if (ui->tvPackages->hasFocus() && ke->key() == Qt::Key_Space)
   {
     invalidateTabs();
     ui->tvPackages->setFocus();
+  }
+  else if (ke->key() == Qt::Key_Tab)
+  {
+    if (ui->tvPackages->hasFocus())
+    {
+      ui->tvPackages->setFocus();
+      QModelIndex mi = m_packageModel->index(ui->tvPackages->currentIndex().row(), PackageModel::ctn_PACKAGE_NAME_COLUMN, QModelIndex());
+      ui->tvPackages->setCurrentIndex(mi);
+      ui->tvPackages->scrollTo(mi);
+    }
   }
   else if(ke->key() == Qt::Key_Home && ke->modifiers() == Qt::AltModifier)
   {
