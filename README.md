@@ -5,7 +5,7 @@
 **OctoXBPS** is a Qt based GUI front end to the [XBPS](https://github.com/void-linux/xbps) package manager, derived from [OctoPkg](http://tintaescura.com/projects/octopkg).
 It consists of a lxqt-sudo clone called [octoxbps-sudo](https://github.com/aarnt/octoxbps/tree/master/sudo) used to gain root privileges, a package browser application used 
 to search, install, remove and update packages and a system tray icon [notifier](https://github.com/aarnt/octoxbps/tree/master/notifier) to notify the user about package changes.
-The project is compatible with [Void Linux](https://voidlinux.org/) and [Project Trident](https://project-trident.org/).
+The project is compatible with [Void Linux](https://voidlinux.org/).
 
 ### You can use XBPS to install the latest OctoXBPS version available in your distro:
 
