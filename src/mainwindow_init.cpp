@@ -724,8 +724,8 @@ void MainWindow::initActions()
   ui->actionOpenDirectory->setIcon(IconHelper::getIconFolder());
 
   connect(ui->actionUseInstantSearch, SIGNAL(triggered(bool)), this, SLOT(toggleInstantSearch()));
-  connect(ui->tvPackages->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
-          this, SLOT(invalidateTabs()));
+  //connect(ui->tvPackages->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
+  //        this, SLOT(invalidateTabs()));
 
   connect(ui->actionInstallLocalPackage, SIGNAL(triggered()), this, SLOT(installLocalPackage()));
   connect(ui->actionCleanXBPSCache, SIGNAL(triggered()), this, SLOT(doCleanCache()));

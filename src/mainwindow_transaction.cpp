@@ -263,22 +263,8 @@ QString MainWindow::getTobeInstalledPackages()
 void MainWindow::insertIntoRemovePackage()
 {
   qApp->processEvents();
-  //bool checkDependencies=false;
-  //QStringList dependencies;
-
   //ensureTabVisible(ctn_TABINDEX_TRANSACTION);
   QModelIndexList selectedRows = ui->tvPackages->selectionModel()->selectedRows();
-
-  //First, let's see if we are dealing with a package group
-  if(!isAllCategoriesSelected())
-  {
-    //If we are trying to remove all the group's packages, why not remove the entire group?
-    if(selectedRows.count() == m_packageModel->getPackageCount())
-    {
-      insertRemovePackageIntoTransaction(getSelectedCategory());
-      return;
-    }
-  }
 
   foreach(QModelIndex item, selectedRows)
   {
@@ -288,34 +274,7 @@ void MainWindow::insertIntoRemovePackage()
       continue;
     }
 
-    /*if(checkDependencies)
-      {
-        QStringList *targets = Package::getTargetRemovalList(package->name);
-
-        foreach(QString target, *targets)
-        {
-          int separator = target.lastIndexOf("-");
-          QString candidate = target.left(separator);
-          separator = candidate.lastIndexOf("-");
-          candidate = candidate.left(separator);
-
-          if (candidate != package->name)
-          {
-            dependencies.append(candidate);
-          }
-        }
-
-        if (dependencies.count() > 0)
-        {
-          if (!dependencies.at(0).contains("HoldPkg was found in"))
-          {
-            if (!insertIntoRemovePackageDeps(dependencies))
-              return;
-          }
-        }
-      }*/
-
-    insertRemovePackageIntoTransaction(package->repository + "/" + package->name);
+    insertRemovePackageIntoTransaction(/*package->repository + "/" + */package->name);
   }
 }
 
@@ -1644,7 +1603,6 @@ void MainWindow::outputText(const QString &output)
   {
     ensureTabVisible(ctn_TABINDEX_OUTPUT);
     positionTextEditCursorAtEnd();
-
     text->insertHtml(output);
     text->ensureCursorVisible();
   }
