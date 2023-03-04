@@ -7,6 +7,7 @@
   Synched octoxbps-sudo code with lxqt-sudo version 1.1.0.
   Actions tab shows a counter feedback for inserts (with a plus signal) and 
     removals (with a minus signal) and does not steal focus anymore. 
+  Changed "Sync packages" string to "Check updates".
   BugFix: Disable refreshing of Info and File tabs while searching for a pkg.
   BugFix: Prefer bash shell when running actions.
   BugFix: Disable Info/Files tab refresh while typing in filter/search line edit.

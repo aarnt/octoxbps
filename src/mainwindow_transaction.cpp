@@ -62,7 +62,7 @@ void MainWindow::changeTransactionActionsState()
   bool state = isThereAPendingTransaction();
   ui->actionCommit->setEnabled(state);
   ui->actionCancel->setEnabled(state);
-  ui->actionSyncPackages->setEnabled(!state);
+  ui->actionCheckUpdates->setEnabled(!state);
 
   if (state == false && m_outdatedStringList->count() > 0)
     ui->actionSystemUpgrade->setEnabled(true);
@@ -1267,7 +1267,7 @@ void MainWindow::toggleTransactionActions(const bool value)
 
     m_actionSwitchToLocalFilter->setEnabled(true);
     m_actionSwitchToRemoteSearch->setEnabled(true);
-    ui->actionSyncPackages->setEnabled(false);
+    ui->actionCheckUpdates->setEnabled(false);
     ui->actionSystemUpgrade->setEnabled(false);
   }
   else if (value == true && state == false)
@@ -1278,7 +1278,7 @@ void MainWindow::toggleTransactionActions(const bool value)
     m_actionSwitchToLocalFilter->setEnabled(true);
     m_actionSwitchToRemoteSearch->setEnabled(true);
 
-    ui->actionSyncPackages->setEnabled(true);
+    ui->actionCheckUpdates->setEnabled(true);
     if (value == true && m_outdatedStringList->count() > 0)
       ui->actionSystemUpgrade->setEnabled(true);
   }
@@ -1287,7 +1287,7 @@ void MainWindow::toggleTransactionActions(const bool value)
     m_actionSwitchToLocalFilter->setEnabled(false);
     m_actionSwitchToRemoteSearch->setEnabled(false);
 
-    ui->actionSyncPackages->setEnabled(false);
+    ui->actionCheckUpdates->setEnabled(false);
     ui->actionSystemUpgrade->setEnabled(false);
   }
 
@@ -1338,11 +1338,11 @@ void MainWindow::toggleSystemActions(const bool value)
 
   if (isRemoteSearchSelected() && !state)
   {
-    ui->actionSyncPackages->setEnabled(true);
+    ui->actionCheckUpdates->setEnabled(true);
   }
   else if ((value == true && !state) || value == false)
   {
-    ui->actionSyncPackages->setEnabled(value);
+    ui->actionCheckUpdates->setEnabled(value);
   }
 
   ui->actionInstallLocalPackage->setEnabled(value);

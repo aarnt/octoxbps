@@ -149,7 +149,7 @@
      <x>0</x>
      <y>0</y>
      <width>552</width>
-     <height>20</height>
+     <height>30</height>
     </rect>
    </property>
    <property name="contextMenuPolicy">
@@ -185,7 +185,7 @@
      <string>&amp;File</string>
     </property>
     <addaction name="actionGetNews"/>
-    <addaction name="actionSyncPackages"/>
+    <addaction name="actionCheckUpdates"/>
     <addaction name="actionSystemUpgrade"/>
     <addaction name="separator"/>
     <addaction name="actionInstallLocalPackage"/>
@@ -283,16 +283,19 @@
     <string>Ctrl+E</string>
    </property>
   </action>
-  <action name="actionSyncPackages">
+  <action name="actionCheckUpdates">
    <property name="icon">
     <iconset resource="../resources.qrc">
      <normaloff>:/resources/images/refresh.png</normaloff>:/resources/images/refresh.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;Sync database</string>
+    <string>Chec&amp;k updates</string>
+   </property>
+   <property name="toolTip">
+    <string>Check updates</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+D</string>
+    <string>Ctrl+K</string>
    </property>
   </action>
   <action name="actionExit">
