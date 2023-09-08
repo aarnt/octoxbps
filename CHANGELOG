@@ -4,7 +4,7 @@
   Added turkish translation (thanks to Mehmet Akif - madanadam).
   Added russian translation (thanks to Carmina16).
   Added support for opendoas commad in octoxbps-sudo and internal terminal.
-  Synched octoxbps-sudo code with lxqt-sudo version 1.1.0.
+  Synched octoxbps-sudo code with lxqt-sudo version 1.3.0.
   Actions tab shows a counter feedback for inserts (with a plus signal) and 
     removals (with a minus signal) and does not steal focus anymore. 
   Changed "Sync packages" string to "Check updates".
