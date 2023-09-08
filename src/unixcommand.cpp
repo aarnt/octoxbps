@@ -580,7 +580,7 @@ void UnixCommand::executeCommand(const QString &pCommand, Language lang)
 }
 
 /*
- * Executes given pCommand without the need to create an UnixCommand obj
+ * Executes given pCommand without the need to create an UnixCommand obj (STATIC)
  */
 void UnixCommand::execCommand(const QString &pCommand, const QStringList &params)
 {
