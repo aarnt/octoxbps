@@ -256,57 +256,57 @@ void WMHelper::openFile(const QString& fileName){
     {
       s << fileToOpen;
       if (UnixCommand::hasTheExecutable(ctn_XFCE_EDITOR))
-        p->startDetached(ctn_XFCE_EDITOR, s);
+        p->start(ctn_XFCE_EDITOR, s);
       else if (UnixCommand::hasTheExecutable(ctn_XFCE_EDITOR_ALT))
-        p->startDetached(ctn_XFCE_EDITOR_ALT, s);
+        p->start(ctn_XFCE_EDITOR_ALT, s);
     }
     else
     {
       s << fileToOpen;
-      p->startDetached(ctn_XFCE_FILE_MANAGER, s);
+      p->start(ctn_XFCE_FILE_MANAGER, s);
     }
   }
   else if (isKDERunning() && UnixCommand::hasTheExecutable(ctn_KDE_FILE_MANAGER)){
     s << "exec";
     s << "file:" + fileToOpen;
-    p->startDetached( ctn_KDE_FILE_MANAGER, s );
+    p->start( ctn_KDE_FILE_MANAGER, s);
   }
   else if (UnixCommand::hasTheExecutable(ctn_KDE4_FILE_MANAGER)){
     s << fileToOpen;
-    p->startDetached( getKDEOpenHelper(), s );
+    p->start( getKDEOpenHelper(), s);
   }
   else if (isTDERunning() && UnixCommand::hasTheExecutable(ctn_TDE_FILE_MANAGER)){
     s << "exec";
     s << "file:" + fileToOpen;
-    p->startDetached( ctn_TDE_FILE_MANAGER, s );
+    p->start(ctn_TDE_FILE_MANAGER, s);
   }
   else if (isMATERunning() && UnixCommand::hasTheExecutable(ctn_MATE_FILE_MANAGER)){
     s << fileToOpen;
-    p->startDetached( ctn_MATE_FILE_MANAGER, s );
+    p->start(ctn_MATE_FILE_MANAGER, s);
   }
   else if (isCinnamonRunning() && UnixCommand::hasTheExecutable(ctn_CINNAMON_FILE_MANAGER)){
     s << fileToOpen;
-    p->startDetached( ctn_CINNAMON_FILE_MANAGER, s );
+    p->start(ctn_CINNAMON_FILE_MANAGER, s);
   }
   else if (isLXQTRunning() && UnixCommand::hasTheExecutable(ctn_LXQT_FILE_MANAGER)){
     s << fileToOpen;
-    p->startDetached( ctn_LXQT_FILE_MANAGER, s );
+    p->start(ctn_LXQT_FILE_MANAGER, s);
   }
   else if (isLuminaRunning() && UnixCommand::hasTheExecutable(ctn_LUMINA_OPEN)){
     s << fileToOpen;
-    p->startDetached( ctn_LUMINA_OPEN, s );
+    p->start(ctn_LUMINA_OPEN, s);
   }
   else if (UnixCommand::hasTheExecutable(ctn_ARCHBANG_FILE_MANAGER)){
     s << fileToOpen;
-    p->startDetached( ctn_ARCHBANG_FILE_MANAGER, s );
+    p->start(ctn_ARCHBANG_FILE_MANAGER, s);
   }
   else if (UnixCommand::hasTheExecutable(ctn_LXQT_FILE_MANAGER)){
     s << fileToOpen;
-    p->startDetached(ctn_LXQT_FILE_MANAGER, s );
+    p->start(ctn_LXQT_FILE_MANAGER, s);
   }
   else if (UnixCommand::hasTheExecutable(ctn_LXDE_FILE_MANAGER)){
     s << fileToOpen;
-    p->startDetached( ctn_LXDE_FILE_MANAGER, s );
+    p->start(ctn_LXDE_FILE_MANAGER, s);
   }
   else if (UnixCommand::hasTheExecutable(ctn_XFCE_FILE_MANAGER))
   {
@@ -314,26 +314,26 @@ void WMHelper::openFile(const QString& fileName){
     {
       s << fileToOpen;
       if (UnixCommand::hasTheExecutable(ctn_XFCE_EDITOR))
-        p->startDetached(ctn_XFCE_EDITOR, s);
+        p->start(ctn_XFCE_EDITOR, s);
       else if (UnixCommand::hasTheExecutable(ctn_XFCE_EDITOR_ALT))
-        p->startDetached(ctn_XFCE_EDITOR_ALT, s);
+        p->start(ctn_XFCE_EDITOR_ALT, s);
     }
     else
     {
       s << fileToOpen;
-      p->startDetached( ctn_XFCE_FILE_MANAGER, s );
+      p->start( ctn_XFCE_FILE_MANAGER, s);
     }
   }
   else if (UnixCommand::hasTheExecutable(ctn_GNOME_FILE_MANAGER)){
     s << fileToOpen;
     if (isTextFile)
-      p->startDetached( ctn_GNOME_EDITOR, s );
+      p->start(ctn_GNOME_EDITOR, s);
     else
-      p->startDetached( ctn_GNOME_FILE_MANAGER, s );
+      p->start(ctn_GNOME_FILE_MANAGER, s);
   }
   else if (UnixCommand::hasTheExecutable(ctn_XDG_OPEN)){
     s << fileToOpen;
-    p->startDetached( ctn_XDG_OPEN, s );
+    p->start(ctn_XDG_OPEN, s);
   }
 }
 
