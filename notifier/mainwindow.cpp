@@ -450,7 +450,7 @@ void MainWindow::toggleEnableInterface(bool state)
 }
 
 /*
- * Called right after the pkexec xbps-install -Syy command has finished!
+ * Called right after the xbps-install -Sy command has finished!
  */
 void MainWindow::finishedPkexec(int)
 {
@@ -571,9 +571,10 @@ void MainWindow::startPkexec()
   QProcess *xbps = new QProcess();
   connect(xbps, SIGNAL(finished(int)), this, SLOT(finishedPkexec(int)));
   QStringList sl;
+  sl << ctn_OCTOXBPS_SUDO_PARAMS;
   sl << QStringLiteral("/usr/bin/xbps-install");
   sl << QStringLiteral("-Sy");
-  xbps->start(QStringLiteral("pkexec"), sl);
+  xbps->start(WMHelper::getSUCommand(), sl);
 }
 
 /*
