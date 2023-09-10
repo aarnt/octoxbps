@@ -62,7 +62,7 @@ void MainWindow::initTabHelpUsage()
   html +=
     QString("<a href=\"http://www.gnu.org/licenses/gpl-2.0.html\">GPL v2</a>.</p></h3>") +
     QString("<h4><p>") + strForMoreInfo + " " +
-    QString("<a href=\"https://github.com/aarnt/octoxbps\">https://github.com/aarnt/octoxbps</a>.</p></h4><br>");
+    QString("<a href=\"https://tintaescura.com/projects/octoxbps\">https://tintaescura.com/projects/octoxbps</a>.</p></h4><br>");
 
   html += tr("Package classification:") +
   QString("<ul type=\"square\"><li>") + iconPath + "installed.png\"/> " +
@@ -206,7 +206,7 @@ void MainWindow::onHelpAbout()
       QLatin1String("<b>") + StrConstants::getApplicationName() + QLatin1String("</b><br>");
   aboutText += StrConstants::getVersion() + QLatin1String(": ") + StrConstants::getApplicationVersion() + QLatin1String(" - ") + StrConstants::getQtVersion() + QLatin1String("<br>");
   aboutText += StrConstants::getURL() + QLatin1String(": ") +
-    QStringLiteral("<a href=\"https://github.com/aarnt/octoxbps/\">https://github.com/aarnt/octoxbps</a><br>");
+    QStringLiteral("<a href=\"https://tintaescura.com/projects/octoxbps/\">https://tintaescura.com/projects/octoxbps</a><br>");
   aboutText += StrConstants::getLicenses() + QLatin1String(": ") + QStringLiteral("<a href=\"http://www.gnu.org/licenses/gpl-2.0.html\">GPL v2</a><br>");
   aboutText += QStringLiteral("&copy; Alexandre Albuquerque Arnt<br><br>");
   aboutText += QStringLiteral("<b>XBPS</b><br>");
