@@ -32,7 +32,7 @@
 
 //Forward class declarations.
 class QString;
-class QStringList;
+//class QStringList;
 class Terminal;
 
 class UnixCommand : public QObject{

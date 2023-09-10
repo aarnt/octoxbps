@@ -48,6 +48,7 @@
 #include <QElapsedTimer>
 #include <QToolTip>
 #include <QFutureWatcher>
+#include <QActionGroup>
 #include <QtConcurrent/QtConcurrentRun>
 
 /*
@@ -240,7 +241,7 @@ void MainWindow::show()
     QMainWindow::show();
 
     m_listOfVisitedPackages.clear();
-    m_indOfVisitedPackage = 0;
+    m_indOfVisitedPackage = -1;
 
     if (Package::hasXBPSDatabase())
     {
@@ -351,6 +352,7 @@ void MainWindow::outputTextBrowserAnchorClicked(const QUrl &link)
   if (link.toString().contains("goto:"))
   {
     QString pkgName = link.toString().mid(5);
+    if (pkgName.isEmpty()) return;
 
     if (m_packageModel->getPackageCount() > 0)
     {
@@ -390,7 +392,6 @@ void MainWindow::outputTextBrowserAnchorClicked(const QUrl &link)
         }
         else if (m_indOfVisitedPackage == 1)
         {
-          m_indOfVisitedPackage++;
           indIncremented = true;
           m_listOfVisitedPackages.insert(m_indOfVisitedPackage, selectedPackage->name);
           m_listOfVisitedPackages.insert(m_indOfVisitedPackage+1, pkgName);
@@ -398,6 +399,7 @@ void MainWindow::outputTextBrowserAnchorClicked(const QUrl &link)
       }
       else //The list is EMPTY!
       {
+        m_indOfVisitedPackage = -1;
         m_indOfVisitedPackage++;
         indIncremented = true;
         m_listOfVisitedPackages.insert(m_indOfVisitedPackage, selectedPackage->name);

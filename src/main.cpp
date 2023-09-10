@@ -22,7 +22,7 @@
 #include "argumentlist.h"
 #include "strconstants.h"
 #include "unixcommand.h"
-#include "wmhelper.h"
+//#include "wmhelper.h"
 #include <iostream>
 
 #include "QtSolutions/qtsingleapplication.h"
@@ -33,6 +33,10 @@
 
 int main(int argc, char *argv[])
 {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+  QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
+#endif
+
   ArgumentList *argList = new ArgumentList(argc, argv);
   QString packagesToInstall;
   QtSingleApplication app( StrConstants::getApplicationName(), argc, argv );
@@ -54,27 +58,32 @@ int main(int argc, char *argv[])
     else
       app.sendMessage(QStringLiteral("RAISE"));
 
+    delete argList;
     return 0;
   }
 
   if(!QFile::exists(ctn_OCTOXBPS_SUDO))
   {
     QMessageBox::critical( 0, StrConstants::getApplicationName(), StrConstants::getErrorBinaryXNotFound(ctn_OCTOXBPS_SUDO));
+    delete argList;
     return 1;
   }
   if(!QFile::exists(QStringLiteral("/usr/bin/xbps-query")))
   {
     QMessageBox::critical( 0, StrConstants::getApplicationName(), StrConstants::getErrorBinaryXNotFound(QStringLiteral("xbps-query")));
+    delete argList;
     return 1;
   }
   if(!QFile::exists(QStringLiteral("/usr/bin/curl")))
   {
     QMessageBox::critical( 0, StrConstants::getApplicationName(), StrConstants::getErrorBinaryXNotFound(QStringLiteral("curl")));
+    delete argList;
     return 1;
   }
   if(!QFile::exists(QStringLiteral("/usr/bin/sh")))
   {
     QMessageBox::critical( 0, StrConstants::getApplicationName(), StrConstants::getErrorBinaryXNotFound(QStringLiteral("sh")));
+    delete argList;
     return 1;
   }
 
@@ -135,4 +144,5 @@ int main(int argc, char *argv[])
   QResource::registerResource(QStringLiteral("./resources.qrc"));
 
   return app.exec();
+  delete argList;
 }

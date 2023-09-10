@@ -22,6 +22,7 @@
 #define OCTOPI_PACKAGEMODEL_H
 
 #include <QAbstractItemModel>
+#include <QRegularExpression>
 #include <QIcon>
 
 #include "src/package.h"
@@ -102,7 +103,7 @@ private:
   QString m_filterPackagesNotInThisGroup;
   QString m_filterPackagesNotInThisRepo;
   int     m_filterColumn;
-  QRegExp m_filterRegExp;
+  QRegularExpression m_filterRegExp;
 
   // Cache
   QIcon   m_iconNotInstalled;

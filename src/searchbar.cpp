@@ -49,7 +49,7 @@ void SearchBar::init()
   setObjectName("searchbar");
   QHBoxLayout *layout = new QHBoxLayout(this);
   layout->setSpacing(0);
-  layout->setMargin(4);
+  layout->setContentsMargins(4, 4, 4, 4);
 
   setStyleSheet("QWidget#searchbar{"
                 "border-top-width: .6px;"
@@ -68,7 +68,7 @@ void SearchBar::init()
 
   m_previousAction->setText("< " + tr("Previous"));
   m_previousButton->setAutoRaise(true);
-  m_previousAction->setShortcut(QKeySequence(Qt::SHIFT + Qt::Key_F3));
+  m_previousAction->setShortcut(QKeySequence(Qt::SHIFT | Qt::Key_F3));
   m_nextAction->setText(tr("Next") + " >");
   m_nextButton->setAutoRaise(true);
   m_nextAction->setShortcut(Qt::Key_F3);
@@ -86,8 +86,8 @@ void SearchBar::init()
   tbClose->setToolTip(tr("Close"));
   tbClose->setShortcut(Qt::Key_Escape);
 
-  layout->addWidget(tbClose, 1, Qt::AlignLeft);
-  layout->addSpacing(3);
+  layout->addWidget(tbClose, 0, Qt::AlignLeft);
+  layout->addSpacing(4);
   layout->addWidget(m_searchLineEdit, 0, Qt::AlignLeft);
   layout->addSpacing(2);
   layout->addWidget(m_previousButton, 1, Qt::AlignLeft);
@@ -128,7 +128,7 @@ void SearchBar::clear()
 void SearchBar::paintEvent(QPaintEvent *)
 {
   QStyleOption styleOption;
-  styleOption.init(this);
+  styleOption.initFrom(this);
   QPainter painter(this);
   style()->drawPrimitive(QStyle::PE_Widget, &styleOption, &painter, this);
 }

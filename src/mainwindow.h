@@ -32,6 +32,7 @@
 #include <QToolButton>
 #include <QList>
 #include <QUrl>
+#include <QActionGroup>
 
 class QTreeView;
 class QStandardItemModel;
@@ -46,7 +47,7 @@ class QTextBrowser;
 class QMenu;
 class SearchLineEdit;
 class QAction;
-class QActionGroup;
+//class QActionGroup;
 class QTreeWidgetItem;
 class QTime;
 class XBPSExec;

@@ -848,7 +848,7 @@ void MainWindow::doRemoveAndInstall()
   QStringList *installTargets = ti.packages;
   QString ds = ti.sizeToDownload;
 
-  if (ti.sizeToDownload == 0) ds = "0.00 Bytes";
+  if (ti.sizeToDownload == "0") ds = "0.00 Bytes";
 
   QString installList;
 
@@ -1037,7 +1037,7 @@ void MainWindow::doInstall()
   QString list;
   QString ds = ti.sizeToDownload;
 
-  if (ti.sizeToDownload == 0) ds = "0.00 Bytes";
+  if (ti.sizeToDownload == "0") ds = "0.00 Bytes";
 
   TransactionDialog question(this);
 

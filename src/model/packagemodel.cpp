@@ -36,7 +36,7 @@ PackageModel::PackageModel(const PackageRepository& repo, QObject *parent)
 : QAbstractItemModel(parent), m_installedPackagesCount(0), m_showColumnPopularity(false), m_packageRepo(repo),
   m_sortOrder(Qt::AscendingOrder), m_sortColumn(1), m_filterPackagesInstalled(false),
   m_filterPackagesNotInstalled(false), m_filterPackagesNotInThisGroup(""),
-  m_filterColumn(-1), m_filterRegExp("", Qt::CaseInsensitive, QRegExp::RegExp),
+  m_filterColumn(-1), m_filterRegExp("", QRegularExpression::CaseInsensitiveOption),
   m_iconNotInstalled(IconHelper::getIconNonInstalled()), m_iconInstalled(IconHelper::getIconInstalled()),
   m_iconInstalledUnrequired(IconHelper::getIconUnrequired()),
   m_iconNewer(IconHelper::getIconNewer()), m_iconOutdated(IconHelper::getIconOutdated()),
@@ -198,21 +198,25 @@ void PackageModel::endResetRepository()
 
     if (!m_filterPackagesNotInThisRepo.isEmpty() && (*it)->repository != m_filterPackagesNotInThisRepo) continue;
 
-    if (m_filterRegExp.isEmpty()) {
+    if (m_filterRegExp.pattern().isEmpty()) {
       m_listOfPackages.push_back(*it);
       if ((*it)->installed()) m_installedPackagesCount++;
     }
     else {
+      QRegularExpressionMatch match;
+
       switch (m_filterColumn) {
       case ctn_PACKAGE_NAME_COLUMN:
-        if (m_filterRegExp.indexIn((*it)->name) != -1)
+        match = m_filterRegExp.match((*it)->name);
+        if (match.hasMatch()) //m_filterRegExp.indexIn((*it)->name) != -1)
         {
           m_listOfPackages.push_back(*it);
           if ((*it)->installed()) m_installedPackagesCount++;
         }
         break;
       case ctn_PACKAGE_DESCRIPTION_FILTER_NO_COLUMN:
-        if (m_filterRegExp.indexIn((*it)->comment) != -1)
+        match = m_filterRegExp.match((*it)->comment);
+        if (match.hasMatch()) //(m_filterRegExp.indexIn((*it)->comment) != -1)
         {
           m_listOfPackages.push_back(*it);
           if ((*it)->installed()) m_installedPackagesCount++;

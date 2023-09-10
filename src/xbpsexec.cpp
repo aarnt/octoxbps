@@ -82,14 +82,14 @@ void XBPSExec::removeTemporaryFile()
  */
 bool XBPSExec::searchForKeyVerbs(QString output)
 {
-  return (output.contains(QRegExp("checking ")) ||
-          output.contains(QRegExp("loading ")) ||
-          output.contains(QRegExp("installing ")) ||
-          output.contains(QRegExp("upgrading ")) ||
-          output.contains(QRegExp("downgrading ")) ||
-          output.contains(QRegExp("resolving ")) ||
-          output.contains(QRegExp("looking ")) ||
-          output.contains(QRegExp("removing ")));
+  return (output.contains(QRegularExpression("checking ")) ||
+          output.contains(QRegularExpression("loading ")) ||
+          output.contains(QRegularExpression("installing ")) ||
+          output.contains(QRegularExpression("upgrading ")) ||
+          output.contains(QRegularExpression("downgrading ")) ||
+          output.contains(QRegularExpression("resolving ")) ||
+          output.contains(QRegularExpression("looking ")) ||
+          output.contains(QRegularExpression("removing ")));
 }
 
 /*
@@ -102,16 +102,16 @@ bool XBPSExec::splitOutputStrings(QString output)
 {
   bool res = true;
   QString msg = output.trimmed();
-  QStringList msgs = msg.split(QRegExp("\\n"), Qt::SkipEmptyParts);
+  QStringList msgs = msg.split(QRegularExpression("\\n"), Qt::SkipEmptyParts);
 
   foreach (QString m, msgs)
   {
-    QStringList m2 = m.split(QRegExp("\\(\\s{0,3}[0-9]{1,4}/[0-9]{1,4}\\) "), Qt::SkipEmptyParts);
+    QStringList m2 = m.split(QRegularExpression("\\(\\s{0,3}[0-9]{1,4}/[0-9]{1,4}\\) "), Qt::SkipEmptyParts);
 
     if (m2.count() == 1)
     {
       //Let's try another test... if it doesn't work, we give up.
-      QStringList maux = m.split(QRegExp("%"), Qt::SkipEmptyParts);
+      QStringList maux = m.split(QRegularExpression("%"), Qt::SkipEmptyParts);
       if (maux.count() > 1)
       {
         foreach (QString aux, maux)
@@ -119,7 +119,7 @@ bool XBPSExec::splitOutputStrings(QString output)
           aux = aux.trimmed();
           if (!aux.isEmpty())
           {
-            if (aux.at(aux.count()-1).isDigit())
+            if (aux.at(aux.length()-1).isDigit())
             {
               aux += "%";
             }
@@ -281,7 +281,7 @@ void XBPSExec::parseXBPSProcessOutput(QString output)
     msg.remove(QRegularExpression("QVariant.+"));
     msg.remove(QRegularExpression("libGL.+"));
     msg.remove(QRegularExpression("Password.+"));
-    msg.remove(QRegularExpression("gksu-run.+"));
+    //msg.remove(QRegularExpression("gksu-run.+"));
     msg.remove(QRegularExpression("GConf Error:.+"));
     msg.remove(QRegularExpression(":: Do you want.+"));
     msg.remove(QRegularExpression("org\\.kde\\."));
@@ -295,13 +295,13 @@ void XBPSExec::parseXBPSProcessOutput(QString output)
     msg.remove(QRegularExpression("qt5ct: using qt5ct plugin"));
 
     //Gksu buggy strings
-    msg.remove(QRegularExpression("you should recompile libgtop and dependent applications.+"));
+    /*msg.remove(QRegularExpression("you should recompile libgtop and dependent applications.+"));
     msg.remove(QRegularExpression("This libgtop was compiled on.+"));
     msg.remove(QRegularExpression("If you see strange problems caused by it.+"));
     msg.remove(QRegularExpression("LibGTop-Server.+"));
     msg.remove(QRegularExpression("received eof.+"));
     msg.remove(QRegularExpression("pid [0-9]+"));
-    msg = msg.trimmed();
+    msg = msg.trimmed();*/
 
     QString order;
     int ini = msg.indexOf(QRegularExpression("\\(\\s{0,3}[0-9]{1,4}/[0-9]{1,4}\\) "));

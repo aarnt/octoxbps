@@ -34,6 +34,7 @@
 
 #include <QApplication>
 
+#include <QRegularExpression>
 #include <QTextStream>
 #include <QMessageBox>
 #include <QFileInfo>
@@ -136,7 +137,7 @@ inline QString quoteShellArg(const QString& arg, bool userFriendly)
   QString rv = arg;
 
   //^ check if thre are any bash special file characters
-  if (!userFriendly || arg.contains(QRegExp(QLatin1String("(\\s|[][!\"#$&'()*,;<=>?\\^`{}|~])")))) {
+  if (!userFriendly || arg.contains(QRegularExpression(QLatin1String("(\\s|[][!\"#$&'()*,;<=>?\\^`{}|~])")))) {
     rv.replace(QStringLiteral("'"), QStringLiteral("'\\''"));
     rv.prepend (QLatin1Char('\'')).append(QLatin1Char('\''));
   }

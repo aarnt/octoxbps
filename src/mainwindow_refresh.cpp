@@ -42,6 +42,7 @@
 #include <QElapsedTimer>
 #include <QMutableListIterator>
 #include <QtConcurrent/QtConcurrentRun>
+#include <QActionGroup>
 
 /*
  * If we have some outdated packages, let's put an angry red face icon in this app!
