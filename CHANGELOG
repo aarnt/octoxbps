@@ -1,6 +1,8 @@
-0.3.2 (dev)
+0.3.2 (2023/09/26)
   Make code compatible with Qt5/Qt6 libs.
   Updated project site to tintaescura.com.
+  BugFix: Notifier's output dialog did not save its size/position.
+  BugFix: Notifier was asking for a password when user tried to "Sync database".
 
 0.3.1 (2023/09/08)
   Added german translation (thanks to Leon Schumacher - 42LoCo42).

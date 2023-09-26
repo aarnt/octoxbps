@@ -232,6 +232,7 @@ void OutputDialog::reject()
     //Let's save the dialog size value before closing it.
     QByteArray windowSize=saveGeometry();
     SettingsManager::setOutputDialogWindowSize(windowSize);
+
     QDialog::reject();
   }
 }
@@ -373,7 +374,8 @@ void OutputDialog::closeEvent(QCloseEvent *event)
       cancelUpgrade();
       m_upgradeRunning = false;
       emit finished(-1);
-      event->accept();
+      //event->accept();
+      reject();
     }
     else
     {

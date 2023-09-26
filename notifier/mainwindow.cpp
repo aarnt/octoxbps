@@ -574,7 +574,7 @@ void MainWindow::startPkexec()
   sl << ctn_OCTOXBPS_SUDO_PARAMS;
   sl << QStringLiteral("/usr/bin/xbps-install");
   sl << QStringLiteral("-Sy");
-  xbps->start(WMHelper::getSUCommand(), sl);
+  xbps->start("pkexec", sl);
 }
 
 /*
