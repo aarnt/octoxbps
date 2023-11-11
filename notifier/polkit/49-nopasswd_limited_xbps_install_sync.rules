@@ -2,7 +2,7 @@
  * without password authentication, similar to "sudo NOPASSWD:"
  */
 polkit.addRule(function(action, subject) {
-    if ((action.id == "org.freedesktop.policykit.pkexec.run-xbpsinstall" &&
+    if (action.id == "org.freedesktop.policykit.pkexec.run-xbpsinstall" &&
         subject.isInGroup("wheel"))
     {
         return polkit.Result.YES;
