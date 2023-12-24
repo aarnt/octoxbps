@@ -228,7 +228,7 @@ void XBPSExec::parseXBPSProcessOutput(QString output)
 
     if(!m_textPrinted.contains(target))
     {
-      prepareTextToPrint("Updating repository " + target); //, ectn_DONT_TREAT_URL_LINK);
+      prepareTextToPrint("Updating repository " + target, ectn_TREAT_STRING, ectn_DONT_TREAT_URL_LINK);
     }
 
     return;
@@ -293,15 +293,6 @@ void XBPSExec::parseXBPSProcessOutput(QString output)
     msg.remove(QRegularExpression("pci id for fd \\d+.+"));
     msg.remove(QRegularExpression("qt.qpa.xcb.+"));
     msg.remove(QRegularExpression("qt5ct: using qt5ct plugin"));
-
-    //Gksu buggy strings
-    /*msg.remove(QRegularExpression("you should recompile libgtop and dependent applications.+"));
-    msg.remove(QRegularExpression("This libgtop was compiled on.+"));
-    msg.remove(QRegularExpression("If you see strange problems caused by it.+"));
-    msg.remove(QRegularExpression("LibGTop-Server.+"));
-    msg.remove(QRegularExpression("received eof.+"));
-    msg.remove(QRegularExpression("pid [0-9]+"));
-    msg = msg.trimmed();*/
 
     QString order;
     int ini = msg.indexOf(QRegularExpression("\\(\\s{0,3}[0-9]{1,4}/[0-9]{1,4}\\) "));
@@ -410,7 +401,13 @@ void XBPSExec::prepareTextToPrint(QString str, TreatString ts, TreatURLLinks tl)
             newStr.contains(QRegularExpression("Running")) ||
             newStr.contains(QRegularExpression("Looking")))
     {
-      newStr = "<b><font color=\"#4BC413\">" + newStr + "</font></b>"; //GREEN
+      if (newStr.startsWith("Updating repository", Qt::CaseInsensitive))
+      {
+        //Updating repository
+        QString target = newStr.mid(20);
+        newStr = "<b><font color=\"#4BC413\">Updating repository</font></b> " + target; //GREEN
+      }
+      else newStr = "<b><font color=\"#4BC413\">" + newStr + "</font></b>"; //GREEN
     }
     else if (newStr.contains(QRegularExpression("warning")) ||
              newStr.contains(QRegularExpression("downgrading")) ||
