@@ -1,3 +1,6 @@
+0.3.4 (dev)
+  Now using the unified qt-sudo project (https://github.com/aarnt/qt-sudo) for privilege escalation.
+
 0.3.3 (2023/12/24)
   BugFix: Notifier was not syncing repos (thanks to dexgs).
   BugFix: Check updates was printing a buggy string.
