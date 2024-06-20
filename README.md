@@ -3,7 +3,7 @@
 ![Main window](https://raw.githubusercontent.com/aarnt/octoxbps/master/octoxbps-mainwindow.png)
 
 **OctoXBPS** is a Qt based GUI front end to the [XBPS](https://github.com/void-linux/xbps) package manager, derived from [OctoPkg](http://tintaescura.com/projects/octopkg).
-It consists of a lxqt-sudo clone called [octoxbps-sudo](https://github.com/aarnt/octoxbps/tree/master/sudo) used to gain root privileges, a package browser application used 
+It consists of a lxqt-sudo clone called [qt-sudo](https://github.com/aarnt/qt-sudo/) used to gain root privileges, a package browser application used 
 to search, install, remove and update packages and a system tray icon [notifier](https://github.com/aarnt/octoxbps/tree/master/notifier) to notify the user about package changes.
 The project is compatible with [Void Linux](https://voidlinux.org/).
 
@@ -16,12 +16,14 @@ The project is compatible with [Void Linux](https://voidlinux.org/).
 ### Follow the steps bellow to compile the latest source code (you'll need curl, git and qt5 packages):
 
 ```
-$ git clone https://github.com/aarnt/octoxbps
-$ cd octoxbps/sudo
+$ git clone https://github.com/aarnt/qt-sudo
+$ cd qt-sudo
 $ qmake-qt5
 $ make
 # make install
-$ cd ../notifier
+$ cd ..
+$ git clone https://github.com/aarnt/octoxbps
+$ cd octoxbps/notifier
 $ qmake-qt5
 $ make
 # make install
