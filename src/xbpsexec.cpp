@@ -281,7 +281,6 @@ void XBPSExec::parseXBPSProcessOutput(QString output)
     msg.remove(QRegularExpression("QVariant.+"));
     msg.remove(QRegularExpression("libGL.+"));
     msg.remove(QRegularExpression("Password.+"));
-    //msg.remove(QRegularExpression("gksu-run.+"));
     msg.remove(QRegularExpression("GConf Error:.+"));
     msg.remove(QRegularExpression(":: Do you want.+"));
     msg.remove(QRegularExpression("org\\.kde\\."));
@@ -292,6 +291,7 @@ void XBPSExec::parseXBPSProcessOutput(QString output)
     msg.remove(QRegularExpression(".+annot load library.+"));
     msg.remove(QRegularExpression("pci id for fd \\d+.+"));
     msg.remove(QRegularExpression("qt.qpa.xcb.+"));
+    msg.remove(QRegularExpression("qt.qpa.plugin: Could not.+"));
     msg.remove(QRegularExpression("qt5ct: using qt5ct plugin"));
 
     QString order;
