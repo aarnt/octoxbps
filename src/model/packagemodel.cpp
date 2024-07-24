@@ -102,8 +102,18 @@ QVariant PackageModel::data(const QModelIndex &index, int role) const
             else
               return QVariant(Package::kbytesToSize(package->downloadSize));
           }
+          /*case ctn_PACKAGE_INSTALLEDON_COLUMN:
+          {
+            bool ok;
+            long idate=package->installedOn.toLong(&ok);
+            if (idate <= 0) return QVariant(QStringLiteral(""));
 
-          break;
+            QString dateTimeFormat = QLocale().dateTimeFormat(QLocale::ShortFormat);
+            QDateTime idt = QDateTime::fromSecsSinceEpoch(idate);
+            return QVariant(idt.toString(dateTimeFormat));
+          }
+
+          break;*/
           default:
             assert(false);
         }
@@ -141,6 +151,8 @@ QVariant PackageModel::headerData(int section, Qt::Orientation orientation, int 
         return QVariant(StrConstants::getName());
       case ctn_PACKAGE_VERSION_COLUMN:
         return QVariant(StrConstants::getVersion());
+      /*case ctn_PACKAGE_INSTALLEDON_COLUMN:
+        return QVariant(StrConstants::getInstalledOn());*/
       /*case ctn_PACKAGE_ORIGIN_COLUMN:
         return QVariant(StrConstants::getOrigin());*/
       /*case ctn_PACKAGE_SIZE_COLUMN:
@@ -342,23 +354,15 @@ const QIcon& PackageModel::getIconFor(const PackageRepository::PackageData& pack
     case ectn_INSTALLED:
       // Does no other package depend on this package ? (unrequired package list)
 
-      if (package.repository != "KCP")
+      if (package.required)
       {
-        if (package.required)
-        {
-          return m_iconInstalled;
-        }
-        else
-        {
-          return m_iconInstalledUnrequired;
-        }
+        return m_iconInstalled;
       }
       else
       {
         return m_iconInstalledUnrequired;
       }
-
-      break;
+    break;
     case ectn_NON_INSTALLED:
 //      if (package.required == false) std::cout << "not installed not required" << std::endl; // doesn't happen with pacman
       return m_iconNotInstalled;
@@ -477,6 +481,19 @@ struct TSort4 {
   }
 };
 
+struct TSort5 {
+  bool operator()(const PackageRepository::PackageData* a, const PackageRepository::PackageData* b) const {
+    if (a->installedOn < b->installedOn) return true;
+
+    if (a->installedOn == b->installedOn)
+    {
+      return a->name < b->name;
+    }
+
+    return false;
+  }
+};
+
 void PackageModel::sort()
 {
   switch (m_sortColumn) {
@@ -494,6 +511,9 @@ void PackageModel::sort()
     return;*/
   case ctn_PACKAGE_SIZE_COLUMN:
     std::sort(m_columnSortedlistOfPackages.begin(), m_columnSortedlistOfPackages.end(), TSort4());
+    return;
+  case ctn_PACKAGE_INSTALLEDON_COLUMN:
+    std::sort(m_columnSortedlistOfPackages.begin(), m_columnSortedlistOfPackages.end(), TSort5());
     return;
   default:
     return;

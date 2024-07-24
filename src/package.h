@@ -104,7 +104,7 @@ struct PackageListData{
                                     status(pkgStatus){
   }
 
-  PackageListData(QString n, QString o, QString v, QString c, PackageStatus pkgStatus, double iSize, double dSize)
+  PackageListData(QString n, QString o, QString v, QString c, PackageStatus pkgStatus, double iSize, double dSize, QString iDate)
                                     : name(n),
                                     repository(""),
                                     origin(o),
@@ -112,6 +112,7 @@ struct PackageListData{
                                     comment(c),
                                     installedSize(iSize),
                                     downloadSize(dSize),
+                                    installedOn(iDate),
                                     status(pkgStatus){
   }
 };
@@ -174,6 +175,8 @@ class Package{
     static QStringList * getTargetRemovalList(const QString &pkgName);
     //static QList<PackageListData> *getForeignPackageList();
     static QList<PackageListData> * parsePackageTuple(const QStringList &packageTuples, QStringList &packageCache);
+    static QString getSystemArch();
+    static QString getPackageInstallDate(const QString &pkgNameVersion);
     static QList<PackageListData> *getPackageList(const QString &packageName = "");
 
     //Remote package methods

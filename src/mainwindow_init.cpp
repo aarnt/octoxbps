@@ -145,8 +145,8 @@ void MainWindow::savePackageColumnWidths()
         ui->tvPackages->columnWidth(PackageModel::ctn_PACKAGE_ICON_COLUMN));
   SettingsManager::setPackageNameColumnWidth(
         ui->tvPackages->columnWidth(PackageModel::ctn_PACKAGE_NAME_COLUMN));
-  //SettingsManager::setPackageVersionColumnWidth(
-  //      ui->tvPackages->columnWidth(PackageModel::ctn_PACKAGE_VERSION_COLUMN));
+  SettingsManager::setPackageVersionColumnWidth(
+       ui->tvPackages->columnWidth(PackageModel::ctn_PACKAGE_VERSION_COLUMN));
 }
 
 /*

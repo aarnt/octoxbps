@@ -45,6 +45,7 @@ public:
   static QString getHelpAbout();
   static QString getName();
   static QString getVersion();
+  static QString getInstalledOn();
   static QString getOutdatedVersion();
   static QString getAvailableVersion();
   static QString getNoDescriptionAvailabe();

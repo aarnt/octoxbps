@@ -78,6 +78,7 @@ public:
     /*const*/ QString outdatedVersion;
     /*const*/ double  downloadSize;
     /*const*/ double  installedSize;
+    QString installedOn;
     /*const*/ PackageStatus status;
     /*const*/ QString comment;
     /*const*/ QString www;

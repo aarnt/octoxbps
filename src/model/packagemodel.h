@@ -38,7 +38,8 @@ public:
   static const int ctn_PACKAGE_NAME_COLUMN        = 1;
   static const int ctn_PACKAGE_VERSION_COLUMN     = 2;
   //static const int ctn_PACKAGE_ORIGIN_COLUMN      = 3;
-  static const int ctn_PACKAGE_SIZE_COLUMN        = 3;
+  static const int ctn_PACKAGE_SIZE_COLUMN        = 4;
+  static const int ctn_PACKAGE_INSTALLEDON_COLUMN = 3;
   // Pseudo Column indices for additional filter criterias
   static const int ctn_PACKAGE_DESCRIPTION_FILTER_NO_COLUMN = 5;
 

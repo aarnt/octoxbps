@@ -381,11 +381,48 @@ QStringList *Package::getTargetRemovalList(const QString &pkgName)
 }*/
 
 /*
+ * Returns system archtecture using arch command
+ */
+QString Package::getSystemArch()
+{
+  static bool firstTime=true;
+  static QString result;
+
+  if (firstTime)
+  {
+    QProcess p;
+    QStringList params;
+    p.start("arch", params);
+    p.waitForFinished();
+    result = p.readAllStandardOutput().trimmed();
+    p.close();
+    firstTime = false;
+  }
+
+  return result;
+}
+
+/*
+ * Finds the xbps install date looking into /var/cache/xbps/ directory
+ */
+QString Package::getPackageInstallDate(const QString &pkgNameVersion)
+{
+  QString path = "/var/cache/xbps/" + pkgNameVersion + "." + getSystemArch() +".xbps";
+  //std::cout << path.toLatin1().data() << std::endl;
+
+  QFileInfo fi(path);
+  if (!fi.exists())
+    return "";
+
+  return QString::number(fi.lastModified().toSecsSinceEpoch());
+}
+
+/*
  * Retrieves the list of all available packages in the database (installed + non-installed)
  */
 QList<PackageListData> * Package::getPackageList(const QString &packageName)
 {
-  QString pkgAux, pkgName, pkgOrigin, pkgVersion, pkgComment, pkgDescription;
+  QString pkgAux, pkgName, pkgOrigin, pkgVersion, pkgComment, pkgDescription, pkgInstalledOn;
   double pkgInstalledSize, pkgDownloadedSize;
   PackageStatus pkgStatus;
   QString pkgList = UnixCommand::getPackageList(packageName);
@@ -409,9 +446,15 @@ QList<PackageListData> * Package::getPackageList(const QString &packageName)
       }
 
       if (parts[0] == "[*]" || parts[0] == "i" || parts[0] == "ii")
+      {
+        pkgInstalledOn = getPackageInstallDate(pkgName + "-" + pkgVersion);
         pkgStatus = ectn_INSTALLED;
+      }
       else
+      {
+        pkgInstalledOn = "";
         pkgStatus = ectn_NON_INSTALLED;
+      }
 
       pkgDownloadedSize = 0;
       pkgInstalledSize = 0; //strToKBytes(parts[3]);
@@ -426,7 +469,7 @@ QList<PackageListData> * Package::getPackageList(const QString &packageName)
       pkgDescription = pkgComment;
 
       PackageListData pld =
-          PackageListData(pkgName, pkgOrigin, pkgVersion, pkgComment, pkgStatus, pkgInstalledSize, pkgDownloadedSize);
+          PackageListData(pkgName, pkgOrigin, pkgVersion, pkgComment, pkgStatus, pkgInstalledSize, pkgDownloadedSize, pkgInstalledOn);
 
       res->append(pld);
     }
@@ -442,7 +485,7 @@ QList<PackageListData> * Package::parsePackageTuple(const QStringList &packageTu
 {
   Q_UNUSED(packageCache)
 
-  QString pkgAux, pkgName, pkgVersion, pkgComment, strStatus, pkgDescription, pkgOrigin;
+  QString pkgAux, pkgName, pkgVersion, pkgComment, strStatus, pkgDescription, pkgOrigin, pkgInstalledOn;
   PackageStatus pkgStatus;
   double pkgInstalledSize, pkgDownloadedSize;
 
@@ -463,9 +506,15 @@ QList<PackageListData> * Package::parsePackageTuple(const QStringList &packageTu
     }
 
     if (strStatus.contains("*"))
+    {
       pkgStatus = ectn_INSTALLED;
+      pkgInstalledOn = getPackageInstallDate(pkgName + "-" + pkgVersion);
+    }
     else
+    {
       pkgStatus = ectn_NON_INSTALLED;
+      pkgInstalledOn = "";
+    }
 
     pkgDownloadedSize = 0;
     pkgInstalledSize = 0; //strToKBytes(parts[3]);
@@ -480,7 +529,7 @@ QList<PackageListData> * Package::parsePackageTuple(const QStringList &packageTu
     pkgDescription = pkgComment;
 
     PackageListData pld =
-        PackageListData(pkgName, pkgOrigin, pkgVersion, pkgComment, pkgStatus, pkgInstalledSize, pkgDownloadedSize);
+        PackageListData(pkgName, pkgOrigin, pkgVersion, pkgComment, pkgStatus, pkgInstalledSize, pkgDownloadedSize, pkgInstalledOn);
 
     res->append(pld);
   }

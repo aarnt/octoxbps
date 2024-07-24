@@ -121,6 +121,10 @@ QString StrConstants::getVersion(){
   return QObject::tr("Version");
 }
 
+QString StrConstants::getInstalledOn(){
+  return QObject::tr("Installed on");
+}
+
 QString StrConstants::getOutdatedVersion(){
   return QObject::tr("Outdated version");
 }
