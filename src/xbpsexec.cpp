@@ -559,7 +559,7 @@ void XBPSExec::onFinished(int exitCode, QProcess::ExitStatus es)
  */
 void XBPSExec::doCleanCache()
 {
-  QString command = "/usr/bin/xbps-remove -O"; //"rm -fr /var/cache/xbps/";
+  QString command = UnixCommand::getXBPSRemoveBin() + " -O";
   m_lastCommandList.clear();
 
   m_commandExecuting = ectn_CLEAN_CACHE;
@@ -571,10 +571,14 @@ void XBPSExec::doCleanCache()
  */
 void XBPSExec::doInstall(const QString &listOfPackages)
 {
-  QString command = "/usr/bin/xbps-install -y " + listOfPackages;
+  //QString command = "/usr/bin/xbps-install -y " + listOfPackages;
+  QString command = UnixCommand::getXBPSInstallBin() + " -y " + listOfPackages;
+
 
   m_lastCommandList.clear();
-  m_lastCommandList.append("/usr/bin/xbps-install " + listOfPackages + ";");
+  //m_lastCommandList.append("/usr/bin/xbps-install " + listOfPackages + ";");
+  m_lastCommandList.append(UnixCommand::getXBPSInstallBin() + " " + listOfPackages + ";");
+
   m_lastCommandList.append("echo -e;");
   m_lastCommandList.append("read -n 1 -p \"" + StrConstants::getPressAnyKey() + "\"");
 
@@ -588,7 +592,9 @@ void XBPSExec::doInstall(const QString &listOfPackages)
 void XBPSExec::doInstallInTerminal(const QString &listOfPackages)
 {
   m_lastCommandList.clear();
-  m_lastCommandList.append("/usr/bin/xbps-install " + listOfPackages + ";");
+  //m_lastCommandList.append("/usr/bin/xbps-install " + listOfPackages + ";");
+  m_lastCommandList.append(UnixCommand::getXBPSInstallBin() + " " + listOfPackages + ";");
+
   m_lastCommandList.append("echo -e;");
   m_lastCommandList.append("read -n 1 -p \"" + StrConstants::getPressAnyKey() + "\"");
 
@@ -601,10 +607,13 @@ void XBPSExec::doInstallInTerminal(const QString &listOfPackages)
  */
 void XBPSExec::doInstallLocal(const QString &targetPath, const QString &listOfPackages)
 {
-  QString command = "xbps-install -S -y --repository " + targetPath + " " + listOfPackages;
+  //QString command = "xbps-install -S -y --repository " + targetPath + " " + listOfPackages;
+  QString command = UnixCommand::getXBPSInstallBin() + " -S -y --repository " + targetPath + " " + listOfPackages;
 
   m_lastCommandList.clear();
-  m_lastCommandList.append("xbps-install -S --repository " + targetPath + " " + listOfPackages + ";");
+  //m_lastCommandList.append("xbps-install -S --repository " + targetPath + " " + listOfPackages + ";");
+  m_lastCommandList.append(UnixCommand::getXBPSInstallBin() + " -S --repository " + targetPath + " " + listOfPackages + ";");
+
   m_lastCommandList.append("echo -e;");
   m_lastCommandList.append("read -n 1 -p \"" + StrConstants::getPressAnyKey() + "\"");
 
@@ -617,10 +626,13 @@ void XBPSExec::doInstallLocal(const QString &targetPath, const QString &listOfPa
  */
 void XBPSExec::doInstallLocalInTerminal(const QString &targetPath, const QString &listOfPackages)
 {
-  QString command = "xbps-install -S -y --repository " + targetPath + " " + listOfPackages;
+  //QString command = "xbps-install -S -y --repository " + targetPath + " " + listOfPackages;
+  QString command = UnixCommand::getXBPSInstallBin() + " -S -y --repository " + targetPath + " " + listOfPackages;
 
   m_lastCommandList.clear();
-  m_lastCommandList.append("xbps-install -S --repository " + targetPath + " " + listOfPackages + ";");
+  //m_lastCommandList.append("xbps-install -S --repository " + targetPath + " " + listOfPackages + ";");
+  m_lastCommandList.append(UnixCommand::getXBPSInstallBin() + " -S --repository " + targetPath + " " + listOfPackages + ";");
+
   m_lastCommandList.append("echo -e;");
   m_lastCommandList.append("read -n 1 -p \"" + StrConstants::getPressAnyKey() + "\"");
 
@@ -633,10 +645,13 @@ void XBPSExec::doInstallLocalInTerminal(const QString &targetPath, const QString
  */
 void XBPSExec::doRemove(const QString &listOfPackages)
 {
-  QString command = "/usr/bin/xbps-remove -R -y " + listOfPackages;
+  //QString command = "/usr/bin/xbps-remove -R -y " + listOfPackages;
+  QString command = UnixCommand::getXBPSRemoveBin() + " -R -y " + listOfPackages;
 
   m_lastCommandList.clear();
-  m_lastCommandList.append("/usr/bin/xbps-remove -R " + listOfPackages + ";");
+  //m_lastCommandList.append("/usr/bin/xbps-remove -R " + listOfPackages + ";");
+  m_lastCommandList.append(UnixCommand::getXBPSRemoveBin() + " -R " + listOfPackages + ";");
+
   m_lastCommandList.append("echo -e;");
   m_lastCommandList.append("read -n 1 -p \"" + StrConstants::getPressAnyKey() + "\"");
 
@@ -650,7 +665,9 @@ void XBPSExec::doRemove(const QString &listOfPackages)
 void XBPSExec::doRemoveInTerminal(const QString &listOfPackages)
 {
   m_lastCommandList.clear();
-  m_lastCommandList.append("/usr/bin/xbps-remove -R " + listOfPackages + ";");
+  //m_lastCommandList.append("/usr/bin/xbps-remove -R " + listOfPackages + ";");
+  m_lastCommandList.append(UnixCommand::getXBPSRemoveBin() + " -R " + listOfPackages + ";");
+
   m_lastCommandList.append("echo -e;");
   m_lastCommandList.append("read -n 1 -p \"" + StrConstants::getPressAnyKey() + "\"");
 
@@ -663,17 +680,23 @@ void XBPSExec::doRemoveInTerminal(const QString &listOfPackages)
  */
 void XBPSExec::doRemoveAndInstall(const QString &listOfPackagestoRemove, const QString &listOfPackagestoInstall)
 {
-  QString command = UnixCommand::getShell() + " -c \"" + "/usr/bin/xbps-remove -R -y " + listOfPackagestoRemove +
-      "; /usr/bin/xbps-install -y " + listOfPackagestoInstall + "\"";
+  QStringList params;
+  params << UnixCommand::getShell();
+  params << "-c";
+  params << UnixCommand::getXBPSRemoveBin() + " -R -y " + listOfPackagestoRemove + "; " +
+            UnixCommand::getXBPSInstallBin() + " -y " + listOfPackagestoInstall;
 
   m_lastCommandList.clear();
-  m_lastCommandList.append("/usr/bin/xbps-remove -R " + listOfPackagestoRemove + ";");
-  m_lastCommandList.append("/usr/bin/xbps-install " + listOfPackagestoInstall + ";");
+  //m_lastCommandList.append("/usr/bin/xbps-remove -R " + listOfPackagestoRemove + ";");
+  m_lastCommandList.append(UnixCommand::getXBPSRemoveBin() + " -R " + listOfPackagestoRemove + ";");
+  //m_lastCommandList.append("/usr/bin/xbps-install " + listOfPackagestoInstall + ";");
+  m_lastCommandList.append(UnixCommand::getXBPSInstallBin() + " " + listOfPackagestoInstall + ";");
+
   m_lastCommandList.append("echo -e;");
   m_lastCommandList.append("read -n 1 -p \"" + StrConstants::getPressAnyKey() + "\"");
 
   m_commandExecuting = ectn_REMOVE_INSTALL;
-  m_unixCommand->executeCommand(command);
+  m_unixCommand->executeCommand(params);
 }
 
 /*
@@ -682,8 +705,12 @@ void XBPSExec::doRemoveAndInstall(const QString &listOfPackagestoRemove, const Q
 void XBPSExec::doRemoveAndInstallInTerminal(const QString &listOfPackagestoRemove, const QString &listOfPackagestoInstall)
 {
   m_lastCommandList.clear();
-  m_lastCommandList.append("/usr/bin/xbps-remove -R " + listOfPackagestoRemove + ";");
-  m_lastCommandList.append("/usr/bin/xbps-install " + listOfPackagestoInstall + ";");
+  //m_lastCommandList.append("/usr/bin/xbps-remove -R " + listOfPackagestoRemove + ";");
+  m_lastCommandList.append(UnixCommand::getXBPSRemoveBin() + " -R " + listOfPackagestoRemove + ";");
+
+  //m_lastCommandList.append("/usr/bin/xbps-install " + listOfPackagestoInstall + ";");
+  m_lastCommandList.append(UnixCommand::getXBPSInstallBin() + " " + listOfPackagestoInstall + ";");
+
   m_lastCommandList.append("echo -e;");
   m_lastCommandList.append("read -n 1 -p \"" + StrConstants::getPressAnyKey() + "\"");
 
@@ -698,14 +725,18 @@ void XBPSExec::doRemoveAndInstallInTerminal(const QString &listOfPackagestoRemov
  */
 void XBPSExec::doSystemUpgrade(bool upgradeXBPS)
 {
-  QString command="/usr/bin/xbps-install -u -y";
-  if (upgradeXBPS) command = "/usr/bin/xbps-install -u -y xbps";
+  //QString command="/usr/bin/xbps-install -u -y";
+  QString command= UnixCommand::getXBPSInstallBin() + " -u -y";
+  //if (upgradeXBPS) command = "/usr/bin/xbps-install -u -y xbps";
+  if (upgradeXBPS) command = UnixCommand::getXBPSInstallBin() + " -u -y xbps";
 
   m_lastCommandList.clear();
   if(upgradeXBPS)
-    m_lastCommandList.append("/usr/bin/xbps-install -u xbps;");
+    //m_lastCommandList.append("/usr/bin/xbps-install -u xbps;");
+    m_lastCommandList.append(UnixCommand::getXBPSInstallBin() + " -u xbps;");
   else
-    m_lastCommandList.append("/usr/bin/xbps-install -u;");
+    //m_lastCommandList.append("/usr/bin/xbps-install -u;");
+    m_lastCommandList.append(UnixCommand::getXBPSInstallBin() + " -u;");
 
   m_lastCommandList.append("echo -e;");
   m_lastCommandList.append("read -n 1 -p \"" + StrConstants::getPressAnyKey() + "\"");
@@ -722,9 +753,11 @@ void XBPSExec::doSystemUpgradeInTerminal(bool upgradeXBPS)
   m_lastCommandList.clear();
 
   if(upgradeXBPS)
-    m_lastCommandList.append("/usr/bin/xbps-install -u xbps;");
+    //m_lastCommandList.append("/usr/bin/xbps-install -u xbps;");
+    m_lastCommandList.append(UnixCommand::getXBPSInstallBin() + " -u xbps;");
   else
-    m_lastCommandList.append("/usr/bin/xbps-install -u;");
+    //m_lastCommandList.append("/usr/bin/xbps-install -u;");
+    m_lastCommandList.append(UnixCommand::getXBPSInstallBin() + " -u;");
 
   m_lastCommandList.append("echo -e;");
   m_lastCommandList.append("read -n 1 -p \"" + StrConstants::getPressAnyKey() + "\"");
@@ -737,7 +770,9 @@ void XBPSExec::doSystemUpgradeInTerminal(bool upgradeXBPS)
  */
 void XBPSExec::doSyncDatabase()
 {
-  QString command = "/usr/bin/xbps-install -Syy";
+  //QString command = "/usr/bin/xbps-install -Syy";
+  QString command = UnixCommand::getXBPSInstallBin() + " -Syy";
+
   m_commandExecuting = ectn_SYNC_DATABASE;
   m_unixCommand->executeCommand(command);
 }

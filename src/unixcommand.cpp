@@ -525,6 +525,28 @@ bool UnixCommand::isTextFile(const QString& fileName)
 }
 
 /*
+ * Retrieves customized or default xbps-install location
+ */
+QString UnixCommand::getXBPSInstallBin()
+{
+  if (QFile::exists("/usr/local/bin/" + ctn_XBPS_INSTALL_BIN))
+    return "/usr/local/bin/" + ctn_XBPS_INSTALL_BIN;
+  else
+    return "/usr/bin/" + ctn_XBPS_INSTALL_BIN;
+}
+
+/*
+ * Retrieves customized or default xbps-remove location
+ */
+QString UnixCommand::getXBPSRemoveBin()
+{
+  if (QFile::exists("/usr/local/bin/" + ctn_XBPS_REMOVE_BIN))
+    return "/usr/local/bin/" + ctn_XBPS_REMOVE_BIN;
+  else
+    return "/usr/bin/" + ctn_XBPS_REMOVE_BIN;
+}
+
+/*
  * Retrieves pkgNG version.
  */
 QString UnixCommand::getXBPSVersion()
@@ -577,6 +599,24 @@ void UnixCommand::executeCommand(const QString &pCommand, Language lang)
   sl.insert(0, ctn_OCTOXBPS_SUDO_PARAMS);
 
   m_process->start(WMHelper::getSUCommand(), sl);
+}
+
+/*
+ * Executes the given command using QProcess async technology with ROOT credentials
+ */
+void UnixCommand::executeCommand(QStringList &params)
+{
+  QString command;
+
+  QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+  env.remove("LANG");
+  env.remove("LC_MESSAGES");
+  env.insert("LANG", QLocale::system().name() + ".UTF-8");
+  env.insert("LC_MESSAGES", QLocale::system().name() + ".UTF-8");
+  m_process->setProcessEnvironment(env);
+
+  params.insert(0, ctn_OCTOXBPS_SUDO_PARAMS);
+  m_process->start(WMHelper::getSUCommand(), params);
 }
 
 /*

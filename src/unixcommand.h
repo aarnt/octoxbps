@@ -81,6 +81,9 @@ public:
   static bool doInternetPingTest();
   static bool isTextFile( const QString& fileName ); //fileName is Path + Name
 
+  static QString getXBPSInstallBin();
+  static QString getXBPSRemoveBin();
+
   static QString getXBPSVersion();
   static bool hasTheExecutable( const QString& exeName );
   static bool isAppRunning(const QString &appName, bool justOneInstance = false);
@@ -117,6 +120,7 @@ public:
 
   void runCommandInTerminal(const QStringList& commandList);
   void executeCommand(const QString &pCommand, Language lang=ectn_LANG_ENGLISH);
+  void executeCommand(QStringList &params);
   static void execCommand(const QString &pCommand, const QStringList &params);
 
   QString readAllStandardOutput();

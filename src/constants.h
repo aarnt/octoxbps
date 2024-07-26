@@ -106,6 +106,8 @@ const QString ctn_NO_SU_COMMAND(QStringLiteral("none"));
 const QString ctn_OCTOXBPS_SUDO(QStringLiteral("/usr/local/bin/qt-sudo"));
 const QString ctn_OCTOXBPS_SUDO_PARAMS(QStringLiteral("-d"));
 const QString ctn_ROOT_SH(QStringLiteral("/bin/sh -c "));
+const QString ctn_XBPS_INSTALL_BIN(QStringLiteral("xbps-install"));
+const QString ctn_XBPS_REMOVE_BIN(QStringLiteral("xbps-remove"));
 
 const QString ctn_KDE_DESKTOP(QStringLiteral("kwin"));
 const QString ctn_KDE_X11_DESKTOP(QStringLiteral("kwin_x11"));
