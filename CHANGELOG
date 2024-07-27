@@ -1,5 +1,7 @@
 0.3.4 (dev)
   BugFix: Remove and install command was not working.
+  Improvement: Files tab expand all items by default.
+  Source code now default to using Qt6 libs.
   Now using the unified qt-sudo project (https://github.com/aarnt/qt-sudo) for privilege escalation.
   All transaction look first for xbps-install/xbps-remove wrappers on /usr/local/bin path,
     which can be used to emulate hooks.

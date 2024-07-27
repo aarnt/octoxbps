@@ -21,7 +21,7 @@
 #ifndef TERMWIDGET_H
 #define TERMWIDGET_H
 
-#include "qtermwidget5/qtermwidget.h"
+#include "qtermwidget6/qtermwidget.h"
 #include <QClipboard>
 
 class QWidget;

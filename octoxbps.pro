@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT += core gui network xml widgets
+QT += core gui network xml widgets core5compat
 DEFINES += OCTOXBPS_EXTENSIONS UNIFIED_SEARCH
 CONFIG += qt warn_on debug lrelease embed_translations
 QM_FILES_RESOURCE_PREFIX=/translations
@@ -14,7 +14,7 @@ DESTDIR += bin
 OBJECTS_DIR += build
 MOC_DIR += build
 UI_DIR += build
-LIBS += -lqtermwidget5
+LIBS += -lqtermwidget6
 
 HEADERS += src/QtSolutions/qtsingleapplication.h \
         src/QtSolutions/qtlocalpeer.h \
