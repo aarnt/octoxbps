@@ -13,22 +13,22 @@ The project is compatible with [Void Linux](https://voidlinux.org/).
 # xbps-install -S octoxbps
 ```
 
-### Follow the steps bellow to compile the latest source code (you'll need curl, git and qt5 packages):
+### Follow the steps bellow to compile the latest source code (you'll need curl, git and qt6 packages):
 
 ```
 $ git clone https://github.com/aarnt/qt-sudo
 $ cd qt-sudo
-$ qmake-qt5
+$ qmake6
 $ make
 # make install
 $ cd ..
 $ git clone https://github.com/aarnt/octoxbps
 $ cd octoxbps/notifier
-$ qmake-qt5
+$ qmake6
 $ make
 # make install
 $ cd ..
-$ qmake-qt5
+$ qmake6
 $ make
 # make install
 ```
