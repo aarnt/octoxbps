@@ -1,4 +1,4 @@
-0.3.4 (dev)
+0.3.4 (2024/07/29)
   BugFix: Remove and install command was not working.
   Improvement: Files tab expand all items by default.
   Source code now default to using Qt6 libs.
