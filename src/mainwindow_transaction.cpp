@@ -712,6 +712,11 @@ void MainWindow::prepareTargetUpgradeList(const QString& pkgName, CommandExecuti
     connect(&g_fwTargetUpgradeList, SIGNAL(finished()), this, SLOT(doSystemUpgrade()));
   }
 
+  clearTabOutput();
+  writeToTabOutput(QLatin1String("<b>") + StrConstants::getCollectingTransactionData() +
+                       QLatin1String("</b><br>"), ectn_DONT_TREAT_URL_LINK);
+  qApp->processEvents();
+
   g_fwTargetUpgradeList.setFuture(f);
 }
 
@@ -770,6 +775,9 @@ void MainWindow::doSystemUpgrade(SystemUpgradeOptions)
     if (target == "xbps") upgradeXBPS=true;
     list = list + target + "\n";
   }
+
+  writeToTabOutput(QLatin1String("<b>") + StrConstants::getCommandFinishedOK() +
+                       QLatin1String("</b><br>"), ectn_DONT_TREAT_URL_LINK);
 
   //Let's build the system upgrade transaction dialog...
   QString ds = ti.sizeToDownload;
@@ -830,6 +838,11 @@ void MainWindow::doPreRemoveAndInstall()
  */
 void MainWindow::doRemoveAndInstall()
 {
+  clearTabOutput();
+  writeToTabOutput(QLatin1String("<b>") + StrConstants::getCollectingTransactionData() +
+                       QLatin1String("</b><br>"), ectn_DONT_TREAT_URL_LINK);
+  qApp->processEvents();
+
   m_progressWidget->setRange(0, 100);
   QString listOfRemoveTargets = getTobeRemovedPackages();
   QString removeList;
@@ -883,6 +896,10 @@ void MainWindow::doRemoveAndInstall()
   question.setWindowTitle(StrConstants::getConfirmation());
   question.setInformativeText(StrConstants::getConfirmationQuestion());
   question.setDetailedText(allLists);
+
+  writeToTabOutput(QLatin1String("<b>") + StrConstants::getCommandFinishedOK() +
+                       QLatin1String("</b><br>"), ectn_DONT_TREAT_URL_LINK);
+
   int result = question.exec();
 
   if(result == QDialogButtonBox::Yes || result == QDialogButtonBox::AcceptRole)
@@ -929,6 +946,11 @@ void MainWindow::doRemoveAndInstall()
  */
 void MainWindow::doRemove()
 {
+  clearTabOutput();
+  writeToTabOutput(QLatin1String("<b>") + StrConstants::getCollectingTransactionData() +
+                       QLatin1String("</b><br>"), ectn_DONT_TREAT_URL_LINK);
+  qApp->processEvents();
+
   m_progressWidget->setRange(0, 100);
   QString listOfTargets = getTobeRemovedPackages();
   QStringList *_targets = Package::getTargetRemovalList(listOfTargets);
@@ -962,6 +984,9 @@ void MainWindow::doRemove()
     question.setWindowTitle(StrConstants::getWarning());
   else
     question.setWindowTitle(StrConstants::getConfirmation());
+
+  writeToTabOutput(QLatin1String("<b>") + StrConstants::getCommandFinishedOK() +
+                       QLatin1String("</b><br>"), ectn_DONT_TREAT_URL_LINK);
 
   question.setInformativeText(StrConstants::getConfirmationQuestion());
   question.setDetailedText(list);
@@ -1020,6 +1045,11 @@ void MainWindow::doPreInstall()
  */
 void MainWindow::doInstall()
 {
+  clearTabOutput();
+  writeToTabOutput(QLatin1String("<b>") + StrConstants::getCollectingTransactionData() +
+                         QLatin1String("</b><br>"), ectn_DONT_TREAT_URL_LINK);
+  qApp->processEvents();
+
   m_progressWidget->setRange(0, 100);
   QString listOfTargets = getTobeInstalledPackages();
 
@@ -1058,6 +1088,10 @@ void MainWindow::doInstall()
   question.setWindowTitle(StrConstants::getConfirmation());
   question.setInformativeText(StrConstants::getConfirmationQuestion());
   question.setDetailedText(list);
+
+  writeToTabOutput(QLatin1String("<b>") + StrConstants::getCommandFinishedOK() +
+                       QLatin1String("</b><br>"), ectn_DONT_TREAT_URL_LINK);
+
   int result = question.exec();
 
   if(result == QDialogButtonBox::Yes || result == QDialogButtonBox::AcceptRole)

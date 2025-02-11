@@ -1,3 +1,7 @@
+0.4.1 (dev)
+  Improvement: Show a "Collecting transaction data..." msg before presenting the transaction 
+    dialog, as it can be quite slow on some systems.
+
 0.4.0 (2024/07/29)
   BugFix: Remove and install command was not working.
   Improvement: Files tab expand all items by default.

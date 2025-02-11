@@ -28,7 +28,7 @@ QString StrConstants::getApplicationName(){
 }
 
 QString StrConstants::getApplicationVersion(){
-  return "0.4.0";
+  return "0.4.1 (dev)";
 }
 
 QString StrConstants::getQtVersion(){
@@ -410,6 +410,11 @@ QString StrConstants::getChooseATerminal(){
 
 QString StrConstants::getRunningCommandInTerminal(){
   return QObject::tr("Running command in terminal...");
+}
+
+QString StrConstants::getCollectingTransactionData()
+{
+  return QObject::tr("Collecting transaction data...");
 }
 
 QString StrConstants::getCommandFinishedOK(){
