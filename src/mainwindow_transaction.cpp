@@ -629,10 +629,29 @@ bool MainWindow::isSUAvailable()
 }
 
 /*
+ * Checks if Internet connection is up/down
+ */
+ bool MainWindow::isInternetAvailable()
+ {
+   bool res=true;
+
+   //Test if Internet access exists
+   if (!UnixCommand::hasInternetConnection())
+   {
+     QMessageBox::critical(this, StrConstants::getError(), StrConstants::getInternetUnavailableError());
+     res=false;
+   }
+
+   return res;
+ }
+
+/*
  * Does a repository sync with "pkg update -f" !
  */
 void MainWindow::doSyncDatabase()
 {
+  if (!isInternetAvailable()) return;
+
   m_progressWidget->setRange(0, 100);
   if (!doRemovePacmanLockFile()) return;
 
@@ -733,6 +752,8 @@ void MainWindow::doPreSystemUpgrade()
  */
 void MainWindow::doSystemUpgrade(SystemUpgradeOptions)
 {
+  if (!isInternetAvailable()) return;
+
   if (m_systemUpgradeDialog) return;
 
   if(m_callSystemUpgrade && m_numberOfOutdatedPackages == 0)
@@ -1394,6 +1415,8 @@ void MainWindow::toggleSystemActions(const bool value)
  */
 void MainWindow::commitTransaction()
 {
+  if (!isInternetAvailable()) return;
+
   //Are there any remove actions to be commited?
   if(getRemoveTransactionParentItem()->rowCount() > 0 && getInstallTransactionParentItem()->rowCount() > 0)
   {

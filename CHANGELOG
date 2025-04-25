@@ -1,4 +1,6 @@
 0.4.1 (dev)
+  BugFix: Removed project Trident code.
+  Added internet check before pkg actions.
   Improvement: Show a "Collecting transaction data..." msg before presenting the transaction 
     dialog, as it can be quite slow on some systems.
 

@@ -185,6 +185,7 @@ public:
   static QString getOnceEveryDesc();
   static QString getNever();
   static QString getSetInterval();
+  static QString getError();
   static QString getUpgrading();
   static QString getSysUpgrade();
   static QString getExit();

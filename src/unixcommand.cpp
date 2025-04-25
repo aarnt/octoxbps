@@ -410,10 +410,10 @@ bool UnixCommand::hasInternetConnection()
   }
 
   //It seems to be alright, but let's make a ping to see the result
-  /*if (result == true)
+  if (result == true)
   {
     result = UnixCommand::doInternetPingTest();
-  }*/
+  }
 
   return result;
 }
@@ -736,11 +736,7 @@ LinuxDistro UnixCommand::getLinuxDistro()
 
   if (firstTime)
   {
-    if (QFile::exists("/etc/trident-login.d"))
-    {
-      ret = ectn_TRIDENT;
-    }
-    else if (QFile::exists("/etc/os-release"))
+    if (QFile::exists("/etc/os-release"))
     {
       QFile file("/etc/os-release");
 

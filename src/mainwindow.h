@@ -66,9 +66,6 @@ const int ctn_TABINDEX_NEWS(4);
 const int ctn_TABINDEX_HELPUSAGE(5);
 const int ctn_TABINDEX_TERMINAL(6);
 
-//enum TreatURLLinks { ectn_TREAT_URL_LINK, ectn_DONT_TREAT_URL_LINK };
-//enum SystemUpgradeOptions { ectn_NO_OPT, ectn_SYNC_DATABASE_OPT, ectn_NOCONFIRM_OPT };
-
 namespace Ui {
 class MainWindow;
 }
@@ -288,6 +285,7 @@ private:
   void ensureTabVisible(const int index);
   bool isPropertiesTabWidgetVisible();
   bool isSUAvailable();
+  bool isInternetAvailable();
   void writeToTabOutput(const QString &msg, TreatURLLinks treatURLLinks = ectn_TREAT_URL_LINK);
   void initTabOutput();
   void clearTabOutput();

@@ -673,6 +673,10 @@ QString StrConstants::getSetInterval(){
   return QObject::tr("Set interval...");
 }
 
+QString StrConstants::getError(){
+   return QObject::tr("Error");
+}
+
 QString StrConstants::getUpgrading()
 {
   return QObject::tr("Upgrading...");
