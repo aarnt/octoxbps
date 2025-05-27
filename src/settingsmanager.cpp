@@ -107,7 +107,7 @@ QDateTime SettingsManager::getLastSyncDbTime()
 {
   if (!instance()->getSYSsettings()->contains(ctn_KEY_LAST_SYNC_DB_TIME))
   {
-    return QDateTime();
+    return QDateTime::currentDateTime().addDays(-2);
   }
   else
   {

@@ -1,5 +1,6 @@
 0.4.1 (dev)
   BugFix: Removed project Trident code.
+  BugFix: Notifier did not fetch updates for the first time when using "once a day".
   Enhancement: Hotkey for marking package for removal (-) & installation (+) when selected.
   Enhancement: Hitting enter on a highlighted package in the package list opens Info tab.
   Added internet check before pkg actions.
