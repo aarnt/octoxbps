@@ -323,6 +323,40 @@ void MainWindow::keyReleaseEvent(QKeyEvent* ke)
     invalidateTabs();
     ui->tvPackages->setFocus();
   }
+  else if(ui->tvPackages->hasFocus() && ke->key() == Qt::Key_Minus)
+  {
+    const QItemSelectionModel*const selectionModel = ui->tvPackages->selectionModel();
+    QModelIndexList selectedRows = selectionModel->selectedRows();
+
+    foreach(QModelIndex item, selectedRows)
+    {
+      const PackageRepository::PackageData*const package = m_packageModel->getData(item);
+
+      if (package->installed() == true && !Package::isForbidden(package->name))
+      {
+        insertRemovePackageIntoTransaction(package->name);
+      }
+    }
+  }
+  else if(ke->key() == Qt::Key_Minus)
+  {
+    onPressDelete();
+  }
+  else if(ui->tvPackages->hasFocus() && ke->key() == Qt::Key_Plus)
+  {
+    const QItemSelectionModel*const selectionModel = ui->tvPackages->selectionModel();
+    QModelIndexList selectedRows = selectionModel->selectedRows();
+
+    foreach(QModelIndex item, selectedRows)
+    {
+      const PackageRepository::PackageData*const package = m_packageModel->getData(item);
+
+      if (!package->installed())
+      {
+        insertInstallPackageIntoTransaction(package->name);
+      }
+    }
+  }
   else if (ke->key() == Qt::Key_Tab)
   {
     if (ui->tvPackages->hasFocus())

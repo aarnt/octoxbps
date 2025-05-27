@@ -1,5 +1,6 @@
 0.4.1 (dev)
   BugFix: Removed project Trident code.
+  Enhancement: Hotkey for marking package for removal (-) & installation (+) when selected.
   Enhancement: Hitting enter on a highlighted package in the package list opens Info tab.
   Added internet check before pkg actions.
   Improvement: Show a "Collecting transaction data..." msg before presenting the transaction 
