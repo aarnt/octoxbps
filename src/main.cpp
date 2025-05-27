@@ -94,7 +94,7 @@ int main(int argc, char *argv[])
   appTranslator.load(QLocale(), QStringLiteral("octoxbps"), QStringLiteral("_"), QStringLiteral(":/translations"));
   app.installTranslator(&appTranslator);
   QTranslator qtTranslator;
-  qtTranslator.load(QLocale(), QStringLiteral("qt"), QStringLiteral("_"), QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+  qtTranslator.load(QLocale(), QStringLiteral("qt"), QStringLiteral("_"), QLibraryInfo::path(QLibraryInfo::TranslationsPath));
   app.installTranslator(&qtTranslator);
 
   if (argList->getSwitch(QStringLiteral("-help"))){

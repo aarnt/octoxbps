@@ -134,8 +134,13 @@ void MainWindow::keyPressEvent(QKeyEvent* ke)
       g_fwPackageOwnsFile.setFuture(f);
       connect(&g_fwPackageOwnsFile, SIGNAL(finished()), this, SLOT(positionInPkgListSearchByFile()));
     }
+
+    else if (ui->tvPackages->hasFocus()){
+      refreshTabInfo(false, true);
+    }
+
     //We are probably inside 'Files' tab...
-    else
+    else if (ui->twProperties->currentIndex() == ctn_TABINDEX_FILES)
     {
       QTreeView *tvPkgFileList =
           ui->twProperties->widget(ctn_TABINDEX_FILES)->findChild<QTreeView*>("tvPkgFileList");
