@@ -44,6 +44,8 @@ TreeViewPackagesItemDelegate::TreeViewPackagesItemDelegate(QObject *parent):
 bool TreeViewPackagesItemDelegate::helpEvent ( QHelpEvent *event, QAbstractItemView*,
     const QStyleOptionViewItem&, const QModelIndex &index )
 {
+  static QString lastShownPackage;
+
   if (this->parent()->objectName() == "tvPackages")
   {
     QTreeView* tvPackages = qobject_cast<QTreeView*>(this->parent());
@@ -54,11 +56,22 @@ bool TreeViewPackagesItemDelegate::helpEvent ( QHelpEvent *event, QAbstractItemV
     if (si != NULL)
     {
       gPoint = tvPackages->mapToGlobal(event->pos());
-      QFuture<QString> f;
+      /*QFuture<QString> f;
       disconnect(&g_fwToolTip, SIGNAL(finished()), this, SLOT(execToolTip()));
       f = QtConcurrent::run(showPackageInformation, si->name);
       g_fwToolTip.setFuture(f);
-      connect(&g_fwToolTip, SIGNAL(finished()), this, SLOT(execToolTip()));
+      connect(&g_fwToolTip, SIGNAL(finished()), this, SLOT(execToolTip()));*/
+
+      if (lastShownPackage != si->name)
+      {
+        QFuture<QString> f;
+        disconnect(&g_fwToolTip, SIGNAL(finished()), this, SLOT(execToolTip()));
+        f = QtConcurrent::run(showPackageInformation, si->name);
+        g_fwToolTip.setFuture(f);
+        connect(&g_fwToolTip, SIGNAL(finished()), this, SLOT(execToolTip()));
+      }
+
+      lastShownPackage = si->name;
     }
     else return false;
   }
@@ -89,16 +102,27 @@ bool TreeViewPackagesItemDelegate::helpEvent ( QHelpEvent *event, QAbstractItemV
           IconHelper::getIconRemoveItem().pixmap(22, 22).toImage())
       {
         gPoint = tvTransaction->mapToGlobal(event->pos());
-        QFuture<QString> f;
+        /*QFuture<QString> f;
         disconnect(&g_fwToolTip, SIGNAL(finished()), this, SLOT(execToolTip()));
         f = QtConcurrent::run(showPackageInformation, pkgName);
         g_fwToolTip.setFuture(f);
-        connect(&g_fwToolTip, SIGNAL(finished()), this, SLOT(execToolTip()));
+        connect(&g_fwToolTip, SIGNAL(finished()), this, SLOT(execToolTip()));*/
+
+        if (lastShownPackage != pkgName)
+        {
+          QFuture<QString> f;
+          disconnect(&g_fwToolTip, SIGNAL(finished()), this, SLOT(execToolTip()));
+          f = QtConcurrent::run(showPackageInformation, pkgName);
+          g_fwToolTip.setFuture(f);
+          connect(&g_fwToolTip, SIGNAL(finished()), this, SLOT(execToolTip()));
+        }
       }
       else
       {
         QToolTip::hideText();
       }
+
+      lastShownPackage = pkgName;
     }
   }
 
