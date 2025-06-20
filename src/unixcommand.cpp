@@ -272,7 +272,7 @@ QByteArray UnixCommand::getPackageInformation(const QString &pkgName, bool forei
 QByteArray UnixCommand::getPackageContentsUsingXBPS(const QString& pkgName, bool isInstalled)
 {
   QString extraArg="";
-  if (!isInstalled) extraArg = " --repository ";
+  if (!isInstalled) extraArg = " -R ";
 
   QByteArray res = performQuery("query " + extraArg + " -f " + pkgName);
   return res;
