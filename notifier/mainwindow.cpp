@@ -571,7 +571,7 @@ void MainWindow::startPkexec()
   QProcess *xbps = new QProcess();
   connect(xbps, SIGNAL(finished(int)), this, SLOT(finishedPkexec(int)));
   QStringList sl;
-  sl << QStringLiteral("/usr/bin/xbps-install");
+  sl << UnixCommand::getXBPSInstallBin();
   sl << QStringLiteral("-Sy");
   xbps->start("pkexec", sl);
 }
