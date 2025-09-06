@@ -286,6 +286,9 @@ void XBPSExec::parseXBPSProcessOutput(QString output)
     msg.remove(QRegularExpression("org\\.kde\\."));
     msg.remove(QRegularExpression("QCommandLineParser"));
     msg.remove(QRegularExpression("QCoreApplication.+"));
+    msg.remove(QRegularExpression(QStringLiteral("Detected locale.+")));
+    msg.remove(QRegularExpression(QStringLiteral("Qt depends on a UTF-8 locale.+")));
+    msg.remove(QRegularExpression(QStringLiteral("^for more information\\.")));
     msg.remove(QRegularExpression("Fontconfig warning.+"));
     msg.remove(QRegularExpression("reading configurations from.+"));
     msg.remove(QRegularExpression(".+annot load library.+"));
