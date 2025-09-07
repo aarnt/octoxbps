@@ -1,3 +1,7 @@
+0.4.2 (dev)
+  BugFix: Use system theme folder icon in Files tab.
+  Added Apply and Cancel buttons also in the Actions tab.
+
 0.4.1 (2025/08/07)
   BugFix: Removed project Trident code.
   BugFix: Notifier did not fetch updates for the first time when using "once a day".

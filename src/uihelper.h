@@ -199,19 +199,10 @@ public:
   }
 
   static QIcon getIconFolder(){
-    if (WMHelper::isKDERunning())
-      return QIcon::fromTheme("document-open-folder", QIcon(":/resources/images/folder.png"));
-    else
-    {
-      if (WMHelper::isKDERunning() || WMHelper::isLXQTRunning() || WMHelper::isLuminaRunning())
-      {
-        return QIcon(":/resources/images/folder.png");
-      }
+      if (WMHelper::isKDERunning())
+          return QIcon::fromTheme(QStringLiteral("document-open-folder"), QIcon(QStringLiteral(":/resources/images/folder.png")));
       else
-      {
-        return QIcon(":/resources/images/folder_gnome.png");
-      }
-    }
+          return QIcon::fromTheme(QStringLiteral("folder"), QIcon(QStringLiteral(":/resources/images/folder.png")));
   }
 
   static QIcon getIconFindFileInPackage(){

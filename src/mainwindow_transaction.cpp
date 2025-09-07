@@ -511,6 +511,9 @@ void MainWindow::tvTransactionSelectionChanged(const QItemSelection&, const QIte
  */
 void MainWindow::tvTransactionRowsChanged(const QModelIndex& parent)
 {
+  if (m_commandExecuting == ectn_NONE)
+    ensureTabVisible(ctn_TABINDEX_TRANSACTION);
+
   QStandardItem *item = m_modelTransaction->itemFromIndex(parent);
   QString count = QString::number(item->rowCount());
 
