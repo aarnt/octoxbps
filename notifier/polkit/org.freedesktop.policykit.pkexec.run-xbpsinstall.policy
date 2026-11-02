@@ -3,6 +3,7 @@
  "-//freedesktop//DTD PolicyKit Policy Configuration 1.0//EN"
  "http://www.freedesktop.org/standards/PolicyKit/1/policyconfig.dtd">
 <policyconfig>
+
   <action id="org.freedesktop.policykit.pkexec.run-xbpsinstall">
     <description>Run the PolicyKit example program xbps-install</description>
     <defaults>
@@ -13,4 +14,16 @@
     <annotate key="org.freedesktop.policykit.exec.path">/usr/bin/xbps-install</annotate>
     <annotate key="org.freedesktop.policykit.exec.argv1">-Sy</annotate>
   </action>
+
+  <action id="org.freedesktop.policykit.pkexec.run-xbpsinstall-local">
+    <description>Run the PolicyKit example program xbps-install (local)</description>
+    <defaults>
+      <allow_any>yes</allow_any>
+      <allow_inactive>yes</allow_inactive>
+      <allow_active>yes</allow_active>
+    </defaults>
+    <annotate key="org.freedesktop.policykit.exec.path">/usr/local/bin/xbps-install</annotate>
+    <annotate key="org.freedesktop.policykit.exec.argv1">-Sy</annotate>
+  </action>
+
 </policyconfig>
